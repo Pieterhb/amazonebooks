@@ -8,6 +8,46 @@ import re, os
 PANTHER = 'https://panther-ebooks.com'
 SOFTCOVER = 'https://www.softcoverbooks.co.za'
 
+
+import openpyxl
+
+def get_series_data():
+    wb = openpyxl.load_workbook(r'C:\googleebook\Books.xlsx', data_only=True)
+    ws = wb.active
+    series_data = {}
+    for col in ws.iter_cols():
+        current_series = None
+        for cell in col:
+            if cell.value:
+                is_bold = cell.font and cell.font.bold
+                fill_color = cell.fill and cell.fill.start_color and cell.fill.start_color.rgb
+                
+                if is_bold and fill_color == 'FFFFFF00':
+                    current_series = str(cell.value).strip()
+                    clean_series = current_series.replace(' (Afrikaans ebooks only)', '').replace(' (English ebooks only)', '').strip()
+                    series_data[clean_series] = []
+                elif current_series:
+                    val = str(cell.value).strip()
+                    m = re.match(r'^(\d+)\.\s*(.*)$', val)
+                    clean_series = current_series.replace(' (Afrikaans ebooks only)', '').replace(' (English ebooks only)', '').strip()
+                    if m:
+                        num = int(m.group(1))
+                        title = m.group(2).strip()
+                        series_data[clean_series].append({'num': num, 'title': title})
+                    else:
+                        series_data[clean_series].append({'num': len(series_data[clean_series])+1, 'title': val})
+    return series_data
+
+series_data = get_series_data()
+
+# Helper to find series for a book title
+def find_series_for_title(title):
+    for s_name, books in series_data.items():
+        for b in books:
+            if b['title'].lower() == title.lower():
+                return s_name, b['num']
+    return "Other", 999
+
 panther_books = [
   {'title':'The Creeping Death','img':'/images/covers/10760_1774940080.jpg','store':'English','url':f'{PANTHER}/book-details/MTA3NjA%3D'},
   {'title':'Comrades of the Dragon','img':'/images/covers/10759_1774939568.jpg','store':'English','url':f'{PANTHER}/book-details/MTA3NTk%3D'},
@@ -176,8 +216,10 @@ def badge_class(store):
 def card_html(book):
     title = book['title'].replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
     bc = badge_class(book['store'])
+    badge_html = f'<div class="book-number-badge">{book["number"]}</div>' if 'number' in book and book['number'] != 999 else ''
     return f'''    <article class="book-card" data-store="{book['store']}">
       <div class="book-img-wrapper">
+        {badge_html}
         <img src="{book['img']}" alt="{title}">
         <span class="store-badge {bc}">{book['store']}</span>
       </div>
@@ -193,6 +235,34 @@ def grid_html(books):
 
 home_featured = panther_books[:4] + softcover_books[:3] + treasure_books[:2]
 
+
+for b in panther_books:
+    s_name, s_num = find_series_for_title(b['title'])
+    b['series'] = s_name
+    b['number'] = s_num
+
+# Group panther_books by series
+from collections import defaultdict
+panther_series_groups = defaultdict(list)
+for b in panther_books:
+    panther_series_groups[b['series']].append(b)
+
+# Sort each series by number
+for s_name in panther_series_groups:
+    panther_series_groups[s_name].sort(key=lambda x: x['number'])
+
+panther_html_sections = []
+for s_name, books in sorted(panther_series_groups.items()):
+    series_grid = '\n'.join(card_html(b) for b in books)
+    panther_html_sections.append(f'''
+        <div class="series-group" data-store="all" style="margin-top: 2rem; width: 100%;">
+          <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 1rem;">{s_name}</h3>
+          <div class="product-grid">
+            {series_grid}
+          </div>
+        </div>
+    ''')
+panther_grouped_html = '\n'.join(panther_html_sections)
 css = open('style.css', encoding='utf-8').read()
 
 nav_js = """
@@ -354,7 +424,7 @@ html = f"""<!DOCTYPE html>
           <button class="filter-btn" data-store="English">English</button>
         </div>
         <div class="product-grid" id="panther-grid">
-{grid_html(panther_books)}
+{panther_grouped_html}
         </div>
       </section>
 

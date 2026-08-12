@@ -1,0 +1,602 @@
+Cell A1: Value=Sahara Avontuur Reeks  (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B1: Value=Sahara Adventure Series  (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C1: Value=Die Buiter Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D1: Value=The Masked Robber Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A2: Value=1. Heks van die Sahara, Bold=False, FillType=None, Color=00000000
+Cell B2: Value=1. Witch of the Sahara, Bold=False, FillType=None, Color=00000000
+Cell C2: Value=1. Die Buiter, Bold=False, FillType=None, Color=00000000
+Cell D2: Value=1. The Masked Robber, Bold=False, FillType=None, Color=00000000
+Cell A3: Value=2. Spore na die Dood, Bold=False, FillType=None, Color=00000000
+Cell B3: Value=2. Footsteps to Death, Bold=False, FillType=None, Color=00000000
+Cell C3: Value=2. Lank Lewe die Buiter, Bold=False, FillType=None, Color=00000000
+Cell D3: Value=2. Long Live the Masked Robber, Bold=False, FillType=None, Color=00000000
+Cell A4: Value=3. Die Skarlaken Ruiters, Bold=False, FillType=None, Color=00000000
+Cell B4: Value=3. The Scarlet Riders, Bold=False, FillType=None, Color=00000000
+Cell C4: Value=3. Die Buiter en sy Bende, Bold=False, FillType=None, Color=00000000
+Cell D4: Value=3. The Masked Robber and His Gang, Bold=False, FillType=None, Color=00000000
+Cell A5: Value=4. Wraak van die Woestyn, Bold=False, FillType=None, Color=00000000
+Cell B5: Value=4. Revenge of the Desert, Bold=False, FillType=None, Color=00000000
+Cell C5: Value=4. Lokval vir die Buiter, Bold=False, FillType=None, Color=00000000
+Cell D5: Value=4. Bait for the Masked Robber, Bold=False, FillType=None, Color=00000000
+Cell A6: Value=5. Die Fort is Stil, Bold=False, FillType=None, Color=00000000
+Cell B6: Value=5. The Fort is Silent, Bold=False, FillType=None, Color=00000000
+Cell C6: Value=5. Die Buiter ry Snags, Bold=False, FillType=None, Color=00000000
+Cell D6: Value=5. The Masked Robber Rides in the Night, Bold=False, FillType=None, Color=00000000
+Cell A7: Value=6. Dood met Sonop, Bold=False, FillType=None, Color=00000000
+Cell B7: Value=6. Death at Sunrise, Bold=False, FillType=None, Color=00000000
+Cell C7: Value=6. Die Buiter se Geheim, Bold=False, FillType=None, Color=00000000
+Cell D7: Value=6. The Masked Robber’s Secret, Bold=False, FillType=None, Color=00000000
+Cell A8: Value=7. Dreunende Hoewe, Bold=False, FillType=None, Color=00000000
+Cell B8: Value=7. Thundering Hooves, Bold=False, FillType=None, Color=00000000
+Cell C8: Value=7. Boodskap vir die Buiter, Bold=False, FillType=None, Color=00000000
+Cell D8: Value=7. Message for the Masked Robber, Bold=False, FillType=None, Color=00000000
+Cell A9: Value=8. Bloed voor die Son, Bold=False, FillType=None, Color=00000000
+Cell B9: Value=8. Blood in front of the Sun, Bold=False, FillType=None, Color=00000000
+Cell C9: Value=8. Die Buiter hou Wag, Bold=False, FillType=None, Color=00000000
+Cell D9: Value=8. The Masked Robber Keeps Watch, Bold=False, FillType=None, Color=00000000
+Cell A10: Value=9. Die Spore Roep, Bold=False, FillType=None, Color=00000000
+Cell B10: Value=9. The Tracks are Calling, Bold=False, FillType=None, Color=00000000
+Cell C10: Value=9. Die Buiter Seëvier, Bold=False, FillType=None, Color=00000000
+Cell D10: Value=9. The Masked Robber Prevails, Bold=False, FillType=None, Color=00000000
+Cell A11: Value=10. Mademoiselle Julie, Bold=False, FillType=None, Color=00000000
+Cell B11: Value=10. Mademoiselle Julie, Bold=False, FillType=None, Color=00000000
+Cell A12: Value=11. Wraak van die Sabel, Bold=False, FillType=None, Color=00000000
+Cell B12: Value=11. Revenge of the Sabre, Bold=False, FillType=None, Color=00000000
+Cell A13: Value=12. Bloedige Robyne, Bold=False, FillType=None, Color=00000000
+Cell B13: Value=12. Curse of the Ruby, Bold=False, FillType=None, Color=00000000
+Cell A14: Value=13. Bloed oor die Duine, Bold=False, FillType=None, Color=00000000
+Cell B14: Value=13. Bloodstained Dunes, Bold=False, FillType=None, Color=00000000
+Cell A15: Value=14. Duine van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B15: Value=14. Dunes of Desolution, Bold=False, FillType=None, Color=00000000
+Cell A16: Value=15. Dreigende Daeraad, Bold=False, FillType=None, Color=00000000
+Cell B16: Value=15. Bloody Sunrise, Bold=False, FillType=None, Color=00000000
+Cell A17: Value=16. Bouvalle van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B17: Value=16. The Silent Ruins, Bold=False, FillType=None, Color=00000000
+Cell A18: Value=17. Gaste van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B18: Value=17. Guests of Death, Bold=False, FillType=None, Color=00000000
+Cell A19: Value=18. Bitter die Wraak, Bold=False, FillType=None, Color=00000000
+Cell B19: Value=18. Vengeance is Mine, Bold=False, FillType=None, Color=00000000
+Cell A20: Value=19. Vlamme in die Tempel, Bold=False, FillType=None, Color=00000000
+Cell B20: Value=19. Flames in the Temple, Bold=False, FillType=None, Color=00000000
+Cell A21: Value=20. Strik van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B21: Value=20. Death in the Shadows, Bold=False, FillType=None, Color=00000000
+Cell A22: Value=21. Die Dodelike Sluipers, Bold=False, FillType=None, Color=00000000
+Cell B22: Value=21. Deathtrap in the Desert, Bold=False, FillType=None, Color=00000000
+Cell A23: Value=22. Nag van Geweld, Bold=False, FillType=None, Color=00000000
+Cell B23: Value=22. Terror under the Stars, Bold=False, FillType=None, Color=00000000
+Cell A24: Value=23. Bloed oor die Bouvalle, Bold=False, FillType=None, Color=00000000
+Cell B24: Value=23. The Fallen Walls, Bold=False, FillType=None, Color=00000000
+Cell A25: Value=24. Spelonk van Verskrikking, Bold=False, FillType=None, Color=00000000
+Cell B25: Value=24. Cave of Horrors, Bold=False, FillType=None, Color=00000000
+Cell A26: Value=25. Skaduwee van Gister, Bold=False, FillType=None, Color=00000000
+Cell B26: Value=25. Echoes of the Past, Bold=False, FillType=None, Color=00000000
+Cell A27: Value=26. Storm oor Dini-Salam, Bold=False, FillType=None, Color=00000000
+Cell B27: Value=26. Dini Salam under Siege, Bold=False, FillType=None, Color=00000000
+Cell A28: Value=27. Die Skatte van Marabash, Bold=False, FillType=None, Color=00000000
+Cell B28: Value=27. The Treasures of Marabash, Bold=False, FillType=None, Color=00000000
+Cell A29: Value=28. Wraak in die Woestynvesting, Bold=False, FillType=None, Color=00000000
+Cell B29: Value=28. Fortress of Fury, Bold=False, FillType=None, Color=00000000
+Cell A30: Value=29. Stille Dood oor die Sahara, Bold=False, FillType=None, Color=00000000
+Cell B30: Value=29. Death Stalks the Brave, Bold=False, FillType=None, Color=00000000
+Cell A31: Value=30. Die Verraaier van Dini-Salam, Bold=False, FillType=None, Color=00000000
+Cell B31: Value=30. The Traitor of Dini Salam, Bold=False, FillType=None, Color=00000000
+Cell A32: Value=31. Graf in die Woestyn, Bold=False, FillType=None, Color=00000000
+Cell B32: Value=31. Desert Tomb, Bold=False, FillType=None, Color=00000000
+Cell A33: Value=32. Vlamme in die Woestyn, Bold=False, FillType=None, Color=00000000
+Cell B33: Value=32. Flames across the Sands, Bold=False, FillType=None, Color=00000000
+Cell A34: Value=33. Noodroep uit die Woestyn, Bold=False, FillType=None, Color=00000000
+Cell B34: Value=33. Signal from the Dunes, Bold=False, FillType=None, Color=00000000
+Cell A35: Value=34. Spore van Verraad, Bold=False, FillType=None, Color=00000000
+Cell B35: Value=34. Footprints of Betrayal, Bold=False, FillType=None, Color=00000000
+Cell A36: Value=35. Die Raaisel van Aber-el-Mir, Bold=False, FillType=None, Color=00000000
+Cell B36: Value=35. Aber-el-Mir’s Secret, Bold=False, FillType=None, Color=00000000
+Cell A37: Value=36. ’n Teken in die Nag, Bold=False, FillType=None, Color=00000000
+Cell B37: Value=36. Signal in the Dark, Bold=False, FillType=None, Color=00000000
+Cell A38: Value=37. Die Swaard van Verwoesting, Bold=False, FillType=None, Color=00000000
+Cell B38: Value=37. Sword of Destruction, Bold=False, FillType=None, Color=00000000
+Cell A39: Value=38. Vuurpeleton lê Aan, Bold=False, FillType=None, Color=00000000
+Cell B39: Value=38. Under a Blazing Sky, Bold=False, FillType=None, Color=00000000
+Cell A40: Value=39. Die Bloedbad van Goras, Bold=False, FillType=None, Color=00000000
+Cell B40: Value=39. The Goras Bloodbath, Bold=False, FillType=None, Color=00000000
+Cell A41: Value=40. Die Geheim van Fort Laval, Bold=False, FillType=None, Color=00000000
+Cell B41: Value=40. The Secret of Fort Laval, Bold=False, FillType=None, Color=00000000
+Cell A43: Value=Die Swart Luiperd Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B43: Value=The Black Leopard Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C43: Value=Oloff die Seerower Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D43: Value=Oloff the Pirate Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A44: Value=1. Gemaskerde Moordenaars, Bold=False, FillType=None, Color=00000000
+Cell B44: Value=1. Masked Murderers, Bold=False, FillType=None, Color=00000000
+Cell C44: Value=1. Die Swaardvegter, Bold=False, FillType=None, Color=00000000
+Cell D44: Value=1. Master of the Sword, Bold=False, FillType=None, Color=00000000
+Cell A45: Value=2. Die Mensvreters van Tsawo, Bold=False, FillType=None, Color=00000000
+Cell B45: Value=2. The Maneaters of Tsavo, Bold=False, FillType=None, Color=00000000
+Cell C45: Value=2. Die Seewraak, Bold=False, FillType=None, Color=00000000
+Cell D45: Value=2. Sea of Vengeance, Bold=False, FillType=None, Color=00000000
+Cell A46: Value=3. Die Bloedboodskap, Bold=False, FillType=None, Color=00000000
+Cell B46: Value=3. The Blood Message, Bold=False, FillType=None, Color=00000000
+Cell C46: Value=3. Die Skuim van die See, Bold=False, FillType=None, Color=00000000
+Cell D46: Value=3. Scum of the Seas, Bold=False, FillType=None, Color=00000000
+Cell A47: Value=4. Kamerade van die Draak, Bold=False, FillType=None, Color=00000000
+Cell B47: Value=4. Comrades of the Dragon, Bold=False, FillType=None, Color=00000000
+Cell C47: Value=4. Kaptein Oloff, Bold=False, FillType=None, Color=00000000
+Cell D47: Value=4. Captain Oloff the Pirate, Bold=False, FillType=None, Color=00000000
+Cell A48: Value=5. Die Kruipende Dood, Bold=False, FillType=None, Color=00000000
+Cell B48: Value=5. The Creeping Death, Bold=False, FillType=None, Color=00000000
+Cell C48: Value=5. Die Verraaier, Bold=False, FillType=None, Color=00000000
+Cell D48: Value=5. The Traitor, Bold=False, FillType=None, Color=00000000
+Cell A49: Value=6. Die Galg in die Oerwoud, Bold=False, FillType=None, Color=00000000
+Cell B49: Value=6. The Gallows in the Jungle, Bold=False, FillType=None, Color=00000000
+Cell C49: Value=6. Drie Vreemde Kapers, Bold=False, FillType=None, Color=00000000
+Cell D49: Value=6. Black Horizon, Bold=False, FillType=None, Color=00000000
+Cell A50: Value=7. Die Eiland van die Blou Duiwels, Bold=False, FillType=None, Color=00000000
+Cell B50: Value=7. The Island of the Blue Devils, Bold=False, FillType=None, Color=00000000
+Cell C50: Value=7. Die Losprys, Bold=False, FillType=None, Color=00000000
+Cell D50: Value=7. The Ransom, Bold=False, FillType=None, Color=00000000
+Cell A51: Value=8. Pyle van Vuur, Bold=False, FillType=None, Color=00000000
+Cell B51: Value=8. Arrows of Fire, Bold=False, FillType=None, Color=00000000
+Cell C51: Value=8. Die Valk in die Kraaines, Bold=False, FillType=None, Color=00000000
+Cell D51: Value=8. Falcon in the Crow’s Nest, Bold=False, FillType=None, Color=00000000
+Cell A52: Value=9. Die Mense van die Meer, Bold=False, FillType=None, Color=00000000
+Cell B52: Value=9. The People of the Lake, Bold=False, FillType=None, Color=00000000
+Cell C52: Value=9. Die Spioen, Bold=False, FillType=None, Color=00000000
+Cell D52: Value=9. The Spy, Bold=False, FillType=None, Color=00000000
+Cell A53: Value=10. Die Rooi Maskers, Bold=False, FillType=None, Color=00000000
+Cell B53: Value=10. The Red Masks, Bold=False, FillType=None, Color=00000000
+Cell C53: Value=10. Aasvoëls van die See, Bold=False, FillType=None, Color=00000000
+Cell D53: Value=10. Sea Vultures, Bold=False, FillType=None, Color=00000000
+Cell A54: Value=11. Kloue van die Valk, Bold=False, FillType=None, Color=00000000
+Cell B54: Value=11. Claws of the Falcon, Bold=False, FillType=None, Color=00000000
+Cell C54: Value=11. Die Swart Seemeeu, Bold=False, FillType=None, Color=00000000
+Cell D54: Value=11. The Black Seagull, Bold=False, FillType=None, Color=00000000
+Cell A55: Value=12. Skedels in die Sand, Bold=False, FillType=None, Color=00000000
+Cell B55: Value=12. Skulls in the Sand, Bold=False, FillType=None, Color=00000000
+Cell C55: Value=12. Die Vloot van Verwoesting, Bold=False, FillType=None, Color=00000000
+Cell D55: Value=12. Ravishing Armada, Bold=False, FillType=None, Color=00000000
+Cell A56: Value=13. Die Dood kom Stil, Bold=False, FillType=None, Color=00000000
+Cell B56: Value=13. Death comes Quietly, Bold=False, FillType=None, Color=00000000
+Cell C56: Value=13. Die Arm uit die See, Bold=False, FillType=None, Color=00000000
+Cell D56: Value=13. Arm from the Deep, Bold=False, FillType=None, Color=00000000
+Cell A57: Value=14. Man sonder Kop, Bold=False, FillType=None, Color=00000000
+Cell B57: Value=14. Man without a Head, Bold=False, FillType=None, Color=00000000
+Cell C57: Value=14. Die Seerower se Buit, Bold=False, FillType=None, Color=00000000
+Cell D57: Value=14. The Pirate’s Treasure, Bold=False, FillType=None, Color=00000000
+Cell A58: Value=15. Die Songod Praat, Bold=False, FillType=None, Color=00000000
+Cell B58: Value=15. The Sungod Speaks, Bold=False, FillType=None, Color=00000000
+Cell C58: Value=15. Die Blou Robyn, Bold=False, FillType=None, Color=00000000
+Cell D58: Value=15. The Blue Ruby, Bold=False, FillType=None, Color=00000000
+Cell A59: Value=16. Pad van die Arend, Bold=False, FillType=None, Color=00000000
+Cell B59: Value=16. Path of the Eagle, Bold=False, FillType=None, Color=00000000
+Cell C59: Value=16. Die Spookskip van Biskaje, Bold=False, FillType=None, Color=00000000
+Cell D59: Value=16. Ghost Ship of Biscay, Bold=False, FillType=None, Color=00000000
+Cell A60: Value=17. Die Duiwel is ’n Vrou, Bold=False, FillType=None, Color=00000000
+Cell B60: Value=17. The Devil is a Woman, Bold=False, FillType=None, Color=00000000
+Cell C60: Value=17. Die Kus van Barbarye, Bold=False, FillType=None, Color=00000000
+Cell D60: Value=17. The Coast of Barbary, Bold=False, FillType=None, Color=00000000
+Cell A61: Value=18. Geheim van die Wit Heks, Bold=False, FillType=None, Color=00000000
+Cell B61: Value=18. Secret of the White Witch, Bold=False, FillType=None, Color=00000000
+Cell C61: Value=18. Haaie van die Ooste, Bold=False, FillType=None, Color=00000000
+Cell D61: Value=18. Predators from the East, Bold=False, FillType=None, Color=00000000
+Cell A62: Value=19. Gees uit die Vuur, Bold=False, FillType=None, Color=00000000
+Cell B62: Value=19. Spirit from the Fire, Bold=False, FillType=None, Color=00000000
+Cell C62: Value=19. Die Skedel, Bold=False, FillType=None, Color=00000000
+Cell D62: Value=19. The Skull, Bold=False, FillType=None, Color=00000000
+Cell A63: Value=20. Waar die Dooies Leef, Bold=False, FillType=None, Color=00000000
+Cell B63: Value=20. Where the Dead Live, Bold=False, FillType=None, Color=00000000
+Cell C63: Value=20. Die Verslete Mantel, Bold=False, FillType=None, Color=00000000
+Cell D63: Value=20. The Secret Mantle, Bold=False, FillType=None, Color=00000000
+Cell A64: Value=21. Dans van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B64: Value=21. Dance of Death, Bold=False, FillType=None, Color=00000000
+Cell C64: Value=21. Skuilplek van die Rowers, Bold=False, FillType=None, Color=00000000
+Cell D64: Value=21. Stronghold of the Pirates, Bold=False, FillType=None, Color=00000000
+Cell A65: Value=22. Bloedfees van die Ape, Bold=False, FillType=None, Color=00000000
+Cell B65: Value=22. Blood Feast of the Apes, Bold=False, FillType=None, Color=00000000
+Cell C65: Value=22. Die Geel Draak, Bold=False, FillType=None, Color=00000000
+Cell D65: Value=22. The Yellow Dragon, Bold=False, FillType=None, Color=00000000
+Cell A66: Value=23. Wraak van die Gorillas, Bold=False, FillType=None, Color=00000000
+Cell B66: Value=23. Revenge of the Gorillas, Bold=False, FillType=None, Color=00000000
+Cell C66: Value=23. Slaaf van die Vyand, Bold=False, FillType=None, Color=00000000
+Cell D66: Value=23. In Enemy Hands, Bold=False, FillType=None, Color=00000000
+Cell A67: Value=24. Vallei van Gedrogte, Bold=False, FillType=None, Color=00000000
+Cell B67: Value=24. Valley of the Monsters, Bold=False, FillType=None, Color=00000000
+Cell C67: Value=24. Kapers op die Kim, Bold=False, FillType=None, Color=00000000
+Cell D67: Value=24. Black Sails on the Horizon, Bold=False, FillType=None, Color=00000000
+Cell A68: Value=25. Rooi is die Waters, Bold=False, FillType=None, Color=00000000
+Cell B68: Value=25. Red is the Water, Bold=False, FillType=None, Color=00000000
+Cell A69: Value=26. Fees van die Kopbeen, Bold=False, FillType=None, Color=00000000
+Cell B69: Value=26. Festival of the Skull, Bold=False, FillType=None, Color=00000000
+Cell A70: Value=27. Die Watermonster Brul, Bold=False, FillType=None, Color=00000000
+Cell B70: Value=27. The Water Monster Roars, Bold=False, FillType=None, Color=00000000
+Cell A71: Value=28. Geheim van die Berge, Bold=False, FillType=None, Color=00000000
+Cell B71: Value=28. Secret of the Mountains, Bold=False, FillType=None, Color=00000000
+Cell A72: Value=29. Newels van Verraad, Bold=False, FillType=None, Color=00000000
+Cell B72: Value=29. Mists of Treachery, Bold=False, FillType=None, Color=00000000
+Cell A73: Value=30. Bloed op die Maan, Bold=False, FillType=None, Color=00000000
+Cell B73: Value=30. Blood on the Moon, Bold=False, FillType=None, Color=00000000
+Cell A74: Value=31. Die Laaste Kreet, Bold=False, FillType=None, Color=00000000
+Cell B74: Value=31. The last Cry, Bold=False, FillType=None, Color=00000000
+Cell A75: Value=32. Die Groot Voël Sterf, Bold=False, FillType=None, Color=00000000
+Cell B75: Value=32. The Great Bird Perishes, Bold=False, FillType=None, Color=00000000
+Cell A76: Value=33. Geheim van die Groen Hel, Bold=False, FillType=None, Color=00000000
+Cell B76: Value=33. Secret of the Green Hell, Bold=False, FillType=None, Color=00000000
+Cell A77: Value=34. Spoor na die Onbekende, Bold=False, FillType=None, Color=00000000
+Cell B77: Value=34. Trail to the Unknown, Bold=False, FillType=None, Color=00000000
+Cell A78: Value=35. Manne van die Maan, Bold=False, FillType=None, Color=00000000
+Cell B78: Value=35. Men of the Moon, Bold=False, FillType=None, Color=00000000
+Cell A79: Value=36. Draer van die Bloedstene, Bold=False, FillType=None, Color=00000000
+Cell B79: Value=36. Bearers of the Bloodstones, Bold=False, FillType=None, Color=00000000
+Cell A80: Value=37. Die Gorillas Kom, Bold=False, FillType=None, Color=00000000
+Cell B80: Value=37. The Gorillas Arrive, Bold=False, FillType=None, Color=00000000
+Cell A81: Value=38. Tiere van die Heilige Woud, Bold=False, FillType=None, Color=00000000
+Cell B81: Value=38. Tigers of the Sacret Forest, Bold=False, FillType=None, Color=00000000
+Cell A82: Value=39. Vegters van die Slanggod, Bold=False, FillType=None, Color=00000000
+Cell B82: Value=39. Warriors of the Serpent God, Bold=False, FillType=None, Color=00000000
+Cell A83: Value=40. Goud en Assegaaie, Bold=False, FillType=None, Color=00000000
+Cell B83: Value=40. Gold and Assegais, Bold=False, FillType=None, Color=00000000
+Cell A84: Value=41. Die Jagters van Bloedeiland, Bold=False, FillType=None, Color=00000000
+Cell B84: Value=41. The Hunters of Blood Island, Bold=False, FillType=None, Color=00000000
+Cell A85: Value=42. Kettings in die Oerwoud, Bold=False, FillType=None, Color=00000000
+Cell B85: Value=42. Chains in the Jungle, Bold=False, FillType=None, Color=00000000
+Cell A86: Value=43. Oog van die Songod, Bold=False, FillType=None, Color=00000000
+Cell B86: Value=43. Eye of the Sungod, Bold=False, FillType=None, Color=00000000
+Cell A87: Value=44. Wraak van die Woud, Bold=False, FillType=None, Color=00000000
+Cell B87: Value=44. Vengeance of the Forest, Bold=False, FillType=None, Color=00000000
+Cell A88: Value=45. Bloed van die Maagd, Bold=False, FillType=None, Color=00000000
+Cell B88: Value=45. Blood of the Maiden, Bold=False, FillType=None, Color=00000000
+Cell A89: Value=46. Die Reus van Boendoe, Bold=False, FillType=None, Color=00000000
+Cell B89: Value=46. The Giant of Boendoe, Bold=False, FillType=None, Color=00000000
+Cell A90: Value=47. Vlamme van Verraad, Bold=False, FillType=None, Color=00000000
+Cell B90: Value=47. Flames of Treachery, Bold=False, FillType=None, Color=00000000
+Cell A91: Value=48. Monster van die Moerasse, Bold=False, FillType=None, Color=00000000
+Cell B91: Value=48. Monster of the Marshes, Bold=False, FillType=None, Color=00000000
+Cell A92: Value=49. Afgrond van Wraak, Bold=False, FillType=None, Color=00000000
+Cell B92: Value=49. Abyss of Vengeance, Bold=False, FillType=None, Color=00000000
+Cell A93: Value=50. Woud van Onheil, Bold=False, FillType=None, Color=00000000
+Cell B93: Value=50. Forest of Peril, Bold=False, FillType=None, Color=00000000
+Cell A94: Value=51. Vlam van Wraak, Bold=False, FillType=None, Color=00000000
+Cell B94: Value=51. Flame of Vengeance, Bold=False, FillType=None, Color=00000000
+Cell A95: Value=52. Sluiers oor die Woud, Bold=False, FillType=None, Color=00000000
+Cell B95: Value=52. Veils over the Forest, Bold=False, FillType=None, Color=00000000
+Cell A96: Value=53. Prinses van die Arende, Bold=False, FillType=None, Color=00000000
+Cell B96: Value=53. Princess of the Eagles, Bold=False, FillType=None, Color=00000000
+Cell A97: Value=54. Woud van Waansin, Bold=False, FillType=None, Color=00000000
+Cell B97: Value=54. Forest of Madness, Bold=False, FillType=None, Color=00000000
+Cell A98: Value=55. Rampokkers van die Paradys, Bold=False, FillType=None, Color=00000000
+Cell B98: Value=55. Marauders of Paradise, Bold=False, FillType=None, Color=00000000
+Cell A99: Value=56. Die Legende van Kumara, Bold=False, FillType=None, Color=00000000
+Cell B99: Value=56. The Legend of Kumara, Bold=False, FillType=None, Color=00000000
+Cell A100: Value=57. Die Monsters van Komo, Bold=False, FillType=None, Color=00000000
+Cell B100: Value=57. The Monsters of Komo, Bold=False, FillType=None, Color=00000000
+Cell A101: Value=58. Monsters van die Bambiberge, Bold=False, FillType=None, Color=00000000
+Cell B101: Value=58. Monsters of the Bambi Mountains, Bold=False, FillType=None, Color=00000000
+Cell A102: Value=59. Die Purper Arend, Bold=False, FillType=None, Color=00000000
+Cell B102: Value=59. The Purple Eagle, Bold=False, FillType=None, Color=00000000
+Cell A103: Value=60. Avontuur in die Kongo, Bold=False, FillType=None, Color=00000000
+Cell B103: Value=60. Adventure in the Kongo, Bold=False, FillType=None, Color=00000000
+Cell A104: Value=61. Moord in die Oerwoud, Bold=False, FillType=None, Color=00000000
+Cell B104: Value=61. Murder in the Jungle, Bold=False, FillType=None, Color=00000000
+Cell A105: Value=62. Seun van die Swart Luiperd, Bold=False, FillType=None, Color=00000000
+Cell B105: Value=62. Son of the Black Leopard, Bold=False, FillType=None, Color=00000000
+Cell A106: Value=63. Slagoffer vir die Slanggod, Bold=False, FillType=None, Color=00000000
+Cell B106: Value=63. Victim of the Snake God, Bold=False, FillType=None, Color=00000000
+Cell A107: Value=64. Dodelike Druppels, Bold=False, FillType=None, Color=00000000
+Cell B107: Value=64. Deadly Drops, Bold=False, FillType=None, Color=00000000
+Cell A108: Value=65. Die Plaag uit Egipte, Bold=False, FillType=None, Color=00000000
+Cell B108: Value=65. The Plague from Egypt, Bold=False, FillType=None, Color=00000000
+Cell A109: Value=66. Renostermanne van die Moraberge, Bold=False, FillType=None, Color=00000000
+Cell B109: Value=66. Rhinoceros Men of the Mora Mountains, Bold=False, FillType=None, Color=00000000
+Cell A110: Value=67. Die Geheim van die Begraafplaas van die Olifante, Bold=False, FillType=None, Color=00000000
+Cell B110: Value=67. The Secret of the Graveyard of the Elephants, Bold=False, FillType=None, Color=00000000
+Cell A111: Value=68. Watergraf vir die Oerwoudman, Bold=False, FillType=None, Color=00000000
+Cell B111: Value=68. Watery Grave for the Jungle Man, Bold=False, FillType=None, Color=00000000
+Cell A112: Value=69. Leeuspore tussen die Lyke, Bold=False, FillType=None, Color=00000000
+Cell B112: Value=69. Lion Tracks Amongst the Corpses, Bold=False, FillType=None, Color=00000000
+Cell A113: Value=70. Die Verlore Stam, Bold=False, FillType=None, Color=00000000
+Cell B113: Value=70. The Lost Tribe, Bold=False, FillType=None, Color=00000000
+Cell A115: Value=Woeste Laeveld Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B115: Value=Wild Lowveld Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C115: Value=Oerwoudvalk Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D115: Value=Jungle Hawk Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A116: Value=1. Vlam van die Laeveld, Bold=False, FillType=None, Color=00000000
+Cell B116: Value=1. Flame of the Lowveld, Bold=False, FillType=None, Color=00000000
+Cell C116: Value=1. Goudstad van Skeba , Bold=False, FillType=None, Color=00000000
+Cell D116: Value=1. Gold City of Sheba, Bold=False, FillType=None, Color=00000000
+Cell A117: Value=2. Die Poort van Trane, Bold=False, FillType=None, Color=00000000
+Cell B117: Value=2. The Alley of Tears, Bold=False, FillType=None, Color=00000000
+Cell C117: Value=2. Die Seekat, Bold=False, FillType=None, Color=00000000
+Cell D117: Value=2. The Octopus, Bold=False, FillType=None, Color=00000000
+Cell A118: Value=3. Vonnis van die Berge, Bold=False, FillType=None, Color=00000000
+Cell B118: Value=3. Judgement of the Mountains, Bold=False, FillType=None, Color=00000000
+Cell C118: Value=3. Oervallei, Bold=False, FillType=None, Color=00000000
+Cell D118: Value=3. Cavemen Valley, Bold=False, FillType=None, Color=00000000
+Cell A119: Value=4. Spore in die Dou, Bold=False, FillType=None, Color=00000000
+Cell B119: Value=4. Traces in the Dew, Bold=False, FillType=None, Color=00000000
+Cell C119: Value=4. Jagters van Zarsjata, Bold=False, FillType=None, Color=00000000
+Cell D119: Value=4. Hunters of Zarsjata, Bold=False, FillType=None, Color=00000000
+Cell A120: Value=5. Beminde Verraaier, Bold=False, FillType=None, Color=00000000
+Cell B120: Value=5. Beloved Traitor, Bold=False, FillType=None, Color=00000000
+Cell C120: Value=5. Die Luiperdbende, Bold=False, FillType=None, Color=00000000
+Cell D120: Value=5. The Leopard Gang, Bold=False, FillType=None, Color=00000000
+Cell A121: Value=6. Geen Vergiffenis, Bold=False, FillType=None, Color=00000000
+Cell B121: Value=6. No Forgiveness, Bold=False, FillType=None, Color=00000000
+Cell C121: Value=6. Rewolusie in die Oerwoud, Bold=False, FillType=None, Color=00000000
+Cell D121: Value=6. Revolution in the Jungle, Bold=False, FillType=None, Color=00000000
+Cell A122: Value=7. Hoefslae teen Middernag, Bold=False, FillType=None, Color=00000000
+Cell B122: Value=7. Hoofbeats at Midnight, Bold=False, FillType=None, Color=00000000
+Cell C122: Value=7. Land van die Vampiere, Bold=False, FillType=None, Color=00000000
+Cell D122: Value=7. Land of the Vampires, Bold=False, FillType=None, Color=00000000
+Cell A123: Value=8. Ruiters van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B123: Value=8. Riders of Death, Bold=False, FillType=None, Color=00000000
+Cell A125: Value=SA Polisie Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B125: Value=SA Police Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C125: Value=Sahara Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D125: Value=Sahara Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A126: Value=1. Nag van geen Genade, Bold=False, FillType=None, Color=00000000
+Cell B126: Value=1. Night of no Mercy, Bold=False, FillType=None, Color=00000000
+Cell C126: Value=1. Bloedspore in die Sahara, Bold=False, FillType=None, Color=00000000
+Cell D126: Value=1. Blood Trails in the Sahara, Bold=False, FillType=None, Color=00000000
+Cell A127: Value=2. Aasvoëls van die Kalahari, Bold=False, FillType=None, Color=00000000
+Cell B127: Value=2. Vultures of the Kalahari, Bold=False, FillType=None, Color=00000000
+Cell C127: Value=2. Bloedhond in die Sahara, Bold=False, FillType=None, Color=00000000
+Cell D127: Value=2. Bloodhound in the Sahara, Bold=False, FillType=None, Color=00000000
+Cell A128: Value=3. Die Bloedhonde Blaf, Bold=False, FillType=None, Color=00000000
+Cell B128: Value=3. The Bloodhounds Bark, Bold=False, FillType=None, Color=00000000
+Cell C128: Value=3. Skaduwee oor die Sahara, Bold=False, FillType=None, Color=00000000
+Cell D128: Value=3. Shadows over the Sahara, Bold=False, FillType=None, Color=00000000
+Cell A129: Value=4. Geheim van die Sederberg, Bold=False, FillType=None, Color=00000000
+Cell B129: Value=4. Secret of the Cederberg, Bold=False, FillType=None, Color=00000000
+Cell C129: Value=4. Wraak trek oor die Sahara, Bold=False, FillType=None, Color=00000000
+Cell D129: Value=4. Vengeance Sweeps the Sahara, Bold=False, FillType=None, Color=00000000
+Cell A130: Value=5. Die Skatte van Monomotapa, Bold=False, FillType=None, Color=00000000
+Cell B130: Value=5. The Treasures of Monomotapa, Bold=False, FillType=None, Color=00000000
+Cell C130: Value=5. Makkers van die Dood, Bold=False, FillType=None, Color=00000000
+Cell D130: Value=5. Companions of Death, Bold=False, FillType=None, Color=00000000
+Cell A131: Value=6. Wraak uit die Verlede, Bold=False, FillType=None, Color=00000000
+Cell B131: Value=6. Vengeance from the Past, Bold=False, FillType=None, Color=00000000
+Cell C131: Value=6. Bloedige Robyn, Bold=False, FillType=None, Color=00000000
+Cell D131: Value=6. Bloody Ruby, Bold=False, FillType=None, Color=00000000
+Cell A132: Value=7. Gees van die Toordokter, Bold=False, FillType=None, Color=00000000
+Cell B132: Value=7. Spirit of the Witch Doctor, Bold=False, FillType=None, Color=00000000
+Cell C132: Value=7. Gebied Zero, Bold=False, FillType=None, Color=00000000
+Cell D132: Value=7. Area Zero, Bold=False, FillType=None, Color=00000000
+Cell A133: Value=8. Die Waansinnige Besoeker, Bold=False, FillType=None, Color=00000000
+Cell B133: Value=8. The Deranged Visitor, Bold=False, FillType=None, Color=00000000
+Cell C133: Value=8. Die Muiters, Bold=False, FillType=None, Color=00000000
+Cell D133: Value=8. The Deserters, Bold=False, FillType=None, Color=00000000
+Cell A134: Value=9. Die Slange van Tumara, Bold=False, FillType=None, Color=00000000
+Cell B134: Value=9. The Snakes of Tumara, Bold=False, FillType=None, Color=00000000
+Cell C134: Value=9. So Donker die Wraak, Bold=False, FillType=None, Color=00000000
+Cell D134: Value=9. Dark Vengeance, Bold=False, FillType=None, Color=00000000
+Cell A135: Value=10. Sluipers in die Namib, Bold=False, FillType=None, Color=00000000
+Cell B135: Value=10. Stalkers in the Namib, Bold=False, FillType=None, Color=00000000
+Cell C135: Value=10. So Soet die Wraak, Bold=False, FillType=None, Color=00000000
+Cell D135: Value=10. Sweet Revenge, Bold=False, FillType=None, Color=00000000
+Cell A136: Value=11. Slagoffer van die Tokkelos, Bold=False, FillType=None, Color=00000000
+Cell B136: Value=11. Victim of the Tokkelos, Bold=False, FillType=None, Color=00000000
+Cell C136: Value=11. Tempel van Geweld, Bold=False, FillType=None, Color=00000000
+Cell D136: Value=11. Temple of Violence, Bold=False, FillType=None, Color=00000000
+Cell A137: Value=12. Die Baron van die Namib, Bold=False, FillType=None, Color=00000000
+Cell B137: Value=12. The Baron of the Namib, Bold=False, FillType=None, Color=00000000
+Cell C137: Value=12. Straf Ekspedisie, Bold=False, FillType=None, Color=00000000
+Cell D137: Value=12. Penalty Expedition, Bold=False, FillType=None, Color=00000000
+Cell A138: Value=13. Monster uit die Mis, Bold=False, FillType=None, Color=00000000
+Cell B138: Value=13. Monster in the Mist, Bold=False, FillType=None, Color=00000000
+Cell C138: Value=13. Gil in die Nag, Bold=False, FillType=None, Color=00000000
+Cell D138: Value=13. Scream at Night, Bold=False, FillType=None, Color=00000000
+Cell A139: Value=14. My Metgesel die Dood, Bold=False, FillType=None, Color=00000000
+Cell B139: Value=14. Death is my Companion, Bold=False, FillType=None, Color=00000000
+Cell A140: Value=15. Vallei van Wit Beendere, Bold=False, FillType=None, Color=00000000
+Cell B140: Value=15. Valley of White Bones, Bold=False, FillType=None, Color=00000000
+Cell A141: Value=16. Rivier van Onheil, Bold=False, FillType=None, Color=00000000
+Cell B141: Value=16. River of Misfortune, Bold=False, FillType=None, Color=00000000
+Cell A142: Value=17. Terwyl die Nagwolf Huil, Bold=False, FillType=None, Color=00000000
+Cell B142: Value=17. The Night Wolf Howls, Bold=False, FillType=None, Color=00000000
+Cell A143: Value=18. Vrou van Skarlaken, Bold=False, FillType=None, Color=00000000
+Cell B143: Value=18. The Scarlet Woman, Bold=False, FillType=None, Color=00000000
+Cell A144: Value=19. Een Uur vir Satan, Bold=False, FillType=None, Color=00000000
+Cell B144: Value=19. One Hour for Satan, Bold=False, FillType=None, Color=00000000
+Cell A145: Value=20. Geen Galg vir jou, Bold=False, FillType=None, Color=00000000
+Cell B145: Value=20. No Gallows for You, Bold=False, FillType=None, Color=00000000
+Cell A146: Value=21. Glimmende Skedels, Bold=False, FillType=None, Color=00000000
+Cell B146: Value=21. Gleaming Skulls, Bold=False, FillType=None, Color=00000000
+Cell A147: Value=22. Vrou in die Skaduwees, Bold=False, FillType=None, Color=00000000
+Cell B147: Value=22. Woman in the Shadows, Bold=False, FillType=None, Color=00000000
+Cell A148: Value=23. Reën oor die Berge, Bold=False, FillType=None, Color=00000000
+Cell B148: Value=23. Rain over the Mountains, Bold=False, FillType=None, Color=00000000
+Cell A149: Value=24. Die Band van Bloed, Bold=False, FillType=None, Color=00000000
+Cell B149: Value=24. Band of Blood, Bold=False, FillType=None, Color=00000000
+Cell A151: Value=Maagd van die See Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B151: Value=Red Ruby Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C151: Value=Tamar Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D151: Value=Tamar Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A152: Value=1. Maagd van die See, Bold=False, FillType=None, Color=00000000
+Cell B152: Value=1. The Red Ruby, Bold=False, FillType=None, Color=00000000
+Cell C152: Value=1. Tamar van die Woud, Bold=False, FillType=None, Color=00000000
+Cell D152: Value=1. Tamar of the Forest, Bold=False, FillType=None, Color=00000000
+Cell A153: Value=2. Skat onder die Palms, Bold=False, FillType=None, Color=00000000
+Cell B153: Value=2. The Pirate’s Treasure, Bold=False, FillType=None, Color=00000000
+Cell C153: Value=2. Tamar en die Indringers, Bold=False, FillType=None, Color=00000000
+Cell D153: Value=2. Tamar and the Invaders, Bold=False, FillType=None, Color=00000000
+Cell A154: Value=3. Robyn uit die Paradys, Bold=False, FillType=None, Color=00000000
+Cell B154: Value=3. Emerald of the High Seas, Bold=False, FillType=None, Color=00000000
+Cell A155: Value=4. Boodskap uit die Blou, Bold=False, FillType=None, Color=00000000
+Cell B155: Value=4. Echoes from the Sky, Bold=False, FillType=None, Color=00000000
+Cell A156: Value=5. Die Pêrel van Malsia, Bold=False, FillType=None, Color=00000000
+Cell B156: Value=5. Quest for the Pearl of Malsia, Bold=False, FillType=None, Color=00000000
+Cell A157: Value=6. Die Tier van Siam, Bold=False, FillType=None, Color=00000000
+Cell B157: Value=6. The Kings Ransom, Bold=False, FillType=None, Color=00000000
+Cell A158: Value=7. Die Mal Seerower, Bold=False, FillType=None, Color=00000000
+Cell B158: Value=7. Curse of the Mad Pirate, Bold=False, FillType=None, Color=00000000
+Cell A159: Value=8. Seerower Vel die Vonnis, Bold=False, FillType=None, Color=00000000
+Cell B159: Value=8. Pirates Execute the Verdict, Bold=False, FillType=None, Color=00000000
+Cell A160: Value=9. Die Geheim van die Sluiskerk, Bold=False, FillType=None, Color=00000000
+Cell B160: Value=9. Whispers of the Sunken Ship, Bold=False, FillType=None, Color=00000000
+Cell A162: Value=Swerwer Speurder Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B162: Value=Wanderer Detective Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C162: Value=Ryk Schoonraad Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D162: Value=Ryk Schoonraad Series (English ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A163: Value=1. Vrees Vannag, Bold=False, FillType=None, Color=00000000
+Cell B163: Value=1. Fear Tonight, Bold=False, FillType=None, Color=00000000
+Cell C163: Value=1. Vuilspel op die Vlaktes, Bold=False, FillType=None, Color=00000000
+Cell D163: Value=1. Secrets of the Plains, Bold=False, FillType=None, Color=00000000
+Cell A164: Value=2. Bloedig die Donker, Bold=False, FillType=None, Color=00000000
+Cell B164: Value=2. Bloody the Darkness, Bold=False, FillType=None, Color=00000000
+Cell C164: Value=2. Vlamme in die Kalahari, Bold=False, FillType=None, Color=00000000
+Cell D164: Value=2. Flames in the Kalahari, Bold=False, FillType=None, Color=00000000
+Cell A165: Value=3. Die Dodelike Driehoek, Bold=False, FillType=None, Color=00000000
+Cell B165: Value=3. The Deadly Triangle, Bold=False, FillType=None, Color=00000000
+Cell C165: Value=3. Die Rooi Klippies van Tandberg, Bold=False, FillType=None, Color=00000000
+Cell D165: Value=3. The Red Pebbles of Tandberg, Bold=False, FillType=None, Color=00000000
+Cell A166: Value=4. Die Dood het Vlerke, Bold=False, FillType=None, Color=00000000
+Cell B166: Value=4. Death has Wings, Bold=False, FillType=None, Color=00000000
+Cell C166: Value=4. Vreemde Vrou in die Wildernis, Bold=False, FillType=None, Color=00000000
+Cell D166: Value=4. Strange Woman in the Wilderness, Bold=False, FillType=None, Color=00000000
+Cell A167: Value=5. Voltrek die Vonnis Self, Bold=False, FillType=None, Color=00000000
+Cell B167: Value=5. Execute the Sentence, Bold=False, FillType=None, Color=00000000
+Cell A168: Value=6. Moord in die Myn, Bold=False, FillType=None, Color=00000000
+Cell B168: Value=6. Murder in the Mine, Bold=False, FillType=None, Color=00000000
+Cell A169: Value=7. Die Geheim in die Graf, Bold=False, FillType=None, Color=00000000
+Cell B169: Value=7. Secret in the Grave, Bold=False, FillType=None, Color=00000000
+Cell A170: Value=8. Die Dood Kruip Nader, Bold=False, FillType=None, Color=00000000
+Cell B170: Value=8. Death Creeps Closer, Bold=False, FillType=None, Color=00000000
+Cell A171: Value=9. Kiem van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B171: Value=9. Germ of Death, Bold=False, FillType=None, Color=00000000
+Cell A172: Value=10. Riete in die Wind, Bold=False, FillType=None, Color=00000000
+Cell B172: Value=10. Reeds in the Wind, Bold=False, FillType=None, Color=00000000
+Cell A173: Value=11. Wraak is Myne, Bold=False, FillType=None, Color=00000000
+Cell B173: Value=11. Revenge is Mine, Bold=False, FillType=None, Color=00000000
+Cell A174: Value=12. Met ŉ Druppel Wyn, Bold=False, FillType=None, Color=00000000
+Cell B174: Value=12. With a Drop of Wine, Bold=False, FillType=None, Color=00000000
+Cell A175: Value=13. Sterf om Twaalfuur, Bold=False, FillType=None, Color=00000000
+Cell B175: Value=13. Die at Twelve O’Clock, Bold=False, FillType=None, Color=00000000
+Cell A176: Value=14. Kettings vir die Siel, Bold=False, FillType=None, Color=00000000
+Cell B176: Value=14. Chains for the Soul, Bold=False, FillType=None, Color=00000000
+Cell A177: Value=15. Ses sal Sterf, Bold=False, FillType=None, Color=00000000
+Cell B177: Value=15. Six will Die, Bold=False, FillType=None, Color=00000000
+Cell A178: Value=16. Beeldskone Erfgename, Bold=False, FillType=None, Color=00000000
+Cell B178: Value=16. The Beautiful Heiresses, Bold=False, FillType=None, Color=00000000
+Cell A179: Value=17. Twee Rye Spore, Bold=False, FillType=None, Color=00000000
+Cell B179: Value=17. Two Rows of Tracks, Bold=False, FillType=None, Color=00000000
+Cell A180: Value=18. Geheime Erfenis, Bold=False, FillType=None, Color=00000000
+Cell B180: Value=18. Secret Inheritance, Bold=False, FillType=None, Color=00000000
+Cell A181: Value=19. Dreigement uit die Dode, Bold=False, FillType=None, Color=00000000
+Cell B181: Value=19. Threat from the Grave, Bold=False, FillType=None, Color=00000000
+Cell A182: Value=20. ŉ Fortuin op die Spel, Bold=False, FillType=None, Color=00000000
+Cell B182: Value=20. A Fortune at Stake, Bold=False, FillType=None, Color=00000000
+Cell A183: Value=21. Die Glimlag van Gevaar, Bold=False, FillType=None, Color=00000000
+Cell B183: Value=21. The Smile of Danger, Bold=False, FillType=None, Color=00000000
+Cell A184: Value=22. Die Verlore Burggraaf, Bold=False, FillType=None, Color=00000000
+Cell B184: Value=22. The Lost Viscount, Bold=False, FillType=None, Color=00000000
+Cell A186: Value=Jaap Zeeman Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B186: Value=Ruimte Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell C186: Value=Henk Human Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell D186: Value=Simon Rand Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A187: Value=1. Skerp staal , Bold=False, FillType=None, Color=00000000
+Cell B187: Value=1. Marsnik III, Bold=False, FillType=None, Color=00000000
+Cell C187: Value=1. Die Enslin Krisis, Bold=False, FillType=None, Color=00000000
+Cell D187: Value=1. Die Breinduiwels, Bold=False, FillType=None, Color=00000000
+Cell A188: Value=2. Verskrikking van Suma, Bold=False, FillType=None, Color=00000000
+Cell B188: Value=2. Verwoeste Komeet, Bold=False, FillType=None, Color=00000000
+Cell C188: Value=2. Een Ongeluk te Veel, Bold=False, FillType=None, Color=00000000
+Cell D188: Value=2. Moord op die Agterkant van die Maan, Bold=False, FillType=None, Color=00000000
+Cell A189: Value=3. Bloed op die Branders, Bold=False, FillType=None, Color=00000000
+Cell B189: Value=3. Een Tree Terug, Bold=False, FillType=None, Color=00000000
+Cell C189: Value=3. Geslepe Prins uit Arabie, Bold=False, FillType=None, Color=00000000
+Cell D189: Value=3. Nuwe Faraoh in die Groot Piramide, Bold=False, FillType=None, Color=00000000
+Cell A190: Value=4. Die Skedelvlag , Bold=False, FillType=None, Color=00000000
+Cell B190: Value=4. Orde van Kreon, Bold=False, FillType=None, Color=00000000
+Cell C190: Value=4. Henk Human en die Moordlustige Breindokter, Bold=False, FillType=None, Color=00000000
+Cell D190: Value=4. Breinduiwels uit die Ooste, Bold=False, FillType=None, Color=00000000
+Cell A191: Value=5. Die Skat van Simeon-Eiland, Bold=False, FillType=None, Color=00000000
+Cell B191: Value=5. Wagter in die Ruimte, Bold=False, FillType=None, Color=00000000
+Cell C191: Value=5. In die Kloue van Kameraad Kristoff, Bold=False, FillType=None, Color=00000000
+Cell D191: Value=5. Die Marsmanne gryp in, Bold=False, FillType=None, Color=00000000
+Cell A192: Value=6. Wraak op See , Bold=False, FillType=None, Color=00000000
+Cell C192: Value=6. Die Roeklose Mannekyn, Bold=False, FillType=None, Color=00000000
+Cell D192: Value=6. Die Onsigbare Gammastrale, Bold=False, FillType=None, Color=00000000
+Cell A193: Value=7. Die Goudvloot, Bold=False, FillType=None, Color=00000000
+Cell D193: Value=7. Die Graviton Krisis, Bold=False, FillType=None, Color=00000000
+Cell A194: Value=8. Swart Kaperskip, Bold=False, FillType=None, Color=00000000
+Cell D194: Value=8. Die Man van Venus, Bold=False, FillType=None, Color=00000000
+Cell A195: Value=9. Die Beuel van Barbarye, Bold=False, FillType=None, Color=00000000
+Cell A197: Value=Spioenasie Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell B197: Value=Temmers van die Woestyn Reeks (Afrikaans ebooks only), Bold=True, FillType=solid, Color=FFFFFF00
+Cell A198: Value=1. Die Profeet, Bold=False, FillType=None, Color=00000000
+Cell B198: Value=1. Die Bekende Vreemdeling, Bold=False, FillType=None, Color=00000000
+Cell A199: Value=2. Die Saboteurs, Bold=False, FillType=None, Color=00000000
+Cell B199: Value=2. Die Wind Beveel, Bold=False, FillType=None, Color=00000000
+Cell A200: Value=3. Die Tonnel, Bold=False, FillType=None, Color=00000000
+Cell B200: Value=3. Ek kom Vannag, Bold=False, FillType=None, Color=00000000
+Cell A201: Value=4. Die Formule, Bold=False, FillType=None, Color=00000000
+Cell B201: Value=4. Wyn met Bloed, Bold=False, FillType=None, Color=00000000
+Cell A202: Value=5. Die Dubbelspel, Bold=False, FillType=None, Color=00000000
+Cell B202: Value=5. Gif vir die Hart, Bold=False, FillType=None, Color=00000000
+Cell A203: Value=6. Die Geskeurde Valskerm, Bold=False, FillType=None, Color=00000000
+Cell B203: Value=6. Vlamme teen die Horison, Bold=False, FillType=None, Color=00000000
+Cell B204: Value=7. Moordenaar in Wit, Bold=False, FillType=None, Color=00000000
+Cell B205: Value=8. Wind oor haar Graf, Bold=False, FillType=None, Color=00000000
+Cell B206: Value=9. Gestaltes in die Skemer, Bold=False, FillType=None, Color=00000000
+Cell B207: Value=10. Lantern in die Nag, Bold=False, FillType=None, Color=00000000
+Cell B208: Value=11. Nag van Wraak, Bold=False, FillType=None, Color=00000000
+Cell B209: Value=12. Geraamtes op die Duine, Bold=False, FillType=None, Color=00000000
+Cell B210: Value=13. Skaduwees op die Krans, Bold=False, FillType=None, Color=00000000
+Cell B211: Value=14. Sluipers in die Nag, Bold=False, FillType=None, Color=00000000
+Cell B212: Value=15. Die Dal van Vrees, Bold=False, FillType=None, Color=00000000
+Cell B213: Value=16. Lied van die Klowe, Bold=False, FillType=None, Color=00000000
+Cell B214: Value=17. Berg van Verraad, Bold=False, FillType=None, Color=00000000
+Cell B215: Value=18. Vlam van Hartstog, Bold=False, FillType=None, Color=00000000
+Cell B216: Value=19. Die Nagwind Ween, Bold=False, FillType=None, Color=00000000
+Cell B217: Value=20. Wees sterk my Hart, Bold=False, FillType=None, Color=00000000
+Cell B218: Value=21. Die Nag het Oë, Bold=False, FillType=None, Color=00000000
+Cell B219: Value=22. Wolke voor die Maan, Bold=False, FillType=None, Color=00000000
+Cell B220: Value=23. Swerwer uit die Weste, Bold=False, FillType=None, Color=00000000
+Cell B221: Value=24. Vrees is my Erfenis, Bold=False, FillType=None, Color=00000000
+Cell B222: Value=25. Vreemde Maskers, Bold=False, FillType=None, Color=00000000
+Cell B223: Value=26. Ver lê Môre, Bold=False, FillType=None, Color=00000000
+Cell B224: Value=27. Duiwels van die Duine, Bold=False, FillType=None, Color=00000000
+Cell B225: Value=28. Ridders uit die Bose, Bold=False, FillType=None, Color=00000000
+Cell B226: Value=29. Kring van die Aasvoël, Bold=False, FillType=None, Color=00000000
+Cell B227: Value=30. Swart Wolk oor die Kalahari, Bold=False, FillType=None, Color=00000000
+Cell B228: Value=31. Wag tot Dagbreek, Bold=False, FillType=None, Color=00000000
+Cell B229: Value=32. Wolwe van die Wildernis, Bold=False, FillType=None, Color=00000000
+Cell B230: Value=33. Moordenaars van die Kosiesberge, Bold=False, FillType=None, Color=00000000
+Cell B231: Value=34. Skerpioen van die Richtersveld, Bold=False, FillType=None, Color=00000000
+Cell B232: Value=35. Bloedspoor oor die Kranse, Bold=False, FillType=None, Color=00000000
+Cell B233: Value=36. Nag van Verskrikking, Bold=False, FillType=None, Color=00000000
+Cell B234: Value=37. Die Wurgbende, Bold=False, FillType=None, Color=00000000
+Cell B235: Value=38. Kraaie oor die Wapad, Bold=False, FillType=None, Color=00000000
+Cell B236: Value=39. Die Rooi Duiwel, Bold=False, FillType=None, Color=00000000
+Cell B237: Value=40. Die Rowers van Koperlus, Bold=False, FillType=None, Color=00000000
+Cell B238: Value=41. Spore in die Sand, Bold=False, FillType=None, Color=00000000
+Cell B239: Value=42. Engel van Wraak, Bold=False, FillType=None, Color=00000000
+Cell B240: Value=43. Die Swart Ruiters, Bold=False, FillType=None, Color=00000000
+Cell B241: Value=44. Vyand uit die Nag, Bold=False, FillType=None, Color=00000000
+Cell B242: Value=45. Die Geheim van Ratelberg, Bold=False, FillType=None, Color=00000000
+Cell B243: Value=46. En hoër Styg die Waters, Bold=False, FillType=None, Color=00000000
+Cell B244: Value=47. Die Blinde Skut, Bold=False, FillType=None, Color=00000000
+Cell B245: Value=48. Ruiters in die Nag, Bold=False, FillType=None, Color=00000000
+Cell B246: Value=49. Die Vermiste Bruid, Bold=False, FillType=None, Color=00000000
+Cell B247: Value=50. Draers van Onheil, Bold=False, FillType=None, Color=00000000
+Cell B248: Value=51. Die Skat van Hanssen, Bold=False, FillType=None, Color=00000000
+Cell B249: Value=52. Spanning op Blinkplok, Bold=False, FillType=None, Color=00000000
+Cell B250: Value=53. Die Stryd van Elsa Oelrich, Bold=False, FillType=None, Color=00000000
+Cell B251: Value=54. Die Verwoester, Bold=False, FillType=None, Color=00000000
+Cell B252: Value=55. Waar die Kraai Waak, Bold=False, FillType=None, Color=00000000
+Cell B253: Value=56. Die Wolf, Bold=False, FillType=None, Color=00000000
+Cell B254: Value=57. Sluipers in Swart, Bold=False, FillType=None, Color=00000000
+Cell B255: Value=58. Wolwe in Skaapsklere, Bold=False, FillType=None, Color=00000000
+Cell B256: Value=59. Die Halfmaanspoor, Bold=False, FillType=None, Color=00000000
+Cell B257: Value=60. Die Skatte van Oewerplaas, Bold=False, FillType=None, Color=00000000
+Cell B258: Value=61. Skat van Bloed, Bold=False, FillType=None, Color=00000000
+Cell B259: Value=62. Die Kluisenaar van Laaste Rus, Bold=False, FillType=None, Color=00000000
+Cell B260: Value=63. Bloed oor die Molopo, Bold=False, FillType=None, Color=00000000
+Cell B261: Value=64. Job van Babelskop, Bold=False, FillType=None, Color=00000000
+Cell B262: Value=65. Die Perdedief van Grootrivier, Bold=False, FillType=None, Color=00000000
+Cell B263: Value=66. Die Plaasstelers, Bold=False, FillType=None, Color=00000000
+Cell B264: Value=67. Slagoffers van die Richtersveld, Bold=False, FillType=None, Color=00000000
+Cell B265: Value=68. Wit Koning van die Boesmans, Bold=False, FillType=None, Color=00000000
+Cell B266: Value=69. Sandpad van die Dood, Bold=False, FillType=None, Color=00000000
+Cell B267: Value=70. Huis onder die Kranse, Bold=False, FillType=None, Color=00000000
+Cell B268: Value=71. Die Spookruiters, Bold=False, FillType=None, Color=00000000
+Cell B269: Value=72. Wandelaar in die Nag, Bold=False, FillType=None, Color=00000000
+Cell B270: Value=73. Plaas van Smart, Bold=False, FillType=None, Color=00000000
+Cell B271: Value=74. Bloedspoor na die Berge, Bold=False, FillType=None, Color=00000000
