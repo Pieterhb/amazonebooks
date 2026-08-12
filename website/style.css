@@ -380,8 +380,8 @@ p { font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem; }
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #000;
-  color: #fff;
+  background-color: #FFD700;
+  color: #000;
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -399,8 +399,8 @@ p { font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem; }
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #000;
-  color: #fff;
+  background-color: #FFD700;
+  color: #000;
   border-radius: 50%;
   width: 28px;
   height: 28px;
