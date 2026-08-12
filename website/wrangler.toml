@@ -1,0 +1,9 @@
+name = "amazonebooks"
+compatibility_date = "2024-09-23"
+
+[site]
+bucket = "./dist"
+
+# Cloudflare Pages – free tier
+# Deploy target: https://amazonebooks.pages.dev/
+# Do NOT configure custom domains here; connect subdomain later via Cybersmart DNS.

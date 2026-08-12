@@ -1,14 +1,16 @@
 {
-  "name": "pulpfictionebook",
+  "name": "amazonebooks",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "vite build && wrangler pages deploy dist --project-name amazonebooks"
   },
   "devDependencies": {
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "wrangler": "^4.122.0"
   }
 }
