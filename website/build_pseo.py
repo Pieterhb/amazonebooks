@@ -30,6 +30,7 @@ def render_sidebar(engine, active_target="home"):
     nav_links = [
         f'<li><a href="/" class="{"active" if active_target == "home" else ""}">🏠 Home</a></li>',
         f'<li><a href="/books/" class="{"active" if active_target == "books" else ""}">📚 All Books <span class="count">({len(engine.books)})</span></a></li>',
+        f'<li><a href="/series/" class="{"active" if active_target == "series" else ""}">📖 Book Series <span class="count">({len(engine.series)})</span></a></li>',
         f'<li><a href="/authors/" class="{"active" if active_target == "authors" else ""}">✍️ Authors <span class="count">({len(engine.authors)})</span></a></li>',
         f'<li><a href="/genres/" class="{"active" if active_target == "genres" else ""}">🏷️ Genres <span class="count">({len(engine.genres)})</span></a></li>',
         f'<li><a href="/themes/" class="{"active" if active_target == "themes" else ""}">🎯 Niche Themes <span class="count">({len(engine.themes)})</span></a></li>',
@@ -40,6 +41,11 @@ def render_sidebar(engine, active_target="home"):
     genre_links = []
     for g_slug, g in list(engine.genres.items())[:8]:
         genre_links.append(f'<li><a href="/genres/{g_slug}/" class="{"active" if active_target == f"genre-{g_slug}" else ""}">{g["name"]} <span class="count">({g["books_count"]})</span></a></li>')
+
+    # All Series in sidebar sorted by books_count
+    series_links = []
+    for s_slug, s in sorted(engine.series.items(), key=lambda x: -x[1]["books_count"]):
+        series_links.append(f'<li><a href="/series/{s_slug}/" class="{"active" if active_target == f"series-{s_slug}" else ""}">{escape_html(s["name"])} <span class="count">({s["books_count"]})</span></a></li>')
 
     return f"""
     <aside class="sidebar" id="sidebar">
@@ -54,6 +60,8 @@ def render_sidebar(engine, active_target="home"):
           {"".join(nav_links)}
           <li class="nav-header">Popular Genres</li>
           {"".join(genre_links)}
+          <li class="nav-header" style="color:var(--accent-yellow); margin-top:1.25rem;">Series</li>
+          {"".join(series_links)}
         </ul>
       </nav>
     </aside>
@@ -110,6 +118,7 @@ def render_footer(engine):
           <h4>Navigation</h4>
           <ul class="footer-links">
             <li><a href="/books/">All 300+ Books</a></li>
+            <li><a href="/series/">Book Series</a></li>
             <li><a href="/authors/">All Authors</a></li>
             <li><a href="/genres/">All Genres</a></li>
             <li><a href="/themes/">Niche Themes</a></li>
@@ -222,6 +231,7 @@ class PSEOBuilder:
         self.out_dir = out_dir
         self.sitemap_urls = {
             "books": [],
+            "series": [],
             "authors": [],
             "genres": [],
             "collections": []
@@ -238,6 +248,7 @@ class PSEOBuilder:
         """Run complete static programmatic generation."""
         print("Starting Programmatic SEO Generation...")
         self.build_book_pages()
+        self.build_series_pages()
         self.build_author_pages()
         self.build_genre_pages()
         self.build_theme_pages()
@@ -246,7 +257,7 @@ class PSEOBuilder:
         self.build_homepage()
         self.build_sitemaps()
         self.build_robots_txt()
-        print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 6} static pages.")
+        print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 7} static pages.")
 
     def build_book_pages(self):
         """Generate 326 Book Detail Pages (/books/[slug]/index.html)."""
@@ -306,7 +317,7 @@ class PSEOBuilder:
                 <h1>{escape_html(book['title'])}</h1>
                 <div class="book-detail-meta-bar">
                   <span>Author: <a href="/authors/{book['author_slug']}/" class="author-link">{escape_html(book['author'])}</a></span>
-                  {f'<span>Series: <strong>{escape_html(book["series"])}</strong></span>' if book.get("series") and book["series"] != "Other" else ""}
+                  {f'<span>Series: <a href="/series/{book["series_slug"]}/" style="font-weight:700; color:var(--accent-yellow);">{escape_html(book["series"])}</a></span>' if book.get("series") and book["series"] != "Other" else ""}
                   <span>Format: <strong>{book['format']}</strong></span>
                   <span>⭐ <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="reviews-link">{book['reviews_label']} &rarr;</a></span>
                 </div>
@@ -447,6 +458,106 @@ class PSEOBuilder:
                 engine=self.engine
             )
             self.write_page(f"books/{book['slug']}/index.html", html)
+
+    def build_series_pages(self):
+        """Generate Series Pages (/series/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.series)} Series Pages...")
+        for slug, series in self.engine.series.items():
+            url = f"{SITE_URL}/series/{slug}/"
+            self.sitemap_urls["series"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.85"
+            })
+
+            title = f"{series['name']} - Complete Pulp Fiction Series & Reading Order | Softcover Books"
+            meta_desc = f"Discover all {series['books_count']} books in {series['name']}. Read story synopses, browse cover art, and buy digital editions in chronological order."
+
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/series/">Series</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(series['name'])}</span>
+            </nav>
+            """
+
+            genre_pills = [f'<a href="/genres/{slugify(g)}/" class="tag-pill tag-pill-genre">🏷️ {g}</a>' for g in series["genres"]]
+            lang_pills = [f'<span class="store-badge badge-{slugify(l)}" style="position:static; margin-right:0.4rem;">{l}</span>' for l in series["languages"]]
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="hub-hero">
+              <div class="hero-badge">📖 Complete Book Series</div>
+              <h1>{escape_html(series['name'])}</h1>
+              <p class="hub-tagline">{series['books_count']} Thrilling Books in Chronological Reading Order</p>
+              <div class="tags-row" style="margin-bottom:1rem;">
+                <span style="font-size:0.9rem; color:var(--text-dim); margin-right:0.5rem;">Languages:</span>
+                {"".join(lang_pills)}
+              </div>
+              <div class="tags-row" style="margin-bottom:1.5rem;">
+                {"".join(genre_pills)}
+              </div>
+              <p class="hub-description">{escape_html(series['description'])}</p>
+            </section>
+
+            <section style="margin-bottom:3rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>All {series['books_count']} Books in {escape_html(series['name'])} (Reading Order)</h2>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(b) for b in series['books']])}
+              </div>
+            </section>
+            """
+
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "CollectionPage",
+                        "@id": url,
+                        "name": f"{series['name']} - Book Series",
+                        "description": series["description"]
+                    },
+                    {
+                        "@type": "ItemList",
+                        "name": f"Books in {series['name']}",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx + 1,
+                                "name": b["title"],
+                                "url": f"{SITE_URL}/books/{b['slug']}/"
+                            }
+                            for idx, b in enumerate(series["books"])
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": "Series", "item": f"{SITE_URL}/series/"},
+                            {"@type": "ListItem", "position": 3, "name": series["name"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target=f"series-{slug}",
+                og_img=series["sample_covers"][0] if series["sample_covers"] else DEFAULT_OG_IMAGE,
+                engine=self.engine
+            )
+            self.write_page(f"series/{slug}/index.html", html)
 
     def build_author_pages(self):
         """Generate Author Hub Pages (/authors/[slug]/index.html)."""
@@ -1005,6 +1116,41 @@ class PSEOBuilder:
             engine=self.engine
         ))
 
+        # 6. /series/index.html
+        series_url = f"{SITE_URL}/series/"
+        self.sitemap_urls["series"].insert(0, {"loc": series_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.95"})
+        series_cards = []
+        for slug, s in sorted(self.engine.series.items(), key=lambda x: -x[1]["books_count"]):
+            series_cards.append(f"""
+            <a href="/series/{slug}/" class="directory-card">
+              <h3>📖 {escape_html(s['name'])}</h3>
+              <p>{escape_html(s['description'][:140])}...</p>
+              <div class="card-footer">
+                <span>{s['books_count']} Books in Series</span>
+                <span>View Reading Order &rarr;</span>
+              </div>
+            </a>
+            """)
+        series_content = f"""
+        <section class="hero">
+          <div class="hero-badge">📖 Complete Series Archive</div>
+          <h1>Pulp Fiction Book Series Directory</h1>
+          <p>Explore all {len(self.engine.series)} classic pulp fiction book series in complete chronological reading order. Desert foreign legion sagas, pirate epics, jungle adventures, and detective thrillers.</p>
+        </section>
+        <div class="directory-grid">
+          {"".join(series_cards)}
+        </div>
+        """
+        self.write_page("series/index.html", render_base_html(
+            title="Pulp Fiction Book Series Directory & Reading Lists | Softcover Books",
+            meta_desc=f"Explore all {len(self.engine.series)} classic vintage pulp fiction book series. Browse complete reading orders, cover art, and digital editions.",
+            canonical_url=series_url,
+            json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Book Series", "url": series_url},
+            content_html=series_content,
+            active_target="series",
+            engine=self.engine
+        ))
+
     def build_homepage(self):
         """Generate high-converting, premium Homepage (/index.html)."""
         print("Generating Main Homepage...")
@@ -1012,6 +1158,7 @@ class PSEOBuilder:
 
         featured_books = self.engine.books[:12]
         top_collections = self.engine.collections[:8]
+        top_series = sorted(self.engine.series.values(), key=lambda x: -x["books_count"])[:6]
 
         content_html = f"""
         <section class="hero">
@@ -1031,6 +1178,10 @@ class PSEOBuilder:
             <span class="stat-label">Pulp Ebooks</span>
           </div>
           <div class="stat-card">
+            <span class="stat-number">{len(self.engine.series)}</span>
+            <span class="stat-label">Book Series</span>
+          </div>
+          <div class="stat-card">
             <span class="stat-number">{len(self.engine.authors)}</span>
             <span class="stat-label">Pulp Authors</span>
           </div>
@@ -1038,11 +1189,27 @@ class PSEOBuilder:
             <span class="stat-number">{len(self.engine.genres)}</span>
             <span class="stat-label">Genres &amp; Subgenres</span>
           </div>
-          <div class="stat-card">
-            <span class="stat-number">{len(self.engine.collections)}+</span>
-            <span class="stat-label">Curated Guides</span>
-          </div>
         </div>
+
+        <!-- Featured Book Series -->
+        <section style="margin-bottom:3.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+            <h2>Popular Pulp Fiction Book Series</h2>
+            <a href="/series/" style="font-weight:700; font-size:0.9rem;">All {len(self.engine.series)} Series &rarr;</a>
+          </div>
+          <div class="directory-grid">
+            {"".join([f'''
+            <a href="/series/{s["slug"]}/" class="directory-card">
+              <h3>📖 {escape_html(s["name"])}</h3>
+              <p>{escape_html(s["description"][:130])}...</p>
+              <div class="card-footer">
+                <span>{s["books_count"]} Books in Series</span>
+                <span>View Reading Order &rarr;</span>
+              </div>
+            </a>
+            ''' for s in top_series])}
+          </div>
+        </section>
 
         <!-- Featured Collections -->
         <section style="margin-bottom:3.5rem;">
@@ -1144,6 +1311,7 @@ class PSEOBuilder:
         # Sub-sitemaps
         sub_sitemaps = [
             ("sitemap-books.xml", self.sitemap_urls["books"]),
+            ("sitemap-series.xml", self.sitemap_urls["series"]),
             ("sitemap-authors.xml", self.sitemap_urls["authors"]),
             ("sitemap-genres.xml", self.sitemap_urls["genres"]),
             ("sitemap-collections.xml", self.sitemap_urls["collections"]),

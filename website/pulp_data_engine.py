@@ -50,6 +50,7 @@ class PulpDataEngine:
         self.genres = {}
         self.themes = {}
         self.collections = []
+        self.series = {}
         self.load_data()
 
     def load_data(self):
@@ -206,6 +207,7 @@ class PulpDataEngine:
         self.build_genres()
         self.build_themes()
         self.build_collections()
+        self.build_series()
 
     def classify_book(self, title, series, author, lang):
         """Classify book into genres, subgenres, and theme tags."""
@@ -756,7 +758,94 @@ class PulpDataEngine:
                     "category": topic_name
                 })
 
-        print(f"Data Engine loaded: {len(self.books)} books, {len(self.authors)} authors, {len(self.genres)} genres, {len(self.themes)} themes, {len(self.collections)} collections. Total landing pages: {len(self.books) + len(self.authors) + len(self.genres) + len(self.themes) + len(self.collections) + 6}")
+    def build_series(self):
+        """Build structured series collections with story descriptions, reading order, and metadata."""
+        series_dict = {}
+        for b in self.books:
+            s_name = b.get("series") or "Other"
+            s_slug = slugify(s_name)
+            if not s_slug:
+                s_slug = "other"
+            if s_slug not in series_dict:
+                series_dict[s_slug] = {
+                    "name": s_name,
+                    "slug": s_slug,
+                    "books": [],
+                    "authors": set(),
+                    "languages": set(),
+                    "genres": set(),
+                    "sample_covers": []
+                }
+            series_dict[s_slug]["books"].append(b)
+            series_dict[s_slug]["authors"].add(b["author"])
+            series_dict[s_slug]["languages"].add(b["lang"])
+            series_dict[s_slug]["genres"].add(b["primary_genre"])
+            if b["img"] and len(series_dict[s_slug]["sample_covers"]) < 4:
+                series_dict[s_slug]["sample_covers"].append(b["img"])
+
+        # Sort books inside each series by book number
+        for s_slug, s_data in series_dict.items():
+            def sort_key(bk):
+                num_str = str(bk.get("series_number", "999"))
+                try:
+                    return int(num_str)
+                except ValueError:
+                    return 999
+            s_data["books"].sort(key=sort_key)
+            s_data["books_count"] = len(s_data["books"])
+            s_data["authors"] = list(s_data["authors"])
+            s_data["languages"] = list(s_data["languages"])
+            s_data["genres"] = list(s_data["genres"])
+            s_data["primary_author"] = s_data["authors"][0] if s_data["authors"] else "Various"
+            s_data["primary_genre"] = s_data["genres"][0] if s_data["genres"] else "Vintage Pulp Fiction"
+            s_data["description"] = self.generate_series_description(s_data["name"], s_data["primary_author"], s_data["primary_genre"], s_data["books_count"], s_data["languages"])
+
+        self.series = series_dict
+
+        print(f"Data Engine loaded: {len(self.books)} books, {len(self.authors)} authors, {len(self.genres)} genres, {len(self.themes)} themes, {len(self.collections)} collections, {len(self.series)} series. Total landing pages: {len(self.books) + len(self.authors) + len(self.genres) + len(self.themes) + len(self.collections) + len(self.series) + 7}")
+
+    def generate_series_description(self, series_name, author, genre, count, languages):
+        """Generate high-engagement overview synopsis for a book series."""
+        lang_str = ", ".join(languages)
+        name_lower = series_name.lower()
+        if "sahara" in name_lower or "aventure sahara" in name_lower or "abenteuer" in name_lower:
+            return (
+                f"The legendary **{series_name}** by {author} is one of the most famous military adventure and desert survival sagas in classic pulp fiction. "
+                f"Spanning {count} pulse-pounding volumes available in {lang_str}, the series follows French Foreign Legion outposts, fearless legionnaires, "
+                f"and perilous desert reconnaissance missions across treacherous Sahara sands. Experience the complete saga in reading order."
+            )
+        elif "swart luiperd" in name_lower or "black leopard" in name_lower:
+            return (
+                f"The iconic **{series_name}** by {author} is South Africa's premier jungle adventure pulp phenomenon. "
+                f"Featuring {count} adrenaline-fueled novels in {lang_str}, the saga follows Leon Marais (The Black Leopard) through uncharted African wilderness, "
+                f"hidden lost cities, ferocious man-eating beasts, and ancient tribal mysteries in classic pulp tradition."
+            )
+        elif "buiter" in name_lower or "masked robber" in name_lower:
+            return (
+                f"The celebrated **{series_name}** by {author} chronicles the daring exploits of a masked Cape highwayman who champions justice against corrupt colonial forces. "
+                f"Across {count} thrilling historical adventure paperbacks in {lang_str}, expect fast horseback pursuits, sword duels, moonlit rescues, and high-velocity intrigue."
+            )
+        elif "seerower" in name_lower or "pirate" in name_lower or "red ruby" in name_lower or "maagd van die see" in name_lower:
+            return (
+                f"The sweeping **{series_name}** by {author} is an epic naval and high-seas swashbuckling saga packed with cannon battles, cutlass duels, "
+                f"and maritime intrigue. Discover {count} legendary ocean adventures in {lang_str}, exploring pirate galleons, lost treasure islands, and daring naval captains."
+            )
+        elif "polisie" in name_lower or "police" in name_lower or "speurder" in name_lower or "detective" in name_lower or "schoonraad" in name_lower or "tamar" in name_lower:
+            return (
+                f"The gripping **{series_name}** by {author} is a vintage 1950s crime noir and detective series. "
+                f"Featuring {count} hardboiled crime novels in {lang_str}, each installment follows fearless investigators unraveling underworld syndicates, "
+                f"diamond smuggling rings, and dangerous conspiracies."
+            )
+        elif "oerwoudvalk" in name_lower or "jungle hawk" in name_lower or "woeste laeveld" in name_lower or "lowveld" in name_lower:
+            return (
+                f"The thrilling **{series_name}** by {author} captures the danger, romance, and untamed beauty of the African bushveld and aviation pulp. "
+                f"With {count} exciting titles in {lang_str}, follow rugged bush pilots and game trackers confronting poachers, remote outpost perils, and wilderness survival."
+            )
+        else:
+            return (
+                f"The classic **{series_name}** by {author} features {count} vintage pulp fiction novels in {lang_str}. "
+                f"Discover unforgettable characters, fast-paced action, and timeless retro storytelling available in digital ebook editions."
+            )
 
 if __name__ == "__main__":
     engine = PulpDataEngine()
