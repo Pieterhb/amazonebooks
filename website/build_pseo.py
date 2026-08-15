@@ -142,7 +142,7 @@ def render_book_card(book):
         <h3><a href="/books/{book['slug']}/">{escape_html(book['title'])}</a></h3>
         <p class="author">By <a href="/authors/{book['author_slug']}/">{escape_html(book['author'])}</a></p>
         <div class="book-card-actions">
-          <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon" aria-label="Buy {escape_html(book['title'])} on Amazon Kindle">
+          <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon" aria-label="Buy {escape_html(book['title'])} on Amazon Kindle" data-title="{escape_html(book['title'])}" data-author="{escape_html(book['author'])}" data-genre="{escape_html(book['primary_genre'])}" data-amazon-url="{book['amazon_url']}">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
             Kindle {book['price']}
           </a>
@@ -192,6 +192,15 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
   <!-- Schema.org JSON-LD Structured Data -->
   <script type="application/ld+json">
 {json.dumps(json_ld, indent=2, ensure_ascii=False)}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XB5JKQYT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-T4XB5JKQYT');
   </script>
 </head>
 <body>
@@ -335,7 +344,7 @@ class PSEOBuilder:
                 </div>
 
                 <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
-                  <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon btn-amazon-lg">
+                  <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon btn-amazon-lg" data-title="{escape_html(book['title'])}" data-author="{escape_html(book['author'])}" data-genre="{escape_html(book['primary_genre'])}" data-amazon-url="{book['amazon_url']}">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
                     Buy on Amazon Kindle ({book['price']})
                   </a>

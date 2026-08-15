@@ -48,4 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ── GA4: Track "Buy on Amazon" / Kindle clicks ────────────────────────────
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-amazon');
+    if (!btn) return;
+
+    // Only fire for Amazon/Kindle links (skip Kobo or other retailers)
+    const href = btn.getAttribute('href') || '';
+    if (!href.includes('amazon.com')) return;
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'amazon_click', {
+        book_title:  btn.dataset.title     || btn.getAttribute('aria-label') || '',
+        author:      btn.dataset.author    || '',
+        genre:       btn.dataset.genre     || '',
+        amazon_url:  btn.dataset.amazonUrl || href,
+      });
+    }
+  });
+  // ─────────────────────────────────────────────────────────────────────────
 });
