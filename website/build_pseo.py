@@ -91,7 +91,7 @@ def render_footer(engine):
       <div class="footer-grid">
         <div class="footer-col">
           <h4>Softcover Books Pulp Ebooks</h4>
-          <p>The premier programmatic library for vintage pulp fiction ebooks on Amazon Kindle. Featuring French Foreign Legion sagas, pirate swashbucklers, hardboiled 1950s detectives, and untamed African adventures.</p>
+          <p>The premier library for vintage pulp fiction ebooks. Featuring French Foreign Legion sagas, pirate swashbucklers, hardboiled 1950s detectives, and untamed African adventures.</p>
           <p style="font-size: 0.8rem; color: var(--text-dim);">Amazon Associate Disclosure: As an Amazon Associate, Softcover Books earns from qualifying purchases made through links on this site.</p>
         </div>
         <div class="footer-col">
@@ -276,8 +276,8 @@ class PSEOBuilder:
                 title = f"{book['title']} by {book['author']} - Pulp Fiction Kobo Ebook | Softcover Books"
                 meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Kobo. Get your copy today."
             else:
-                title = f"{book['title']} by {book['author']} - Pulp Fiction Kindle Ebook | Softcover Books"
-                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon Kindle. Get your copy today."
+                title = f"{book['title']} by {book['author']} - Vintage Pulp Fiction Ebook | Softcover Books"
+                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon. Get your copy today."
             
             # Related books: More from author
             author_books = [b for b in self.engine.books if b['author'] == book['author'] and b['id'] != book['id']][:4]
@@ -335,10 +335,6 @@ class PSEOBuilder:
                   <div class="spec-item">
                     <span class="spec-label">Language</span>
                     <span class="spec-val">{book['lang']}</span>
-                  </div>
-                  <div class="spec-item">
-                    <span class="spec-label">Length</span>
-                    <span class="spec-val">~{book['pages']} pages</span>
                   </div>
                   <div class="spec-item">
                     <span class="spec-label">Read Time</span>
@@ -410,7 +406,6 @@ class PSEOBuilder:
                         "description": book["synopsis"],
                         "inLanguage": book["lang"],
                         "genre": book["primary_genre"],
-                        "numberOfPages": book["pages"],
                         "bookFormat": "https://schema.org/EBook",
                         "publisher": {
                             "@type": "Organization",
@@ -571,8 +566,8 @@ class PSEOBuilder:
                 "priority": "0.8"
             })
 
-            title = f"{author['name']} - Pulp Fiction Kindle Ebooks & Complete Bibliography | Softcover Books"
-            meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels on Amazon Kindle."
+            title = f"{author['name']} - Vintage Pulp Fiction Ebooks & Complete Bibliography | Softcover Books"
+            meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels in digital editions."
 
             breadcrumbs_html = f"""
             <nav class="breadcrumbs" aria-label="Breadcrumbs">
@@ -592,7 +587,7 @@ class PSEOBuilder:
             <section class="hub-hero">
               <div class="hero-badge">✍️ Author Spotlight</div>
               <h1>{escape_html(author['name'])}</h1>
-              <p class="hub-tagline">{author['books_count']} Classic Pulp Fiction Ebooks Available on Amazon Kindle</p>
+              <p class="hub-tagline">{author['books_count']} Classic Pulp Fiction Ebooks in Complete Bibliography</p>
               <div class="tags-row" style="margin-bottom:1.5rem;">
                 {"".join(genre_pills)}
               </div>
@@ -671,7 +666,7 @@ class PSEOBuilder:
             })
 
             title = f"{genre['title']} | Softcover Books"
-            meta_desc = f"Discover {genre['books_count']}+ classic {genre['name']} vintage pulp fiction novels available on Amazon Kindle. {genre['tagline']}."
+            meta_desc = f"Discover {genre['books_count']}+ classic {genre['name']} vintage pulp fiction novels available online. {genre['tagline']}."
 
             breadcrumbs_html = f"""
             <nav class="breadcrumbs" aria-label="Breadcrumbs">
@@ -768,7 +763,7 @@ class PSEOBuilder:
             })
 
             title = f"{theme['title']} | Softcover Books"
-            meta_desc = f"Browse vintage {theme['name']} pulp fiction ebooks. Discover {theme['books_count']} exciting retro paperback novels on Amazon Kindle."
+            meta_desc = f"Browse vintage {theme['name']} pulp fiction ebooks. Discover {theme['books_count']} exciting retro paperback novels."
 
             breadcrumbs_html = f"""
             <nav class="breadcrumbs" aria-label="Breadcrumbs">
@@ -792,7 +787,7 @@ class PSEOBuilder:
 
             <section style="margin-bottom:3rem;">
               <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
-                <h2>Featured {escape_html(theme['name'])} Titles on Amazon Kindle ({theme['books_count']})</h2>
+                <h2>Featured {escape_html(theme['name'])} Titles ({theme['books_count']})</h2>
               </div>
               <div class="product-grid">
                 {"".join([render_book_card(b) for b in theme['books']])}
@@ -857,8 +852,8 @@ class PSEOBuilder:
                 "priority": "0.8"
             })
 
-            title = f"{col['title']} - Curated Pulp Ebooks on Kindle | Softcover Books"
-            meta_desc = f"{col['description']} Read top-rated vintage pulp fiction books on Amazon Kindle today."
+            title = f"{col['title']} - Curated Pulp Ebooks | Softcover Books"
+            meta_desc = f"{col['description']} Read top-rated vintage pulp fiction books in digital editions today."
 
             breadcrumbs_html = f"""
             <nav class="breadcrumbs" aria-label="Breadcrumbs">
@@ -877,7 +872,7 @@ class PSEOBuilder:
               <div class="hero-badge">⭐ Curated Reading List</div>
               <h1>{escape_html(col['title'])}</h1>
               <p class="hub-tagline">Handpicked selection of {col['books_count']} thrilling pulp fiction ebooks</p>
-              <p class="hub-description">{escape_html(col['description'])} Discover high-velocity plots, unforgettable vintage characters, and instant digital Kindle reading on Amazon.</p>
+              <p class="hub-description">{escape_html(col['description'])} Discover high-velocity plots, unforgettable vintage characters, and instant digital reading.</p>
             </section>
 
             <section style="margin-bottom:3rem;">
@@ -946,7 +941,7 @@ class PSEOBuilder:
         <section class="hero">
           <div class="hero-badge">📚 Complete Library Catalog</div>
           <h1>All {len(self.engine.books)} Vintage Pulp Fiction Ebooks</h1>
-          <p>Search, filter, and discover classic French Foreign Legion adventures, swashbuckling pirates, hardboiled crime sleuths, and lost jungle worlds available on Amazon Kindle.</p>
+          <p>Search, filter, and discover classic French Foreign Legion adventures, swashbuckling pirates, hardboiled crime sleuths, and lost jungle worlds.</p>
         </section>
 
         <div class="pseo-search-container">
@@ -962,13 +957,13 @@ class PSEOBuilder:
         books_json_ld = {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks on Kindle",
+            "name": f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks",
             "url": books_url,
-            "description": "Complete library catalog of vintage pulp fiction ebooks available on Amazon Kindle."
+            "description": "Complete library catalog of vintage pulp fiction ebooks available in digital editions."
         }
         self.write_page("books/index.html", render_base_html(
-            title=f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks on Amazon Kindle | Softcover Books",
-            meta_desc=f"Browse our complete catalog of {len(self.engine.books)} vintage pulp fiction ebooks on Amazon Kindle. Search desert adventures, pirate sagas, noir mysteries, and jungle pulp.",
+            title=f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks | Softcover Books",
+            meta_desc=f"Browse our complete catalog of {len(self.engine.books)} vintage pulp fiction ebooks. Search desert adventures, pirate sagas, noir mysteries, and jungle pulp.",
             canonical_url=books_url,
             json_ld=books_json_ld,
             content_html=books_content,
@@ -995,7 +990,7 @@ class PSEOBuilder:
         <section class="hero">
           <div class="hero-badge">✍️ Master Pulp Storytellers</div>
           <h1>Pulp Fiction Authors Directory</h1>
-          <p>Explore the celebrated literary giants and vintage paperback authors behind our classic pulp fiction catalog on Amazon Kindle.</p>
+          <p>Explore the celebrated literary giants and vintage paperback authors behind our classic pulp fiction catalog.</p>
         </section>
         <div class="directory-grid">
           {"".join(authors_cards)}
@@ -1003,7 +998,7 @@ class PSEOBuilder:
         """
         self.write_page("authors/index.html", render_base_html(
             title="Pulp Fiction Authors Directory | Softcover Books",
-            meta_desc="Discover the legendary pulp fiction authors behind our vintage Kindle catalog, including F.A. Venter, Gerrie Radlof, Braam le Roux, and Sandbergh Beyers.",
+            meta_desc="Discover the legendary pulp fiction authors behind our vintage catalog, including F.A. Venter, Gerrie Radlof, Braam le Roux, and Sandbergh Beyers.",
             canonical_url=authors_url,
             json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Authors", "url": authors_url},
             content_html=authors_content,
@@ -1038,7 +1033,7 @@ class PSEOBuilder:
         """
         self.write_page("genres/index.html", render_base_html(
             title="Pulp Fiction Genres & Categories | Softcover Books",
-            meta_desc="Browse our complete directory of classic pulp fiction genres and subgenres on Amazon Kindle. Foreign Legion, pirates, detectives, jungle action, and space opera.",
+            meta_desc="Browse our complete directory of classic pulp fiction genres and subgenres. Foreign Legion, pirates, detectives, jungle action, and space opera.",
             canonical_url=genres_url,
             json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Genres", "url": genres_url},
             content_html=genres_content,
@@ -1073,7 +1068,7 @@ class PSEOBuilder:
         """
         self.write_page("themes/index.html", render_base_html(
             title="Pulp Fiction Niche Themes & Tropes | Softcover Books",
-            meta_desc="Explore over 75+ niche pulp fiction themes and long-tail tropes available on Amazon Kindle. Private eyes, space opera, foreign legion, and lost cities.",
+            meta_desc="Explore over 75+ niche pulp fiction themes and long-tail tropes. Private eyes, space opera, foreign legion, and lost cities.",
             canonical_url=themes_url,
             json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Themes", "url": themes_url},
             content_html=themes_content,
@@ -1100,7 +1095,7 @@ class PSEOBuilder:
         <section class="hero">
           <div class="hero-badge">⭐ Curated Reading Guides</div>
           <h1>Curated Thematic Pulp Fiction Collections</h1>
-          <p>Browse our editorial reading lists, top-10 rankings, and buyer guides for vintage pulp fiction ebooks on Amazon Kindle.</p>
+          <p>Browse our editorial reading lists, top-10 rankings, and buyer guides for vintage pulp fiction ebooks.</p>
         </section>
         <div class="directory-grid">
           {"".join(col_cards)}
@@ -1108,7 +1103,7 @@ class PSEOBuilder:
         """
         self.write_page("collections/index.html", render_base_html(
             title="Curated Pulp Fiction Collections & Reading Guides | Softcover Books",
-            meta_desc="Discover over 500+ curated thematic pulp fiction lists, rankings, and reading guides for Amazon Kindle. Find your next favorite retro adventure.",
+            meta_desc="Discover over 500+ curated thematic pulp fiction lists, rankings, and reading guides. Find your next favorite retro adventure.",
             canonical_url=collections_url,
             json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Curated Collections", "url": collections_url},
             content_html=col_content,
@@ -1294,7 +1289,7 @@ class PSEOBuilder:
         }
 
         html = render_base_html(
-            title="Vintage Pulp Fiction Ebooks on Amazon Kindle | Softcover Books",
+            title="Vintage Pulp Fiction Ebooks | Softcover Books",
             meta_desc=DEFAULT_DESCRIPTION,
             canonical_url=home_url,
             json_ld=json_ld,

@@ -10,8 +10,8 @@ SITE_URL = "https://ebooks.softcoverbooks.co.za"
 # Site Identity
 SITE_NAME = "Softcover Books | Vintage Pulp Fiction Ebooks"
 SITE_TITLE_SUFFIX = " | Softcover Books"
-SITE_TAGLINE = "Your Gateway to Classic Pulp Fiction Ebooks on Kindle & Kobo"
-DEFAULT_DESCRIPTION = "Explore over 300+ classic vintage pulp fiction ebooks available on Kindle and Kobo. Featuring French Foreign Legion desert adventures, swashbuckling pirates, hardboiled detectives, safari mysteries, and retro sci-fi."
+SITE_TAGLINE = "Your Gateway to Classic Vintage Pulp Fiction Ebooks"
+DEFAULT_DESCRIPTION = "Explore over 300+ classic vintage pulp fiction ebooks. Featuring French Foreign Legion desert adventures, swashbuckling pirates, hardboiled detectives, safari mysteries, and retro sci-fi."
 
 # Amazon Affiliate Configuration
 # Set your Amazon Associate Tag here (e.g., 'softcoverbook-20')

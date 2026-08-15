@@ -124,9 +124,9 @@ class PulpDataEngine:
                 store_full = "Rakuten Kobo"
                 card_btn_label = "Buy on Kobo"
                 detail_btn_label = "Buy on Kobo"
-                format_label = "Kobo Ebook"
-                delivery_label = "Instant Kobo Delivery"
-                devices_label = "Kobo eReader, iOS, Android, or PC"
+                format_label = "Digital Ebook"
+                delivery_label = "Instant Digital Delivery"
+                devices_label = "eReader, iOS, Android, or PC"
                 reviews_label = "Reviews on Kobo"
                 seller_name = "Rakuten Kobo"
             elif "play.google.com" in link_lower:
@@ -135,7 +135,7 @@ class PulpDataEngine:
                 store_full = "Google Play Books"
                 card_btn_label = "Buy on Google Play"
                 detail_btn_label = "Buy on Google Play"
-                format_label = "Google Play Ebook"
+                format_label = "Digital Ebook"
                 delivery_label = "Instant Digital Delivery"
                 devices_label = "Google Play Books, iOS, Android, or PC"
                 reviews_label = "Reviews on Google Play"
@@ -146,7 +146,7 @@ class PulpDataEngine:
                 store_full = "Sqrindle"
                 card_btn_label = "Buy on Sqrindle"
                 detail_btn_label = "Buy on Sqrindle"
-                format_label = "Ebook"
+                format_label = "Digital Ebook"
                 delivery_label = "Instant Digital Delivery"
                 devices_label = "eReader, Tablet, Phone, or PC"
                 reviews_label = "Reviews on Sqrindle"
@@ -154,20 +154,19 @@ class PulpDataEngine:
             else:
                 store_key = "amazon"
                 store_name = "Amazon"
-                store_full = "Amazon Kindle"
+                store_full = "Amazon"
                 card_btn_label = "Buy on Amazon"
-                detail_btn_label = "Buy on Amazon Kindle"
-                format_label = "Kindle Ebook"
-                delivery_label = "Instant Kindle Delivery"
-                devices_label = "Kindle, iPad, Android, or PC"
+                detail_btn_label = "Buy on Amazon"
+                format_label = "Digital Ebook"
+                delivery_label = "Instant Digital Delivery"
+                devices_label = "eReader, Tablet, Phone, or PC"
                 reviews_label = "Reviews on Amazon"
                 seller_name = "Amazon"
 
             primary_genre, subgenres, themes = self.classify_book(title_display, b["series"], author, b["lang"])
             synopsis = self.generate_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"], store_key=store_key)
 
-            page_count = 140 if "omnibus" not in title_display.lower() and "box set" not in title_display.lower() else 420
-            read_time = f"{page_count // 35} hours"
+            read_time = "4 – 8 hours" if ("omnibus" in title_display.lower() or "box set" in title_display.lower()) else "1 – 4 hours"
 
             book_obj = {
                 "id": idx + 1,
@@ -198,7 +197,6 @@ class PulpDataEngine:
                 "themes": themes,
                 "theme_slugs": [slugify(th) for th in themes],
                 "synopsis": synopsis,
-                "pages": page_count,
                 "read_time": read_time,
             }
             self.books.append(book_obj)
@@ -278,8 +276,8 @@ class PulpDataEngine:
             store_cta = "on Sqrindle"
             device_cta = "available instantly in digital ebook format."
         else:
-            store_cta = "on Amazon Kindle"
-            device_cta = "available instantly for your Kindle device and app."
+            store_cta = "on Amazon"
+            device_cta = "available instantly in digital ebook format."
 
         if genre == "Desert Adventure & Foreign Legion":
             desc = (
@@ -356,7 +354,7 @@ class PulpDataEngine:
             ),
             "Pieter Haasbroek": (
                 "Pieter Haasbroek is an author and curator dedicated to preserving and expanding the golden legacy of vintage pulp fiction. "
-                "His stories span suspense, desert survival, retro adventure, and modern pulp revivals available exclusively on Amazon Kindle."
+                "His stories span suspense, desert survival, retro adventure, and modern pulp revivals available across multiple digital editions."
             ),
             "Chris Opperman": "Author of intense vintage crime thrillers, bushveld suspense, and high-stakes adventure fiction.",
             "Johan Nel": "Pulp novelist known for fast-paced mystery, frontier exploration, and classic paperback action.",
@@ -373,7 +371,7 @@ class PulpDataEngine:
 
         for name, b_list in author_map.items():
             slug = slugify(name)
-            bio = author_bios.get(name, f"Celebrated pulp fiction author featuring {len(b_list)} thrilling titles on Amazon Kindle.")
+            bio = author_bios.get(name, f"Celebrated pulp fiction author featuring {len(b_list)} thrilling vintage ebook titles.")
             genres_set = list(dict.fromkeys(b["primary_genre"] for b in b_list))
 
             self.authors[slug] = {
@@ -393,7 +391,7 @@ class PulpDataEngine:
                 "title": "Desert Adventure & French Foreign Legion Pulp Fiction",
                 "tagline": "Blistering Dunes, Outpost Defenses, and High-Stakes Military Survival",
                 "guide": (
-                    "Step into the scorching sands of North Africa with our extensive collection of classic French Foreign Legion and desert adventure pulp novels on Amazon Kindle. "
+                    "Step into the scorching sands of North Africa with our extensive collection of classic French Foreign Legion and desert adventure pulp novels. "
                     "From F.A. Venter's iconic Sahara Adventure Series to Sandbergh Beyers' high-tension military survival tales, these books deliver non-stop combat, fortress sieges, and desert reconnaissance. "
                     "Featuring legendary battles against ruthless raiders, perilous sandstorms, and deep bonds of military brotherhood, this genre is the cornerstone of mid-century adventure pulp."
                 ),
@@ -405,7 +403,7 @@ class PulpDataEngine:
                 "guide": (
                     "Set sail across stormy oceans and pirate-infested straits in our collection of classic high-seas swashbuckling ebooks. "
                     "Featuring Gerrie Radlof's legendary 'Oloff die Seerower' (Oloff the Pirate) and 'Maagd van die See' (Red Ruby) sagas, these stories capture the ferocious glory of naval combat, hidden gold islands, and cutlass-wielding buccaneers. "
-                    "Experience unforgettable maritime adventures full of naval broadsides, mutinous plots, and heroic escapes available on Kindle."
+                    "Experience unforgettable maritime adventures full of naval broadsides, mutinous plots, and heroic escapes."
                 ),
                 "tropes": ["Pirate Galleons", "Broadside Cannon Duels", "Hidden Treasure", "Cutlass Swordplay", "Mutinous Crews", "Ghost Ships"]
             },
@@ -425,7 +423,7 @@ class PulpDataEngine:
                 "guide": (
                     "Journey into deep, uncharted African jungles where forgotten civilizations and man-eating predators reign. "
                     "Braam le Roux's immortal 'Die Swart Luiperd' (The Black Leopard) series leads readers through treacherous swamps, ancient cursed ruins, and heart-pounding battles against rogue beasts and ruthless adversaries. "
-                    "Experience the raw, feral excitement of classic mid-century African jungle pulp on Kindle."
+                    "Experience the raw, feral excitement of classic mid-century African jungle pulp."
                 ),
                 "tropes": ["Feral Jungle Heroes", "Lost Civilizations", "Man-Eating Predators", "Tribal Feuds", "Ancient Curses", "Untamed Wilderness"]
             },
@@ -445,7 +443,7 @@ class PulpDataEngine:
                 "guide": (
                     "Explore the untamed African bushveld with our collection of safari mysteries and frontier adventure novels. "
                     "Featuring 'Untamed Lowveld' and 'Jungle Hawk' aviation tales, these novels pit brave hunters and bush pilots against wildlife perils, illegal diamond syndicates, and hostile terrain. "
-                    "Experience authentic, fast-paced frontier suspense available on Kindle."
+                    "Experience authentic, fast-paced frontier suspense."
                 ),
                 "tropes": ["Bush Pilots", "Diamond Smugglers", "Safari Expeditions", "Apex Predators", "Bushveld Intrigue", "Remote Outposts"]
             },
@@ -463,7 +461,7 @@ class PulpDataEngine:
                 "tagline": "Relentless Pacing, Dime-Novel Thrills, and Unforgettable Cliffhangers",
                 "guide": (
                     "Experience the raw energy of mid-century dime novels and paperback originals. "
-                    "Filled with sharp plot twists, daring escapes, and high-velocity action, our curated vintage pulp thrillers deliver pure, unadulterated reading pleasure on Amazon Kindle."
+                    "Filled with sharp plot twists, daring escapes, and high-velocity action, our curated vintage pulp thrillers deliver pure, unadulterated reading pleasure."
                 ),
                 "tropes": ["Dime Novel Style", "Fast Pacing", "High Stakes", "Cliffhangers", "Heroic Action"]
             }
@@ -497,9 +495,9 @@ class PulpDataEngine:
                 self.genres[sg_slug] = {
                     "name": sg_name,
                     "slug": sg_slug,
-                    "title": f"{sg_name} Pulp Fiction Ebooks on Kindle",
+                    "title": f"{sg_name} Vintage Pulp Fiction Ebooks",
                     "tagline": f"Explore the Best {sg_name} Classic Pulp Novels",
-                    "guide": f"Discover our handpicked selection of {sg_name} vintage pulp fiction ebooks on Amazon Kindle. Featuring {len(sg_books)} thrilling titles by celebrated authors with fast-paced storytelling and authentic retro atmosphere.",
+                    "guide": f"Discover our handpicked selection of {sg_name} vintage pulp fiction ebooks. Featuring {len(sg_books)} thrilling titles by celebrated authors with fast-paced storytelling and authentic retro atmosphere.",
                     "tropes": ["Action Packed", "Vintage Aesthetic", "Relentless Suspense"],
                     "books_count": len(sg_books),
                     "books": sg_books,
@@ -538,7 +536,7 @@ class PulpDataEngine:
             ("Radio Serial Style", "Fast-paced cliffhanger fiction inspired by vintage radio dramas."),
             ("Dime Novel Thrills", "The pure, high-voltage action of golden age pulp magazines."),
             ("Afrikaans Pulp Classics", "Original vintage Afrikaans pulp literature (snelskrif & ontspanningslees)."),
-            ("English Translated Classics", "Masterpiece pulp fiction translated for worldwide Kindle readers."),
+            ("English Translated Classics", "Masterpiece pulp fiction translated for worldwide ebook readers."),
             ("Bush Pilots", "Daring aviators flying over unmapped African wilderness."),
             ("Desert Outpost Sieges", "Desperate garrisons holding out against overwhelming odds."),
             ("Lost Civilizations", "Enigmatic ancient empires hidden in uncharted Africa."),
@@ -591,9 +589,9 @@ class PulpDataEngine:
             self.themes[th_slug] = {
                 "name": th_name,
                 "slug": th_slug,
-                "title": f"{th_name} Pulp Fiction Ebooks on Kindle",
+                "title": f"{th_name} Pulp Fiction Ebooks",
                 "tagline": f"The Ultimate Collection of {th_name} Pulp Stories",
-                "guide": f"Immerse yourself in our curated selection of vintage {th_name} pulp fiction ebooks on Amazon Kindle. Featuring {len(th_books)} classic novels with authentic retro action, gripping suspense, and instant Kindle delivery.",
+                "guide": f"Immerse yourself in our curated selection of vintage {th_name} pulp fiction ebooks. Featuring {len(th_books)} classic novels with authentic retro action, gripping suspense, and instant digital delivery.",
                 "books_count": len(th_books),
                 "books": th_books
             }
@@ -601,25 +599,25 @@ class PulpDataEngine:
     def build_collections(self):
         """Build 550+ Curated Collections & Long-Tail pSEO Intent Landing Pages."""
         collection_templates = [
-            ("Best Retro Crime Fiction on Amazon", "Explore the top vintage hardboiled crime, detective noir, and mid-century mystery pulp ebooks available on Kindle.", "Hardboiled Detective & Noir Crime"),
-            ("Short Pulp Stories under $3", "Fast, thrilling, budget-friendly vintage pulp novels on Amazon Kindle priced at just $2.99 or less.", "All"),
-            ("Top 10 Classic Foreign Legion Novels on Kindle", "The definitive reading list of French Foreign Legion desert warfare and military survival pulp fiction.", "Desert Adventure & Foreign Legion"),
+            ("Best Retro Crime Fiction on Amazon", "Explore the top vintage hardboiled crime, detective noir, and mid-century mystery pulp ebooks available on Amazon.", "Hardboiled Detective & Noir Crime"),
+            ("Short Pulp Stories under $3", "Fast, thrilling, budget-friendly vintage pulp novels available online at just $2.99 or less.", "All"),
+            ("Top 10 Classic Foreign Legion Novels", "The definitive reading list of French Foreign Legion desert warfare and military survival pulp fiction.", "Desert Adventure & Foreign Legion"),
             ("Ultimate Pirate Pulp Adventure Ebooks", "High-seas swashbucklers featuring galleon broadsides, cutlass duels, and pirate treasure islands.", "Pirate & High Seas Swashbuckler"),
             ("Vintage African Jungle Adventure Novels", "Iconic lost world and African wilderness pulp stories featuring legendary feral heroes and jungle danger.", "Jungle Adventure & Lost Worlds"),
-            ("Best Hardboiled Detective Ebooks on Amazon", "Gritty private eyes, rain-soaked streets, and 1950s undercover police investigations on Kindle.", "Hardboiled Detective & Noir Crime"),
-            ("Top Swashbuckling Rogue & Highwayman Stories", "Classic masked vigilantes, daring midnight escapes, and cape frontier action on Amazon Kindle.", "Masked Rogue & Highwayman"),
-            ("Best 1950s Vintage Mystery Novels for Kindle", "Nostalgic mid-century paperback mysteries with sharp sleuths and intricate whodunits.", "Hardboiled Detective & Noir Crime"),
+            ("Best Hardboiled Detective Ebooks on Amazon", "Gritty private eyes, rain-soaked streets, and 1950s undercover police investigations.", "Hardboiled Detective & Noir Crime"),
+            ("Top Swashbuckling Rogue & Highwayman Stories", "Classic masked vigilantes, daring midnight escapes, and cape frontier action.", "Masked Rogue & Highwayman"),
+            ("Best 1950s Vintage Mystery Novels", "Nostalgic mid-century paperback mysteries with sharp sleuths and intricate whodunits.", "Hardboiled Detective & Noir Crime"),
             ("Complete Sahara Adventure Reading Order", "The complete chronological guide and reading list for F.A. Venter's legendary Sahara Adventure Series.", "Desert Adventure & Foreign Legion"),
             ("Complete Oloff the Pirate Series Reading Order", "Read Gerrie Radlof's master swashbuckler naval series in sequence from Book 1 to 25.", "Pirate & High Seas Swashbuckler"),
             ("Complete Masked Robber Chronology", "The definitive guide to 'Die Buiter' / 'The Masked Robber' cape frontier vigilante saga.", "Masked Rogue & Highwayman"),
-            ("Top 20 Afrikaans Pulp Fiction Ebooks on Kindle", "The finest vintage Afrikaans action, romance, and detective novels available worldwide on Amazon.", "Afrikaans"),
-            ("Top 20 English Translated Pulp Fiction Masterpieces", "Classic South African and international pulp fiction translated into English for Kindle readers.", "English"),
+            ("Top 20 Afrikaans Pulp Fiction Ebooks", "The finest vintage Afrikaans action, romance, and detective novels available worldwide.", "Afrikaans"),
+            ("Top 20 English Translated Pulp Fiction Masterpieces", "Classic South African and international pulp fiction translated into English for global readers.", "English"),
             ("Fast-Paced Action Ebooks for Weekend Reading", "Binge-worthy, edge-of-your-seat pulp adventure thrillers you can finish in a single weekend.", "All"),
             ("Pulp Thrillers for Fans of Conan and Tarzan", "Feral heroics, lost civilizations, and brutal wilderness action for classic pulp fantasy enthusiasts.", "Jungle Adventure & Lost Worlds"),
-            ("Vintage Espionage Novels for Fans of Ian Fleming", "Cold War spy craft, undercover agents, and deadly foreign conspiracies on Amazon Kindle.", "Hardboiled Detective & Noir Crime"),
+            ("Vintage Espionage Novels for Fans of Ian Fleming", "Cold War spy craft, undercover agents, and deadly foreign conspiracies.", "Hardboiled Detective & Noir Crime"),
             ("Binge-Worthy Pulp Fiction Box Sets and Omnibuses", "Value-packed 3-in-1 collections and omnibus editions delivering hundreds of pages of pulp thrills.", "All"),
             ("Must-Read Desert Survival Thrillers", "Outpost sieges, searing sandstorms, and military grit in the unforgiving North African desert.", "Desert Adventure & Foreign Legion"),
-            ("Underground Noir Crime Paperbacks on Kindle", "Cigarette smoke, femme fatales, and lethal syndicate double-crosses in 1950s crime pulp.", "Hardboiled Detective & Noir Crime"),
+            ("Underground Noir Crime Paperbacks", "Cigarette smoke, femme fatales, and lethal syndicate double-crosses in 1950s crime pulp.", "Hardboiled Detective & Noir Crime"),
             ("Classic Maritime Adventure Novels on Amazon", "Broadside naval battles, ghost ships, and fearless captains battling the high seas.", "Pirate & High Seas Swashbuckler"),
         ]
 
@@ -644,16 +642,16 @@ class PulpDataEngine:
             })
 
         intents = [
-            ("Best {} Ebooks on Amazon Kindle", "The ultimate curated list of top-rated {} pulp novels available for instant Kindle download."),
+            ("Best {} Ebooks on Amazon", "The ultimate curated list of top-rated {} pulp novels available for instant digital download."),
             ("Top 10 {} Pulp Fiction Classics", "Our editorial ranking of the 10 most thrilling {} stories you must read today."),
-            ("Must-Read {} Thrillers for Kindle", "High-octane {} books packed with suspense, action, and retro paperback style."),
+            ("Must-Read {} Thrillers", "High-octane {} books packed with suspense, action, and retro paperback style."),
             ("Ultimate Guide to {} Novels", "A comprehensive buyer's and reader's guide to the best {} pulp ebooks on Amazon."),
-            ("Essential {} Vintage Paperbacks", "Rediscover the golden era of mid-century {} pulp fiction on Amazon Kindle."),
+            ("Essential {} Vintage Paperbacks", "Rediscover the golden era of mid-century {} pulp fiction available online."),
             ("Cheap {} Ebooks Under $5 on Amazon", "Affordable, top-quality {} vintage pulp ebooks for your digital library."),
             ("Action-Packed {} Stories for Fast Reading", "Fast-moving {} pulp novels delivering instant excitement from the first page."),
             ("Classic {} Ebooks with Badass Protagonists", "Follow fearless heroes navigating high stakes and deadly danger in these {} masterpieces."),
             ("Top Ranked {} Books for Pulp Fiction Fans", "Community favorite {} pulp fiction ebooks ranked by excitement and storytelling quality."),
-            ("Best {} Novels for Vacation Reading", "Gripping {} stories that will keep you glued to your Kindle throughout your travels.")
+            ("Best {} Novels for Vacation Reading", "Gripping {} stories that will keep you captivated throughout your travels.")
         ]
 
         topics = [
@@ -696,7 +694,7 @@ class PulpDataEngine:
             ("Treasure Hunting Pulp Stories", "Pirate & High Seas Swashbuckler"),
             ("Escape & Evasion Military Thrillers", "Desert Adventure & Foreign Legion"),
             ("Men's Adventure Vintage Paperbacks", "All"),
-            ("Pulp Fiction Novellas for Kindle", "All"),
+            ("Pulp Fiction Novellas", "All"),
             ("Cold War Spy Thrillers", "Hardboiled Detective & Noir Crime"),
             ("Vintage Crime Paperbacks", "Hardboiled Detective & Noir Crime"),
             ("Desert Caravan Romances", "Desert Adventure & Foreign Legion"),
@@ -706,7 +704,7 @@ class PulpDataEngine:
             ("Man Eating Beast Thrillers", "Jungle Adventure & Lost Worlds"),
             ("Bushveld Diamond Caches", "Safari & Bushveld Adventure"),
             ("Retro AI and Cyber Thrillers", "Sci-Fi Pulp & Retro Space Opera"),
-            ("Pulp Fiction Masterpieces on Kindle", "All"),
+            ("Pulp Fiction Masterpieces", "All"),
             ("Skeleton Coast Survival Novels", "Desert Adventure & Foreign Legion"),
             ("Kalahari Desert Espionage", "Desert Adventure & Foreign Legion"),
             ("Daring Prison Break Pulp Stories", "Desert Adventure & Foreign Legion"),
