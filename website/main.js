@@ -49,22 +49,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── GA4: Track "Buy on Amazon" / Kindle clicks ────────────────────────────
+  // ── GA4: Track Store CTA Clicks (Amazon, Kobo, etc.) ───────────────────────
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-amazon');
     if (!btn) return;
 
-    // Only fire for Amazon/Kindle links (skip Kobo or other retailers)
     const href = btn.getAttribute('href') || '';
-    if (!href.includes('amazon.com')) return;
+    const store = href.includes('kobo.com') ? 'kobo' : (href.includes('play.google.com') ? 'google_play' : (href.includes('sqrindle.com') ? 'sqrindle' : 'amazon'));
 
     if (typeof gtag === 'function') {
-      gtag('event', 'amazon_click', {
-        book_title:  btn.dataset.title     || btn.getAttribute('aria-label') || '',
-        author:      btn.dataset.author    || '',
-        genre:       btn.dataset.genre     || '',
-        amazon_url:  btn.dataset.amazonUrl || href,
+      gtag('event', 'store_click', {
+        store: store,
+        book_title: btn.dataset.title || btn.getAttribute('aria-label') || '',
+        author: btn.dataset.author || '',
+        genre: btn.dataset.genre || '',
+        target_url: btn.dataset.amazonUrl || href,
       });
+
+      if (store === 'amazon') {
+        gtag('event', 'amazon_click', {
+          book_title: btn.dataset.title || btn.getAttribute('aria-label') || '',
+          author: btn.dataset.author || '',
+          genre: btn.dataset.genre || '',
+          amazon_url: btn.dataset.amazonUrl || href,
+        });
+      }
     }
   });
   // ─────────────────────────────────────────────────────────────────────────

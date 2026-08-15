@@ -614,6 +614,17 @@ a:hover {
   color: var(--accent-yellow);
 }
 
+.reviews-link {
+  color: var(--accent-yellow);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+.reviews-link:hover {
+  color: #fff;
+}
+
 .book-synopsis {
   font-size: 1.05rem;
   line-height: 1.75;

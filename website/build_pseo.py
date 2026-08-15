@@ -142,9 +142,9 @@ def render_book_card(book):
         <h3><a href="/books/{book['slug']}/">{escape_html(book['title'])}</a></h3>
         <p class="author">By <a href="/authors/{book['author_slug']}/">{escape_html(book['author'])}</a></p>
         <div class="book-card-actions">
-          <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon" aria-label="Buy {escape_html(book['title'])} on Amazon Kindle" data-title="{escape_html(book['title'])}" data-author="{escape_html(book['author'])}" data-genre="{escape_html(book['primary_genre'])}" data-amazon-url="{book['amazon_url']}">
+          <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon" aria-label="{escape_html(book['card_btn_label'])} - {escape_html(book['title'])}" data-title="{escape_html(book['title'])}" data-author="{escape_html(book['author'])}" data-genre="{escape_html(book['primary_genre'])}" data-amazon-url="{book['amazon_url']}">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-            Kindle {book['price']}
+            {escape_html(book['card_btn_label'])}
           </a>
           <a href="/books/{book['slug']}/" class="btn-secondary">Details &amp; Synopsis</a>
         </div>
@@ -261,8 +261,12 @@ class PSEOBuilder:
             })
 
             # Meta tags
-            title = f"{book['title']} by {book['author']} - Pulp Fiction Kindle Ebook | Softcover Books"
-            meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon Kindle. Get your copy today."
+            if book.get("store_key") == "kobo":
+                title = f"{book['title']} by {book['author']} - Pulp Fiction Kobo Ebook | Softcover Books"
+                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Kobo. Get your copy today."
+            else:
+                title = f"{book['title']} by {book['author']} - Pulp Fiction Kindle Ebook | Softcover Books"
+                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon Kindle. Get your copy today."
             
             # Related books: More from author
             author_books = [b for b in self.engine.books if b['author'] == book['author'] and b['id'] != book['id']][:4]
@@ -303,8 +307,8 @@ class PSEOBuilder:
                 <div class="book-detail-meta-bar">
                   <span>Author: <a href="/authors/{book['author_slug']}/" class="author-link">{escape_html(book['author'])}</a></span>
                   {f'<span>Series: <strong>{escape_html(book["series"])}</strong></span>' if book.get("series") and book["series"] != "Other" else ""}
-                  <span>Format: <strong>Kindle Ebook</strong></span>
-                  <span>⭐ <strong>{book['rating']}/5.0</strong> ({book['reviews_count']} reader reviews)</span>
+                  <span>Format: <strong>{book['format']}</strong></span>
+                  <span>⭐ <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="reviews-link">{book['reviews_label']} &rarr;</a></span>
                 </div>
 
                 <div class="tags-row">
@@ -335,20 +339,20 @@ class PSEOBuilder:
                   </div>
                   <div class="spec-item">
                     <span class="spec-label">Availability</span>
-                    <span class="spec-val" style="color:#00e676;">Instant Kindle Delivery</span>
+                    <span class="spec-val" style="color:#00e676;">{book['delivery']}</span>
                   </div>
                   <div class="spec-item">
-                    <span class="spec-label">Amazon Price</span>
-                    <span class="spec-val" style="color:var(--accent-yellow);">{book['price']}</span>
+                    <span class="spec-label">Price</span>
+                    <span class="spec-val" style="color:var(--accent-yellow);"><a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" style="color:var(--accent-yellow); text-decoration:none;">Check on {book['store_name']} &rarr;</a></span>
                   </div>
                 </div>
 
                 <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
                   <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon btn-amazon-lg" data-title="{escape_html(book['title'])}" data-author="{escape_html(book['author'])}" data-genre="{escape_html(book['primary_genre'])}" data-amazon-url="{book['amazon_url']}">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-                    Buy on Amazon Kindle ({book['price']})
+                    {book['detail_btn_label']}
                   </a>
-                  <span style="font-size:0.85rem; color:var(--text-dim);">Read instantly on Kindle, iPad, Android, or PC.</span>
+                  <span style="font-size:0.85rem; color:var(--text-dim);">Read instantly on {book['devices']}.</span>
                 </div>
               </div>
             </section>
@@ -405,24 +409,20 @@ class PSEOBuilder:
                         "offers": {
                             "@type": "Offer",
                             "url": book["amazon_url"],
-                            "price": book["price"].replace("$", ""),
-                            "priceCurrency": "USD",
                             "availability": "https://schema.org/InStock",
-                            "seller": {"@type": "Organization", "name": "Amazon"}
+                            "seller": {"@type": "Organization", "name": book["seller"]}
                         }
                     },
                     {
                         "@type": "Product",
-                        "name": f"{book['title']} (Kindle Ebook Edition)",
+                        "name": f"{book['title']} ({book['format']} Edition)",
                         "image": f"{SITE_URL}{book['img']}",
                         "description": book["synopsis"],
                         "offers": {
                             "@type": "Offer",
                             "url": book["amazon_url"],
-                            "price": book["price"].replace("$", ""),
-                            "priceCurrency": "USD",
                             "availability": "https://schema.org/InStock",
-                            "seller": {"@type": "Organization", "name": "Amazon"}
+                            "seller": {"@type": "Organization", "name": book["seller"]}
                         }
                     },
                     {
@@ -1015,9 +1015,9 @@ class PSEOBuilder:
 
         content_html = f"""
         <section class="hero">
-          <div class="hero-badge">🐆 Vintage Pulp Fiction On Amazon Kindle</div>
+          <div class="hero-badge">🐆 Vintage Pulp Fiction Ebook Library</div>
           <h1>Classic Pulp Fiction Ebooks</h1>
-          <p>Welcome to the ultimate digital archive of vintage pulp fiction. Discover over 300+ action-packed novels on Amazon Kindle across French Foreign Legion warfare, pirate swashbucklers, hardboiled noir crime, and untamed jungle adventures.</p>
+          <p>Welcome to the ultimate digital archive of vintage pulp fiction. Discover over 300+ action-packed novels across French Foreign Legion warfare, pirate swashbucklers, hardboiled noir crime, and untamed jungle adventures.</p>
           
           <div class="pseo-search-container" style="margin-top:2rem;">
             <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1028,7 +1028,7 @@ class PSEOBuilder:
         <div class="stats-banner">
           <div class="stat-card">
             <span class="stat-number">{len(self.engine.books)}</span>
-            <span class="stat-label">Kindle Ebooks</span>
+            <span class="stat-label">Pulp Ebooks</span>
           </div>
           <div class="stat-card">
             <span class="stat-number">{len(self.engine.authors)}</span>

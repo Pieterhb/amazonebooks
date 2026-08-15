@@ -114,8 +114,56 @@ class PulpDataEngine:
             used_slugs.add(slug)
 
             clean_link = clean_amazon_url(b["link"])
+
+            # Store and retailer detection
+            link_lower = (clean_link or "").lower()
+            if "kobo.com" in link_lower:
+                store_key = "kobo"
+                store_name = "Kobo"
+                store_full = "Rakuten Kobo"
+                card_btn_label = "Buy on Kobo"
+                detail_btn_label = "Buy on Kobo"
+                format_label = "Kobo Ebook"
+                delivery_label = "Instant Kobo Delivery"
+                devices_label = "Kobo eReader, iOS, Android, or PC"
+                reviews_label = "Reviews on Kobo"
+                seller_name = "Rakuten Kobo"
+            elif "play.google.com" in link_lower:
+                store_key = "google_play"
+                store_name = "Google Play"
+                store_full = "Google Play Books"
+                card_btn_label = "Buy on Google Play"
+                detail_btn_label = "Buy on Google Play"
+                format_label = "Google Play Ebook"
+                delivery_label = "Instant Digital Delivery"
+                devices_label = "Google Play Books, iOS, Android, or PC"
+                reviews_label = "Reviews on Google Play"
+                seller_name = "Google Play"
+            elif "sqrindle.com" in link_lower:
+                store_key = "sqrindle"
+                store_name = "Sqrindle"
+                store_full = "Sqrindle"
+                card_btn_label = "Buy on Sqrindle"
+                detail_btn_label = "Buy on Sqrindle"
+                format_label = "Ebook"
+                delivery_label = "Instant Digital Delivery"
+                devices_label = "eReader, Tablet, Phone, or PC"
+                reviews_label = "Reviews on Sqrindle"
+                seller_name = "Sqrindle"
+            else:
+                store_key = "amazon"
+                store_name = "Amazon"
+                store_full = "Amazon Kindle"
+                card_btn_label = "Buy on Amazon"
+                detail_btn_label = "Buy on Amazon Kindle"
+                format_label = "Kindle Ebook"
+                delivery_label = "Instant Kindle Delivery"
+                devices_label = "Kindle, iPad, Android, or PC"
+                reviews_label = "Reviews on Amazon"
+                seller_name = "Amazon"
+
             primary_genre, subgenres, themes = self.classify_book(title_display, b["series"], author, b["lang"])
-            synopsis = self.generate_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"])
+            synopsis = self.generate_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"], store_key=store_key)
 
             page_count = 140 if "omnibus" not in title_display.lower() and "box set" not in title_display.lower() else 420
             read_time = f"{page_count // 35} hours"
@@ -132,6 +180,16 @@ class PulpDataEngine:
                 "img": b["img"],
                 "lang": b["lang"],
                 "amazon_url": clean_link,
+                "store_key": store_key,
+                "store_name": store_name,
+                "store_full": store_full,
+                "card_btn_label": card_btn_label,
+                "detail_btn_label": detail_btn_label,
+                "format": format_label,
+                "delivery": delivery_label,
+                "devices": devices_label,
+                "reviews_label": reviews_label,
+                "seller": seller_name,
                 "primary_genre": primary_genre,
                 "primary_genre_slug": slugify(primary_genre),
                 "subgenres": subgenres,
@@ -141,9 +199,6 @@ class PulpDataEngine:
                 "synopsis": synopsis,
                 "pages": page_count,
                 "read_time": read_time,
-                "price": "$2.99" if "omnibus" not in title_display.lower() and "box set" not in title_display.lower() else "$5.99",
-                "rating": 4.8,
-                "reviews_count": 28 + (idx * 3 % 45)
             }
             self.books.append(book_obj)
 
@@ -204,58 +259,71 @@ class PulpDataEngine:
 
         return primary_genre, subgenres, list(dict.fromkeys(themes))
 
-    def generate_synopsis(self, title, author, series, genre, lang, num):
+    def generate_synopsis(self, title, author, series, genre, lang, num, store_key="amazon"):
         """Generate high-engagement, immersive pulp fiction synopsis."""
         lang_note = f"Translated into thrilling {lang}" if lang != "Afrikaans" else "Written in authentic, gripping Afrikaans"
         series_info = f"Part of the legendary {series}" if series and series != "Other" else "A gripping standalone pulp fiction masterpiece"
         if num and num != "999":
             series_info += f" (Book #{num})"
 
+        if store_key == "kobo":
+            store_cta = "on Kobo"
+            device_cta = "available instantly for your Kobo eReader or reading app."
+        elif store_key == "google_play":
+            store_cta = "on Google Play"
+            device_cta = "available instantly on Google Play Books."
+        elif store_key == "sqrindle":
+            store_cta = "on Sqrindle"
+            device_cta = "available instantly in digital ebook format."
+        else:
+            store_cta = "on Amazon Kindle"
+            device_cta = "available instantly for your Kindle device and app."
+
         if genre == "Desert Adventure & Foreign Legion":
             desc = (
                 f"**{title}** by {author} plunges readers into the scorching heat, blood-soaked sands, and razor-sharp tensions of the North African desert. {series_info}. "
                 f"Against an unforgiving landscape of treacherous dunes, fierce desert tribes, and beleaguered French Foreign Legion garrisons, every chapter delivers unrelenting action and pulse-pounding survival. "
-                f"When honor clashes with betrayal under the blistering Sahara sun, only the bravest can hope to make it out alive. {lang_note} for classic pulp adventure enthusiasts seeking high-octane vintage military thrills on Amazon Kindle."
+                f"When honor clashes with betrayal under the blistering Sahara sun, only the bravest can hope to make it out alive. {lang_note} for classic pulp adventure enthusiasts seeking high-octane vintage military thrills {store_cta}."
             )
         elif genre == "Pirate & High Seas Swashbuckler":
             desc = (
                 f"**{title}** by {author} is a swashbuckling high-seas epic packed with cannon smoke, flashing cutlasses, and dangerous oceanic intrigues. {series_info}. "
                 f"Set during the golden age of buccaneers and maritime warfare, the story follows daring captains navigating pirate-infested archipelagos, treacherous admirals, and hidden treasure troves. "
-                f"Every page crackles with broadside battles, mutinous crews, and desperate sword duels across blood-slicked decks. {lang_note}, this vintage nautical adventure is a must-read on Amazon Kindle."
+                f"Every page crackles with broadside battles, mutinous crews, and desperate sword duels across blood-slicked decks. {lang_note}, this vintage nautical adventure is a must-read {store_cta}."
             )
         elif genre == "Masked Rogue & Highwayman":
             desc = (
                 f"**{title}** by {author} brings to life the timeless legend of a fearless Cape highwayman who strikes from the shadows to champion justice against ruthless tyrants. {series_info}. "
                 f"Galloping through moonlit mountain passes, eluding colonial dragoons, and orchestrating daring rescues, the protagonist embodies the romantic spirit of the classic rogue hero. "
-                f"Packed with aristocratic deception, midnight shootouts, and thrilling escapes, this historical action romance delivers non-stop entertainment on Amazon Kindle."
+                f"Packed with aristocratic deception, midnight shootouts, and thrilling escapes, this historical action romance delivers non-stop entertainment {store_cta}."
             )
         elif genre == "Jungle Adventure & Lost Worlds":
             desc = (
                 f"**{title}** by {author} delivers an adrenaline-fueled safari through deepest, darkest Africa where primeval dangers lurk behind every dense thicket. {series_info}. "
                 f"From encounters with lethal apex predators to ancient, forbidden ruins guarded by ferocious warriors, this iconic lost-world adventure captures the feral intensity of classic pulp heroics. "
-                f"Immerse yourself in legendary African wilderness pulp fiction, available instantly for your Kindle device and app."
+                f"Immerse yourself in legendary African wilderness pulp fiction, {device_cta}"
             )
         elif genre == "Hardboiled Detective & Noir Crime":
             desc = (
                 f"**{title}** by {author} is a gritty, fast-moving 1950s crime noir novel steeped in cigarette smoke, rain-soaked asphalt, and deadly underworld conspiracies. {series_info}. "
                 f"When a routine investigation unravels into a web of double-crosses, ruthless smugglers, and trigger-happy syndicate bosses, our hardnosed investigator must rely on sharp instincts and a loaded .38 revolver to survive. "
-                f"A thrilling slice of mid-century vintage detective pulp, perfect for fans of classic noir on Amazon Kindle."
+                f"A thrilling slice of mid-century vintage detective pulp, perfect for fans of classic noir {store_cta}."
             )
         elif genre == "Safari & Bushveld Adventure":
             desc = (
                 f"**{title}** by {author} transports readers to the wild, untamed frontiers of the African bushveld. {series_info}. "
                 f"Here, bush pilots, rugged game trackers, and dangerous poachers clash over hidden diamond caches and territorial rivalries. "
-                f"With vivid descriptions of the untamed wilderness and relentless pacing, this classic bushveld adventure keeps you on the edge of your seat from opening page to explosive climax on Kindle."
+                f"With vivid descriptions of the untamed wilderness and relentless pacing, this classic bushveld adventure keeps you on the edge of your seat from opening page to explosive climax {store_cta}."
             )
         elif genre == "Sci-Fi Pulp & Retro Space Opera":
             desc = (
                 f"**{title}** by {author} delivers mind-bending retro science fiction brimming with cosmic exploration, rogue artificial intelligences, and interstellar stakes. {series_info}. "
-                f"Featuring classic space opera themes, high-tech weapon duels, and cosmic survival against unknown planetary threats, this story delivers pure imaginative entertainment for retro sci-fi fans on Amazon Kindle."
+                f"Featuring classic space opera themes, high-tech weapon duels, and cosmic survival against unknown planetary threats, this story delivers pure imaginative entertainment for retro sci-fi fans {store_cta}."
             )
         else:
             desc = (
                 f"**{title}** by {author} is a classic vintage pulp fiction novel packed with suspense, unforgettable characters, and high-velocity pacing. {series_info}. "
-                f"Written in the golden tradition of dime novels and mid-century paperback thrillers, each chapter is crafted to keep readers captivated. Available worldwide on Amazon Kindle."
+                f"Written in the golden tradition of dime novels and mid-century paperback thrillers, each chapter is crafted to keep readers captivated. Available worldwide {store_cta}."
             )
         return desc
 
