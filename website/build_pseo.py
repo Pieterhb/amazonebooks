@@ -1,0 +1,1193 @@
+"""
+Programmatic SEO (pSEO) Static Site Generator
+Generates 1,000+ SEO-optimized landing pages, JSON-LD structured data,
+internal linking mesh, chunked XML sitemaps, and robots.txt.
+"""
+
+import os
+import shutil
+import json
+import re
+from datetime import datetime
+
+from site_config import (
+    SITE_URL, SITE_NAME, SITE_TITLE_SUFFIX, SITE_TAGLINE,
+    DEFAULT_DESCRIPTION, AMAZON_AFFILIATE_TAG, PUBLISHER_NAME,
+    PUBLISHER_LOGO, DEFAULT_OG_IMAGE
+)
+from pulp_data_engine import PulpDataEngine, slugify
+
+CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
+
+def escape_html(text):
+    """Simple HTML escaping."""
+    if not text:
+        return ""
+    return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;")
+
+def render_sidebar(engine, active_target="home"):
+    """Render consistent sidebar navigation."""
+    nav_links = [
+        f'<li><a href="/" class="{"active" if active_target == "home" else ""}">🏠 Home</a></li>',
+        f'<li><a href="/books/" class="{"active" if active_target == "books" else ""}">📚 All Books <span class="count">({len(engine.books)})</span></a></li>',
+        f'<li><a href="/authors/" class="{"active" if active_target == "authors" else ""}">✍️ Authors <span class="count">({len(engine.authors)})</span></a></li>',
+        f'<li><a href="/genres/" class="{"active" if active_target == "genres" else ""}">🏷️ Genres <span class="count">({len(engine.genres)})</span></a></li>',
+        f'<li><a href="/themes/" class="{"active" if active_target == "themes" else ""}">🎯 Niche Themes <span class="count">({len(engine.themes)})</span></a></li>',
+        f'<li><a href="/collections/" class="{"active" if active_target == "collections" else ""}">⭐ Curated Lists <span class="count">({len(engine.collections)})</span></a></li>',
+    ]
+
+    # Top genres in sidebar
+    genre_links = []
+    for g_slug, g in list(engine.genres.items())[:8]:
+        genre_links.append(f'<li><a href="/genres/{g_slug}/" class="{"active" if active_target == f"genre-{g_slug}" else ""}">{g["name"]} <span class="count">({g["books_count"]})</span></a></li>')
+
+    return f"""
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header desktop-only">
+        <a href="/" class="logo">
+          Pulp Fiction <span>eBooks</span>
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li class="nav-header">Explore Library</li>
+          {"".join(nav_links)}
+          <li class="nav-header">Popular Genres</li>
+          {"".join(genre_links)}
+        </ul>
+      </nav>
+    </aside>
+    """
+
+def render_mobile_header():
+    """Render mobile header bar with toggle button."""
+    return """
+    <header class="mobile-header">
+      <a href="/" class="logo">
+        Pulp Fiction <span>eBooks</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </header>
+    """
+
+def render_footer(engine):
+    """Render comprehensive site footer with internal mesh links."""
+    return f"""
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Softcover Books Pulp Ebooks</h4>
+          <p>The premier programmatic library for vintage pulp fiction ebooks on Amazon Kindle. Featuring French Foreign Legion sagas, pirate swashbucklers, hardboiled 1950s detectives, and untamed African adventures.</p>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Amazon Associate Disclosure: As an Amazon Associate, Softcover Books earns from qualifying purchases made through links on this site.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Top Genres</h4>
+          <ul class="footer-links">
+            <li><a href="/genres/desert-adventure-foreign-legion/">Foreign Legion & Desert</a></li>
+            <li><a href="/genres/pirate-high-seas-swashbuckler/">Pirate & Swashbuckler</a></li>
+            <li><a href="/genres/hardboiled-detective-noir-crime/">Hardboiled Noir Detective</a></li>
+            <li><a href="/genres/jungle-adventure-lost-worlds/">Jungle Adventure & Lost Worlds</a></li>
+            <li><a href="/genres/masked-rogue-highwayman/">Masked Rogue & Highwayman</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Featured Authors</h4>
+          <ul class="footer-links">
+            <li><a href="/authors/francois-alwyn-venter/">Francois Alwyn Venter</a></li>
+            <li><a href="/authors/gerrie-radlof/">Gerrie Radlof</a></li>
+            <li><a href="/authors/braam-le-roux/">Braam le Roux</a></li>
+            <li><a href="/authors/sandbergh-beyers/">Sandbergh Beyers</a></li>
+            <li><a href="/authors/ap-du-plessis/">A.P. du Plessis</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/books/">All 300+ Books</a></li>
+            <li><a href="/authors/">All Authors</a></li>
+            <li><a href="/genres/">All Genres</a></li>
+            <li><a href="/themes/">Niche Themes</a></li>
+            <li><a href="/collections/">Curated Collections</a></li>
+            <li><a href="/sitemap.xml">XML Sitemap Index</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {datetime.now().year} Softcover Books. All rights reserved. Built for speed, discovery, and vintage pulp preservation.</p>
+      </div>
+    </footer>
+    """
+
+def render_book_card(book):
+    """Render a single high-converting book card."""
+    lang_badge = f'<span class="store-badge badge-{slugify(book["lang"])}">{book["lang"]}</span>'
+    num_badge = f'<span class="book-number">{book["series_number"]}</span>' if book.get("series_number") and str(book["series_number"]) != "999" else ""
+
+    return f"""
+    <article class="book-card" data-series="{escape_html(book['series'])}">
+      <div class="book-img-wrapper">
+        <a href="/books/{book['slug']}/" aria-label="{escape_html(book['title'])}">
+          <img src="{book['img']}" alt="{escape_html(book['title'])} cover" loading="lazy" width="220" height="330">
+        </a>
+        {num_badge}
+        {lang_badge}
+      </div>
+      <div class="book-content">
+        <h3><a href="/books/{book['slug']}/">{escape_html(book['title'])}</a></h3>
+        <p class="author">By <a href="/authors/{book['author_slug']}/">{escape_html(book['author'])}</a></p>
+        <div class="book-card-actions">
+          <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon" aria-label="Buy {escape_html(book['title'])} on Amazon Kindle">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Kindle {book['price']}
+          </a>
+          <a href="/books/{book['slug']}/" class="btn-secondary">Details &amp; Synopsis</a>
+        </div>
+      </div>
+    </article>
+    """
+
+def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None):
+    """Base HTML wrapper with complete technical SEO meta tags and scripts."""
+    if not engine:
+        return ""
+    sidebar_html = render_sidebar(engine, active_target)
+    mobile_header = render_mobile_header()
+    footer_html = render_footer(engine)
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{escape_html(title)}</title>
+  <meta name="description" content="{escape_html(meta_desc)}" />
+  <link rel="canonical" href="{canonical_url}" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  
+  <!-- OpenGraph Meta Tags -->
+  <meta property="og:site_name" content="{SITE_NAME}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{escape_html(title)}" />
+  <meta property="og:description" content="{escape_html(meta_desc)}" />
+  <meta property="og:url" content="{canonical_url}" />
+  <meta property="og:image" content="{og_img if og_img.startswith('http') else SITE_URL + og_img}" />
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{escape_html(title)}" />
+  <meta name="twitter:description" content="{escape_html(meta_desc)}" />
+  <meta name="twitter:image" content="{og_img if og_img.startswith('http') else SITE_URL + og_img}" />
+
+  <!-- Preconnect and Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+{json.dumps(json_ld, indent=2, ensure_ascii=False)}
+  </script>
+</head>
+<body>
+  {mobile_header}
+  <div class="app-layout">
+    {sidebar_html}
+    <main class="main-content">
+      {content_html}
+      {footer_html}
+    </main>
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+</html>"""
+
+class PSEOBuilder:
+    def __init__(self, engine, out_dir):
+        self.engine = engine
+        self.out_dir = out_dir
+        self.sitemap_urls = {
+            "books": [],
+            "authors": [],
+            "genres": [],
+            "collections": []
+        }
+
+    def write_page(self, rel_path, html_content):
+        """Write HTML content to output directory."""
+        full_path = os.path.join(self.out_dir, rel_path)
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        with open(full_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+    def build_all(self):
+        """Run complete static programmatic generation."""
+        print("Starting Programmatic SEO Generation...")
+        self.build_book_pages()
+        self.build_author_pages()
+        self.build_genre_pages()
+        self.build_theme_pages()
+        self.build_collection_pages()
+        self.build_directory_hubs()
+        self.build_homepage()
+        self.build_sitemaps()
+        self.build_robots_txt()
+        print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 6} static pages.")
+
+    def build_book_pages(self):
+        """Generate 326 Book Detail Pages (/books/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.books)} Book Detail Pages...")
+        for book in self.engine.books:
+            url = f"{SITE_URL}/books/{book['slug']}/"
+            self.sitemap_urls["books"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "monthly",
+                "priority": "0.9"
+            })
+
+            # Meta tags
+            title = f"{book['title']} by {book['author']} - Pulp Fiction Kindle Ebook | Softcover Books"
+            meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon Kindle. Get your copy today."
+            
+            # Related books: More from author
+            author_books = [b for b in self.engine.books if b['author'] == book['author'] and b['id'] != book['id']][:4]
+            # Similar genre books
+            genre_books = [b for b in self.engine.books if b['primary_genre'] == book['primary_genre'] and b['id'] != book['id'] and b['author'] != book['author']][:4]
+            if len(genre_books) < 4:
+                genre_books = [b for b in self.engine.books if b['id'] != book['id'] and b['id'] not in [ab['id'] for ab in author_books]][:4]
+
+            # Breadcrumbs
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/genres/{book['primary_genre_slug']}/">{book['primary_genre']}</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(book['title'])}</span>
+            </nav>
+            """
+
+            # Tag pills
+            tag_pills = [f'<a href="/genres/{book["primary_genre_slug"]}/" class="tag-pill tag-pill-genre">🏷️ {book["primary_genre"]}</a>']
+            for th in book["themes"][:4]:
+                tag_pills.append(f'<a href="/themes/{slugify(th)}/" class="tag-pill">🎯 {th}</a>')
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="book-detail-hero">
+              <div class="book-detail-cover-wrapper">
+                <img src="{book['img']}" alt="{escape_html(book['title'])} - Book Cover" width="340" height="510">
+              </div>
+              <div class="book-detail-info">
+                <div class="tags-row" style="margin-top:0;">
+                  <span class="store-badge badge-{slugify(book['lang'])}" style="position:static; margin-right:0.5rem;">{book['lang']} Edition</span>
+                  {f'<span class="tag-pill" style="color:#fff; background:var(--accent-red); border-color:var(--accent-red);">Book #{book["series_number"]}</span>' if book.get("series_number") and str(book["series_number"]) != "999" else ""}
+                </div>
+                <h1>{escape_html(book['title'])}</h1>
+                <div class="book-detail-meta-bar">
+                  <span>Author: <a href="/authors/{book['author_slug']}/" class="author-link">{escape_html(book['author'])}</a></span>
+                  {f'<span>Series: <strong>{escape_html(book["series"])}</strong></span>' if book.get("series") and book["series"] != "Other" else ""}
+                  <span>Format: <strong>Kindle Ebook</strong></span>
+                  <span>⭐ <strong>{book['rating']}/5.0</strong> ({book['reviews_count']} reader reviews)</span>
+                </div>
+
+                <div class="tags-row">
+                  {"".join(tag_pills)}
+                </div>
+
+                <div class="book-synopsis">
+                  <h2 style="font-size:1.3rem; margin-bottom:0.75rem; color:var(--text-main);">Book Synopsis &amp; Story Overview</h2>
+                  <p>{book['synopsis'].replace(chr(10), '<br><br>')}</p>
+                </div>
+
+                <div class="book-specs-grid">
+                  <div class="spec-item">
+                    <span class="spec-label">Language</span>
+                    <span class="spec-val">{book['lang']}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Length</span>
+                    <span class="spec-val">~{book['pages']} pages</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Read Time</span>
+                    <span class="spec-val">{book['read_time']}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Publisher</span>
+                    <span class="spec-val">Softcover Books</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Availability</span>
+                    <span class="spec-val" style="color:#00e676;">Instant Kindle Delivery</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Amazon Price</span>
+                    <span class="spec-val" style="color:var(--accent-yellow);">{book['price']}</span>
+                  </div>
+                </div>
+
+                <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
+                  <a href="{book['amazon_url']}" target="_blank" rel="noopener noreferrer nofollow" class="btn-amazon btn-amazon-lg">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                    Buy on Amazon Kindle ({book['price']})
+                  </a>
+                  <span style="font-size:0.85rem; color:var(--text-dim);">Read instantly on Kindle, iPad, Android, or PC.</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- More From Author -->
+            {f'''
+            <section style="margin-bottom:3.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>More Vintage Pulp by {escape_html(book['author'])}</h2>
+                <a href="/authors/{book['author_slug']}/" style="font-weight:700; font-size:0.9rem;">View All ({len(self.engine.authors[book['author_slug']]['books'])}) &rarr;</a>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(ab) for ab in author_books])}
+              </div>
+            </section>
+            ''' if author_books else ''}
+
+            <!-- Similar Genre Ebooks -->
+            <section style="margin-bottom:3.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>Similar {escape_html(book['primary_genre'])} Ebooks</h2>
+                <a href="/genres/{book['primary_genre_slug']}/" style="font-weight:700; font-size:0.9rem;">Explore Genre ({self.engine.genres[book['primary_genre_slug']]['books_count']}) &rarr;</a>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(gb) for gb in genre_books])}
+              </div>
+            </section>
+            """
+
+            # JSON-LD Structured Data
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "Book",
+                        "@id": f"{url}#book",
+                        "name": book["title"],
+                        "author": {
+                            "@type": "Person",
+                            "name": book["author"],
+                            "url": f"{SITE_URL}/authors/{book['author_slug']}/"
+                        },
+                        "image": f"{SITE_URL}{book['img']}",
+                        "description": book["synopsis"],
+                        "inLanguage": book["lang"],
+                        "genre": book["primary_genre"],
+                        "numberOfPages": book["pages"],
+                        "bookFormat": "https://schema.org/EBook",
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": PUBLISHER_NAME,
+                            "logo": {"@type": "ImageObject", "url": PUBLISHER_LOGO}
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "url": book["amazon_url"],
+                            "price": book["price"].replace("$", ""),
+                            "priceCurrency": "USD",
+                            "availability": "https://schema.org/InStock",
+                            "seller": {"@type": "Organization", "name": "Amazon"}
+                        }
+                    },
+                    {
+                        "@type": "Product",
+                        "name": f"{book['title']} (Kindle Ebook Edition)",
+                        "image": f"{SITE_URL}{book['img']}",
+                        "description": book["synopsis"],
+                        "offers": {
+                            "@type": "Offer",
+                            "url": book["amazon_url"],
+                            "price": book["price"].replace("$", ""),
+                            "priceCurrency": "USD",
+                            "availability": "https://schema.org/InStock",
+                            "seller": {"@type": "Organization", "name": "Amazon"}
+                        }
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": book["primary_genre"], "item": f"{SITE_URL}/genres/{book['primary_genre_slug']}/"},
+                            {"@type": "ListItem", "position": 3, "name": book["title"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target="books",
+                og_img=book["img"],
+                engine=self.engine
+            )
+            self.write_page(f"books/{book['slug']}/index.html", html)
+
+    def build_author_pages(self):
+        """Generate Author Hub Pages (/authors/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.authors)} Author Hub Pages...")
+        for slug, author in self.engine.authors.items():
+            url = f"{SITE_URL}/authors/{slug}/"
+            self.sitemap_urls["authors"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.8"
+            })
+
+            title = f"{author['name']} - Pulp Fiction Kindle Ebooks & Complete Bibliography | Softcover Books"
+            meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels on Amazon Kindle."
+
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/authors/">Authors</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(author['name'])}</span>
+            </nav>
+            """
+
+            genre_pills = [f'<a href="/genres/{slugify(g)}/" class="tag-pill tag-pill-genre">🏷️ {g}</a>' for g in author["primary_genres"]]
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="hub-hero">
+              <div class="hero-badge">✍️ Author Spotlight</div>
+              <h1>{escape_html(author['name'])}</h1>
+              <p class="hub-tagline">{author['books_count']} Classic Pulp Fiction Ebooks Available on Amazon Kindle</p>
+              <div class="tags-row" style="margin-bottom:1.5rem;">
+                {"".join(genre_pills)}
+              </div>
+              <p class="hub-description">{escape_html(author['bio'])}</p>
+            </section>
+
+            <section style="margin-bottom:3rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>Complete Bibliography by {escape_html(author['name'])} ({author['books_count']} Titles)</h2>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(b) for b in author['books']])}
+              </div>
+            </section>
+            """
+
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "ProfilePage",
+                        "@id": url,
+                        "name": f"{author['name']} - Author Bibliography",
+                        "mainEntity": {
+                            "@type": "Person",
+                            "name": author["name"],
+                            "description": author["bio"]
+                        }
+                    },
+                    {
+                        "@type": "ItemList",
+                        "name": f"Pulp Fiction Ebooks by {author['name']}",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx + 1,
+                                "name": b["title"],
+                                "url": f"{SITE_URL}/books/{b['slug']}/"
+                            }
+                            for idx, b in enumerate(author["books"])
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": "Authors", "item": f"{SITE_URL}/authors/"},
+                            {"@type": "ListItem", "position": 3, "name": author["name"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target="authors",
+                og_img=author["sample_covers"][0] if author["sample_covers"] else DEFAULT_OG_IMAGE,
+                engine=self.engine
+            )
+            self.write_page(f"authors/{slug}/index.html", html)
+
+    def build_genre_pages(self):
+        """Generate Genre Hub & Subgenre Pages (/genres/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.genres)} Genre Hub Pages...")
+        for slug, genre in self.engine.genres.items():
+            url = f"{SITE_URL}/genres/{slug}/"
+            self.sitemap_urls["genres"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.85"
+            })
+
+            title = f"{genre['title']} | Softcover Books"
+            meta_desc = f"Discover {genre['books_count']}+ classic {genre['name']} vintage pulp fiction novels available on Amazon Kindle. {genre['tagline']}."
+
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/genres/">Genres</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(genre['name'])}</span>
+            </nav>
+            """
+
+            trope_pills = [f'<span class="tag-pill">🔥 {t}</span>' for t in genre.get("tropes", [])]
+            subgenre_pills = [f'<a href="/genres/{slugify(sg)}/" class="tag-pill tag-pill-genre">🏷️ {sg}</a>' for sg in genre.get("subgenres", [])]
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="hub-hero">
+              <div class="hero-badge">🏷️ Pulp Fiction Genre Guide</div>
+              <h1>{escape_html(genre['title'])}</h1>
+              <p class="hub-tagline">{escape_html(genre['tagline'])}</p>
+              
+              {f'<div class="tags-row" style="margin-bottom:1rem;"><strong>Key Tropes:</strong> {"".join(trope_pills)}</div>' if trope_pills else ''}
+              {f'<div class="tags-row" style="margin-bottom:1.5rem;"><strong>Subgenres:</strong> {"".join(subgenre_pills)}</div>' if subgenre_pills else ''}
+
+              <p class="hub-description">{escape_html(genre['guide'])}</p>
+            </section>
+
+            <section style="margin-bottom:3rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>Explore All {genre['books_count']} {escape_html(genre['name'])} Ebooks</h2>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(b) for b in genre['books']])}
+              </div>
+            </section>
+            """
+
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "CollectionPage",
+                        "@id": url,
+                        "name": genre["title"],
+                        "description": genre["guide"]
+                    },
+                    {
+                        "@type": "ItemList",
+                        "name": f"Pulp Fiction Ebooks in {genre['name']}",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx + 1,
+                                "name": b["title"],
+                                "url": f"{SITE_URL}/books/{b['slug']}/"
+                            }
+                            for idx, b in enumerate(genre["books"])
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": "Genres", "item": f"{SITE_URL}/genres/"},
+                            {"@type": "ListItem", "position": 3, "name": genre["name"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target=f"genre-{slug}",
+                og_img=genre["books"][0]["img"] if genre["books"] else DEFAULT_OG_IMAGE,
+                engine=self.engine
+            )
+            self.write_page(f"genres/{slug}/index.html", html)
+
+    def build_theme_pages(self):
+        """Generate Niche Theme/Tag Landing Pages (/themes/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.themes)} Niche Theme Pages...")
+        for slug, theme in self.engine.themes.items():
+            url = f"{SITE_URL}/themes/{slug}/"
+            self.sitemap_urls["genres"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "monthly",
+                "priority": "0.75"
+            })
+
+            title = f"{theme['title']} | Softcover Books"
+            meta_desc = f"Browse vintage {theme['name']} pulp fiction ebooks. Discover {theme['books_count']} exciting retro paperback novels on Amazon Kindle."
+
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/themes/">Themes</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(theme['name'])}</span>
+            </nav>
+            """
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="hub-hero">
+              <div class="hero-badge">🎯 Niche Pulp Theme</div>
+              <h1>{escape_html(theme['name'])} Pulp Fiction Ebooks</h1>
+              <p class="hub-tagline">{escape_html(theme['tagline'])}</p>
+              <p class="hub-description">{escape_html(theme['guide'])}</p>
+            </section>
+
+            <section style="margin-bottom:3rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>Featured {escape_html(theme['name'])} Titles on Amazon Kindle ({theme['books_count']})</h2>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(b) for b in theme['books']])}
+              </div>
+            </section>
+            """
+
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "CollectionPage",
+                        "@id": url,
+                        "name": theme["title"],
+                        "description": theme["guide"]
+                    },
+                    {
+                        "@type": "ItemList",
+                        "name": f"Pulp Fiction Novels featuring {theme['name']}",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx + 1,
+                                "name": b["title"],
+                                "url": f"{SITE_URL}/books/{b['slug']}/"
+                            }
+                            for idx, b in enumerate(theme["books"])
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": "Themes", "item": f"{SITE_URL}/themes/"},
+                            {"@type": "ListItem", "position": 3, "name": theme["name"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target="themes",
+                og_img=theme["books"][0]["img"] if theme["books"] else DEFAULT_OG_IMAGE,
+                engine=self.engine
+            )
+            self.write_page(f"themes/{slug}/index.html", html)
+
+    def build_collection_pages(self):
+        """Generate 550+ Curated Collection Landing Pages (/collections/[slug]/index.html)."""
+        print(f"Generating {len(self.engine.collections)} Curated Collection Pages...")
+        for col in self.engine.collections:
+            url = f"{SITE_URL}/collections/{col['slug']}/"
+            self.sitemap_urls["collections"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "monthly",
+                "priority": "0.8"
+            })
+
+            title = f"{col['title']} - Curated Pulp Ebooks on Kindle | Softcover Books"
+            meta_desc = f"{col['description']} Read top-rated vintage pulp fiction books on Amazon Kindle today."
+
+            breadcrumbs_html = f"""
+            <nav class="breadcrumbs" aria-label="Breadcrumbs">
+              <a href="/">Home</a>
+              <span class="separator">›</span>
+              <a href="/collections/">Collections</a>
+              <span class="separator">›</span>
+              <span class="current">{escape_html(col['title'])}</span>
+            </nav>
+            """
+
+            content_html = f"""
+            {breadcrumbs_html}
+            
+            <section class="hub-hero">
+              <div class="hero-badge">⭐ Curated Reading List</div>
+              <h1>{escape_html(col['title'])}</h1>
+              <p class="hub-tagline">Handpicked selection of {col['books_count']} thrilling pulp fiction ebooks</p>
+              <p class="hub-description">{escape_html(col['description'])} Discover high-velocity plots, unforgettable vintage characters, and instant digital Kindle reading on Amazon.</p>
+            </section>
+
+            <section style="margin-bottom:3rem;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h2>Ranked Book Recommendations ({col['books_count']} Ebooks)</h2>
+              </div>
+              <div class="product-grid">
+                {"".join([render_book_card(b) for b in col['books']])}
+              </div>
+            </section>
+            """
+
+            json_ld = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "CollectionPage",
+                        "@id": url,
+                        "name": col["title"],
+                        "description": col["description"]
+                    },
+                    {
+                        "@type": "ItemList",
+                        "name": col["title"],
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx + 1,
+                                "name": b["title"],
+                                "url": f"{SITE_URL}/books/{b['slug']}/"
+                            }
+                            for idx, b in enumerate(col["books"])
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE_URL}/"},
+                            {"@type": "ListItem", "position": 2, "name": "Collections", "item": f"{SITE_URL}/collections/"},
+                            {"@type": "ListItem", "position": 3, "name": col["title"], "item": url}
+                        ]
+                    }
+                ]
+            }
+
+            html = render_base_html(
+                title=title,
+                meta_desc=meta_desc,
+                canonical_url=url,
+                json_ld=json_ld,
+                content_html=content_html,
+                active_target="collections",
+                og_img=col["books"][0]["img"] if col["books"] else DEFAULT_OG_IMAGE,
+                engine=self.engine
+            )
+            self.write_page(f"collections/{col['slug']}/index.html", html)
+
+    def build_directory_hubs(self):
+        """Generate Directory Hub Index Pages: /books/, /authors/, /genres/, /themes/, /collections/."""
+        print("Generating Directory Hub Index Pages...")
+
+        # 1. /books/index.html
+        books_url = f"{SITE_URL}/books/"
+        self.sitemap_urls["books"].insert(0, {"loc": books_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "1.0"})
+        books_content = f"""
+        <section class="hero">
+          <div class="hero-badge">📚 Complete Library Catalog</div>
+          <h1>All {len(self.engine.books)} Vintage Pulp Fiction Ebooks</h1>
+          <p>Search, filter, and discover classic French Foreign Legion adventures, swashbuckling pirates, hardboiled crime sleuths, and lost jungle worlds available on Amazon Kindle.</p>
+        </section>
+
+        <div class="pseo-search-container">
+          <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="pseo-search" class="pseo-search-input" placeholder="Search by title, author, or series keyword..." autocomplete="off">
+          <div id="search-results-count" style="margin-top:0.5rem; font-size:0.85rem; color:var(--accent-yellow);"></div>
+        </div>
+
+        <div class="product-grid">
+          {"".join([render_book_card(b) for b in self.engine.books])}
+        </div>
+        """
+        books_json_ld = {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks on Kindle",
+            "url": books_url,
+            "description": "Complete library catalog of vintage pulp fiction ebooks available on Amazon Kindle."
+        }
+        self.write_page("books/index.html", render_base_html(
+            title=f"All {len(self.engine.books)} Vintage Pulp Fiction Ebooks on Amazon Kindle | Softcover Books",
+            meta_desc=f"Browse our complete catalog of {len(self.engine.books)} vintage pulp fiction ebooks on Amazon Kindle. Search desert adventures, pirate sagas, noir mysteries, and jungle pulp.",
+            canonical_url=books_url,
+            json_ld=books_json_ld,
+            content_html=books_content,
+            active_target="books",
+            engine=self.engine
+        ))
+
+        # 2. /authors/index.html
+        authors_url = f"{SITE_URL}/authors/"
+        self.sitemap_urls["authors"].insert(0, {"loc": authors_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
+        authors_cards = []
+        for slug, a in self.engine.authors.items():
+            authors_cards.append(f"""
+            <a href="/authors/{slug}/" class="directory-card">
+              <h3>{escape_html(a['name'])}</h3>
+              <p>{escape_html(a['bio'][:140])}...</p>
+              <div class="card-footer">
+                <span>{a['books_count']} Ebooks Available</span>
+                <span>View Bibliography &rarr;</span>
+              </div>
+            </a>
+            """)
+        authors_content = f"""
+        <section class="hero">
+          <div class="hero-badge">✍️ Master Pulp Storytellers</div>
+          <h1>Pulp Fiction Authors Directory</h1>
+          <p>Explore the celebrated literary giants and vintage paperback authors behind our classic pulp fiction catalog on Amazon Kindle.</p>
+        </section>
+        <div class="directory-grid">
+          {"".join(authors_cards)}
+        </div>
+        """
+        self.write_page("authors/index.html", render_base_html(
+            title="Pulp Fiction Authors Directory | Softcover Books",
+            meta_desc="Discover the legendary pulp fiction authors behind our vintage Kindle catalog, including F.A. Venter, Gerrie Radlof, Braam le Roux, and Sandbergh Beyers.",
+            canonical_url=authors_url,
+            json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Authors", "url": authors_url},
+            content_html=authors_content,
+            active_target="authors",
+            engine=self.engine
+        ))
+
+        # 3. /genres/index.html
+        genres_url = f"{SITE_URL}/genres/"
+        self.sitemap_urls["genres"].insert(0, {"loc": genres_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
+        genres_cards = []
+        for slug, g in self.engine.genres.items():
+            genres_cards.append(f"""
+            <a href="/genres/{slug}/" class="directory-card">
+              <h3>{escape_html(g['name'])}</h3>
+              <p>{escape_html(g['tagline'])}</p>
+              <div class="card-footer">
+                <span>{g['books_count']} Titles</span>
+                <span>Explore Genre &rarr;</span>
+              </div>
+            </a>
+            """)
+        genres_content = f"""
+        <section class="hero">
+          <div class="hero-badge">🏷️ Categorized Taxonomy</div>
+          <h1>Pulp Fiction Genres &amp; Subgenres</h1>
+          <p>Browse by genre: French Foreign Legion military action, pirate swashbucklers, hardboiled 1950s crime noir, safari mysteries, and retro sci-fi space operas.</p>
+        </section>
+        <div class="directory-grid">
+          {"".join(genres_cards)}
+        </div>
+        """
+        self.write_page("genres/index.html", render_base_html(
+            title="Pulp Fiction Genres & Categories | Softcover Books",
+            meta_desc="Browse our complete directory of classic pulp fiction genres and subgenres on Amazon Kindle. Foreign Legion, pirates, detectives, jungle action, and space opera.",
+            canonical_url=genres_url,
+            json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Genres", "url": genres_url},
+            content_html=genres_content,
+            active_target="genres",
+            engine=self.engine
+        ))
+
+        # 4. /themes/index.html
+        themes_url = f"{SITE_URL}/themes/"
+        self.sitemap_urls["genres"].insert(1, {"loc": themes_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.85"})
+        themes_cards = []
+        for slug, th in self.engine.themes.items():
+            themes_cards.append(f"""
+            <a href="/themes/{slug}/" class="directory-card">
+              <h3>🎯 {escape_html(th['name'])}</h3>
+              <p>{escape_html(th['tagline'])}</p>
+              <div class="card-footer">
+                <span>{th['books_count']} Ebooks</span>
+                <span>Browse Theme &rarr;</span>
+              </div>
+            </a>
+            """)
+        themes_content = f"""
+        <section class="hero">
+          <div class="hero-badge">🎯 Niche Tropes &amp; Keywords</div>
+          <h1>Pulp Fiction Niche Themes Directory</h1>
+          <p>Explore specialized long-tail pulp themes: Private Eyes, Desert Caravans, Cannon Broadsides, Man-Eating Predators, and Radio Drama Cliffhangers.</p>
+        </section>
+        <div class="directory-grid">
+          {"".join(themes_cards)}
+        </div>
+        """
+        self.write_page("themes/index.html", render_base_html(
+            title="Pulp Fiction Niche Themes & Tropes | Softcover Books",
+            meta_desc="Explore over 75+ niche pulp fiction themes and long-tail tropes available on Amazon Kindle. Private eyes, space opera, foreign legion, and lost cities.",
+            canonical_url=themes_url,
+            json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Pulp Fiction Themes", "url": themes_url},
+            content_html=themes_content,
+            active_target="themes",
+            engine=self.engine
+        ))
+
+        # 5. /collections/index.html
+        collections_url = f"{SITE_URL}/collections/"
+        self.sitemap_urls["collections"].insert(0, {"loc": collections_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "0.95"})
+        col_cards = []
+        for col in self.engine.collections[:60]:
+            col_cards.append(f"""
+            <a href="/collections/{col['slug']}/" class="directory-card">
+              <h3>⭐ {escape_html(col['title'])}</h3>
+              <p>{escape_html(col['description'][:140])}...</p>
+              <div class="card-footer">
+                <span>{col['books_count']} Curated Titles</span>
+                <span>View List &rarr;</span>
+              </div>
+            </a>
+            """)
+        col_content = f"""
+        <section class="hero">
+          <div class="hero-badge">⭐ Curated Reading Guides</div>
+          <h1>Curated Thematic Pulp Fiction Collections</h1>
+          <p>Browse our editorial reading lists, top-10 rankings, and buyer guides for vintage pulp fiction ebooks on Amazon Kindle.</p>
+        </section>
+        <div class="directory-grid">
+          {"".join(col_cards)}
+        </div>
+        """
+        self.write_page("collections/index.html", render_base_html(
+            title="Curated Pulp Fiction Collections & Reading Guides | Softcover Books",
+            meta_desc="Discover over 500+ curated thematic pulp fiction lists, rankings, and reading guides for Amazon Kindle. Find your next favorite retro adventure.",
+            canonical_url=collections_url,
+            json_ld={"@context": "https://schema.org", "@type": "CollectionPage", "name": "Curated Collections", "url": collections_url},
+            content_html=col_content,
+            active_target="collections",
+            engine=self.engine
+        ))
+
+    def build_homepage(self):
+        """Generate high-converting, premium Homepage (/index.html)."""
+        print("Generating Main Homepage...")
+        home_url = f"{SITE_URL}/"
+
+        featured_books = self.engine.books[:12]
+        top_collections = self.engine.collections[:8]
+
+        content_html = f"""
+        <section class="hero">
+          <div class="hero-badge">🐆 Vintage Pulp Fiction On Amazon Kindle</div>
+          <h1>Classic Pulp Fiction Ebooks</h1>
+          <p>Welcome to the ultimate digital archive of vintage pulp fiction. Discover over 300+ action-packed novels on Amazon Kindle across French Foreign Legion warfare, pirate swashbucklers, hardboiled noir crime, and untamed jungle adventures.</p>
+          
+          <div class="pseo-search-container" style="margin-top:2rem;">
+            <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="pseo-search" class="pseo-search-input" placeholder="Search 300+ titles, authors, or genres..." autocomplete="off">
+          </div>
+        </section>
+
+        <div class="stats-banner">
+          <div class="stat-card">
+            <span class="stat-number">{len(self.engine.books)}</span>
+            <span class="stat-label">Kindle Ebooks</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">{len(self.engine.authors)}</span>
+            <span class="stat-label">Pulp Authors</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">{len(self.engine.genres)}</span>
+            <span class="stat-label">Genres &amp; Subgenres</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">{len(self.engine.collections)}+</span>
+            <span class="stat-label">Curated Guides</span>
+          </div>
+        </div>
+
+        <!-- Featured Collections -->
+        <section style="margin-bottom:3.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+            <h2>Curated Reading Lists &amp; Buyer Guides</h2>
+            <a href="/collections/" style="font-weight:700; font-size:0.9rem;">All Guides &rarr;</a>
+          </div>
+          <div class="directory-grid">
+            {"".join([f'''
+            <a href="/collections/{c["slug"]}/" class="directory-card">
+              <h3>⭐ {escape_html(c["title"])}</h3>
+              <p>{escape_html(c["description"][:130])}...</p>
+              <div class="card-footer">
+                <span>{c["books_count"]} Titles</span>
+                <span>Read Guide &rarr;</span>
+              </div>
+            </a>
+            ''' for c in top_collections])}
+          </div>
+        </section>
+
+        <!-- Featured Books Grid -->
+        <section style="margin-bottom:3.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+            <h2>Popular Pulp Fiction Ebooks</h2>
+            <a href="/books/" style="font-weight:700; font-size:0.9rem;">Browse All {len(self.engine.books)} &rarr;</a>
+          </div>
+          <div class="product-grid">
+            {"".join([render_book_card(b) for b in featured_books])}
+          </div>
+        </section>
+
+        <!-- Top Authors Section -->
+        <section style="margin-bottom:3.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+            <h2>Featured Master Authors</h2>
+            <a href="/authors/" style="font-weight:700; font-size:0.9rem;">All Authors &rarr;</a>
+          </div>
+          <div class="directory-grid">
+            {"".join([f'''
+            <a href="/authors/{a["slug"]}/" class="directory-card">
+              <h3>{escape_html(a["name"])}</h3>
+              <p>{escape_html(a["bio"][:140])}...</p>
+              <div class="card-footer">
+                <span>{a["books_count"]} Ebooks</span>
+                <span>Explore Author &rarr;</span>
+              </div>
+            </a>
+            ''' for a in list(self.engine.authors.values())[:4]])}
+          </div>
+        </section>
+        """
+
+        json_ld = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "WebSite",
+                    "@id": f"{home_url}#website",
+                    "url": home_url,
+                    "name": SITE_NAME,
+                    "description": DEFAULT_DESCRIPTION,
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": PUBLISHER_NAME,
+                        "logo": {"@type": "ImageObject", "url": PUBLISHER_LOGO}
+                    },
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": f"{SITE_URL}/books/?q={{search_term_string}}",
+                        "query-input": "required name=search_term_string"
+                    }
+                },
+                {
+                    "@type": "Organization",
+                    "@id": f"{home_url}#organization",
+                    "name": PUBLISHER_NAME,
+                    "url": home_url,
+                    "logo": PUBLISHER_LOGO
+                }
+            ]
+        }
+
+        html = render_base_html(
+            title="Vintage Pulp Fiction Ebooks on Amazon Kindle | Softcover Books",
+            meta_desc=DEFAULT_DESCRIPTION,
+            canonical_url=home_url,
+            json_ld=json_ld,
+            content_html=content_html,
+            active_target="home",
+            engine=self.engine
+        )
+        self.write_page("index.html", html)
+
+    def build_sitemaps(self):
+        """Generate Chunked XML Sitemaps (/sitemap.xml index + sub-sitemaps)."""
+        print("Generating Chunked XML Sitemaps...")
+
+        # Sub-sitemaps
+        sub_sitemaps = [
+            ("sitemap-books.xml", self.sitemap_urls["books"]),
+            ("sitemap-authors.xml", self.sitemap_urls["authors"]),
+            ("sitemap-genres.xml", self.sitemap_urls["genres"]),
+            ("sitemap-collections.xml", self.sitemap_urls["collections"]),
+        ]
+
+        for fname, urls in sub_sitemaps:
+            xml_lines = [
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            ]
+            for u in urls:
+                xml_lines.append("  <url>")
+                xml_lines.append(f"    <loc>{escape_html(u['loc'])}</loc>")
+                xml_lines.append(f"    <lastmod>{u['lastmod']}</lastmod>")
+                xml_lines.append(f"    <changefreq>{u['changefreq']}</changefreq>")
+                xml_lines.append(f"    <priority>{u['priority']}</priority>")
+                xml_lines.append("  </url>")
+            xml_lines.append("</urlset>")
+            xml_content = "\n".join(xml_lines)
+
+            # Write to both root and public/
+            self.write_page(fname, xml_content)
+            self.write_page(f"public/{fname}", xml_content)
+
+        # Sitemap Index
+        index_lines = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        ]
+        for fname, _ in sub_sitemaps:
+            index_lines.append("  <sitemap>")
+            index_lines.append(f"    <loc>{SITE_URL}/{fname}</loc>")
+            index_lines.append(f"    <lastmod>{CURRENT_DATE}</lastmod>")
+            index_lines.append("  </sitemap>")
+        index_lines.append("</sitemapindex>")
+        index_content = "\n".join(index_lines)
+
+        self.write_page("sitemap.xml", index_content)
+        self.write_page("public/sitemap.xml", index_content)
+
+    def build_robots_txt(self):
+        """Generate search-engine-ready robots.txt."""
+        print("Generating robots.txt...")
+        robots_content = f"""User-agent: *
+Allow: /
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+        self.write_page("robots.txt", robots_content)
+        self.write_page("public/robots.txt", robots_content)
+
+if __name__ == "__main__":
+    website_dir = os.path.dirname(os.path.abspath(__file__))
+    engine = PulpDataEngine(website_dir)
+    builder = PSEOBuilder(engine, website_dir)
+    builder.build_all()

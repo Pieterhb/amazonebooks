@@ -1,13 +1,14 @@
 {
   "name": "amazonebooks",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "generate": "python build_pseo.py",
     "dev": "vite",
-    "build": "vite build",
+    "build": "python build_pseo.py && vite build",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler pages deploy dist --project-name amazonebooks"
+    "deploy": "python build_pseo.py && vite build && wrangler pages deploy dist --project-name amazonebooks"
   },
   "devDependencies": {
     "vite": "^8.2.0",

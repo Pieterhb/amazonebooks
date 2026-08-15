@@ -1,59 +1,50 @@
-// Navigation logic for sidebar layout
+// Navigation and interactive features for Softcover Books pSEO
 
 document.addEventListener('DOMContentLoaded', () => {
-  const navLinks = document.querySelectorAll('.nav-list a, .logo');
-  const views = document.querySelectorAll('.view');
   const sidebar = document.getElementById('sidebar');
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-
-  function navigateTo(targetId) {
-    // Hide all views
-    views.forEach(view => {
-      view.classList.remove('active');
-    });
-    
-    // Show target view
-    const targetView = document.getElementById(targetId);
-    if (targetView) {
-      targetView.classList.add('active');
-    }
-
-    // Update active state on nav links
-    document.querySelectorAll('.nav-list a').forEach(link => {
-      link.classList.remove('active');
-      if (link.dataset.target === targetId) {
-        link.classList.add('active');
-      }
-    });
-
-    // Close sidebar on mobile after clicking a link
-    if (window.innerWidth <= 1024) {
-      sidebar.classList.remove('open');
-    }
-
-    window.scrollTo(0, 0);
-  }
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = link.dataset.target;
-      if (target) navigateTo(target);
-    });
-  });
+  const searchInput = document.getElementById('pseo-search');
 
   // Mobile menu toggle
   if (mobileMenuBtn && sidebar) {
-    mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       sidebar.classList.toggle('open');
     });
 
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 1024) {
+      if (window.innerWidth <= 1100 && sidebar.classList.contains('open')) {
         if (!e.target.closest('#sidebar') && !e.target.closest('#mobile-menu-btn')) {
           sidebar.classList.remove('open');
         }
+      }
+    });
+  }
+
+  // Live filter / search on books list if present
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.product-grid .book-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = (card.querySelector('h3') ? card.querySelector('h3').innerText : '').toLowerCase();
+        const author = (card.querySelector('.author') ? card.querySelector('.author').innerText : '').toLowerCase();
+        const series = (card.dataset.series || '').toLowerCase();
+        
+        if (!q || title.includes(q) || author.includes(q) || series.includes(q)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const countDisplay = document.getElementById('search-results-count');
+      if (countDisplay) {
+        countDisplay.innerText = q ? `${visibleCount} books found` : '';
       }
     });
   }

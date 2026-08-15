@@ -1,0 +1,5 @@
+__pycache__
+*.pyc
+website/dist
+website/node_modules
+website/.wrangler
