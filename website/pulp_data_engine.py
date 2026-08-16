@@ -216,12 +216,12 @@ class PulpDataEngine:
         if any(w in series_lower for w in ["swart luiperd", "black leopard"]):
             primary_genre = "Jungle Adventure & Lost Worlds"
             subgenres = ["African Wilderness Pulp", "Lost Civilizations", "Feral Hero Action", "Safari Mystery"]
-            themes = ["Jungle Lost Cities", "Tribal Mysteries", "Man-Eating Beasts", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
+            themes = ["Jungle Lost Cities", "Tribal Mysteries", "Masked Jungle Adventurer", "Jungle Leopard Companions", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
 
         elif any(w in series_lower for w in ["sahara", "aventure sahara", "abenteuer", "dini salam", "legion"]):
             primary_genre = "Desert Adventure & Foreign Legion"
             subgenres = ["Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
-            themes = ["French Foreign Legion", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
+            themes = ["French Foreign Legion", "Sahara Western Action", "Sahara Desert Peril", "Sahara Vultures", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
 
         elif any(w in series_lower for w in ["seerower", "pirate", "maagd van die see", "red ruby"]):
             primary_genre = "Pirate & High Seas Swashbuckler"
@@ -238,10 +238,15 @@ class PulpDataEngine:
             subgenres = ["1950s Crime Fiction", "Undercover Thriller", "Police Procedural", "Mystery Suspense"]
             themes = ["Private Eye", "1950s Crime", "Undercover Cops", "Wandering Detectives", "Smuggling Rings", "Revolver Shootouts", "Cold War Espionage"]
 
-        elif any(w in series_lower for w in ["woeste laeveld", "untamed lowveld", "oerwoudvalk", "jungle hawk"]):
+        elif any(w in series_lower for w in ["woeste laeveld", "untamed lowveld"]):
             primary_genre = "Safari & Bushveld Adventure"
-            subgenres = ["Bushveld Thriller", "Aviation Pulp", "Wilderness Danger", "African Expedition"]
-            themes = ["Safari Expeditions", "Bushveld Mystery", "Aviation Action", "Man-Eating Beasts", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
+            subgenres = ["Lowveld Westerns", "Bushveld Thriller", "Wilderness Danger", "African Expedition"]
+            themes = ["Lowveld Westerns", "South African Westerns", "Safari Expeditions", "Bushveld Mystery", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
+
+        elif any(w in series_lower for w in ["oerwoudvalk", "jungle hawk"]):
+            primary_genre = "Safari & Bushveld Adventure"
+            subgenres = ["Lowveld Westerns", "Bushveld Thriller", "Wilderness Danger", "African Expedition"]
+            themes = ["Lowveld Westerns", "South African Westerns", "Safari Expeditions", "Bushveld Mystery", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
 
         elif any(w in series_lower for w in ["ai stories", "artificial intelligence"]) or any(w in title_lower for w in ["saloon fights", "romantic short stories", "scary western"]):
             primary_genre = "Western, Romance & Pulp Anthologies"
@@ -262,7 +267,7 @@ class PulpDataEngine:
         elif any(w in title_lower for w in ["sahara", "legion"]):
             primary_genre = "Desert Adventure & Foreign Legion"
             subgenres = ["Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
-            themes = ["French Foreign Legion", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
+            themes = ["French Foreign Legion", "Sahara Western Action", "Sahara Desert Peril", "Sahara Vultures", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
 
         elif any(w in title_lower for w in ["seerower", "pirate", "maagd van die see", "red ruby", "seewraak", "vloot"]):
             primary_genre = "Pirate & High Seas Swashbuckler"
@@ -277,17 +282,22 @@ class PulpDataEngine:
         elif any(w in title_lower for w in ["swart luiperd", "black leopard"]):
             primary_genre = "Jungle Adventure & Lost Worlds"
             subgenres = ["African Wilderness Pulp", "Lost Civilizations", "Feral Hero Action", "Safari Mystery"]
-            themes = ["Jungle Lost Cities", "Tribal Mysteries", "Man-Eating Beasts", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
+            themes = ["Jungle Lost Cities", "Tribal Mysteries", "Masked Jungle Adventurer", "Jungle Leopard Companions", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
 
         elif any(w in title_lower for w in ["polisie", "police", "speurder", "detective", "schoonraad", "tamar"]):
             primary_genre = "Hardboiled Detective & Noir Crime"
             subgenres = ["1950s Crime Fiction", "Undercover Thriller", "Police Procedural", "Mystery Suspense"]
             themes = ["Private Eye", "1950s Crime", "Undercover Cops", "Wandering Detectives", "Smuggling Rings", "Revolver Shootouts", "Cold War Espionage"]
 
-        elif any(w in title_lower for w in ["woeste laeveld", "untamed lowveld", "oerwoudvalk", "jungle hawk"]):
+        elif any(w in title_lower for w in ["woeste laeveld", "untamed lowveld"]):
             primary_genre = "Safari & Bushveld Adventure"
-            subgenres = ["Bushveld Thriller", "Aviation Pulp", "Wilderness Danger", "African Expedition"]
-            themes = ["Safari Expeditions", "Bushveld Mystery", "Aviation Action", "Man-Eating Beasts", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
+            subgenres = ["Lowveld Westerns", "Bushveld Thriller", "Wilderness Danger", "African Expedition"]
+            themes = ["Lowveld Westerns", "South African Westerns", "Safari Expeditions", "Bushveld Mystery", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
+
+        elif any(w in title_lower for w in ["oerwoudvalk", "jungle hawk"]):
+            primary_genre = "Safari & Bushveld Adventure"
+            subgenres = ["Lowveld Westerns", "Bushveld Thriller", "Wilderness Danger", "African Expedition"]
+            themes = ["Lowveld Westerns", "South African Westerns", "Safari Expeditions", "Bushveld Mystery", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
 
         else:
             primary_genre = "Vintage Pulp Thriller & Suspense"
@@ -354,7 +364,7 @@ class PulpDataEngine:
         elif genre == "Safari & Bushveld Adventure":
             desc = (
                 f"**{title}** by {author} transports readers to the wild, untamed frontiers of the African bushveld. {series_info}. "
-                f"Here, bush pilots, rugged game trackers, and dangerous poachers clash over hidden diamond caches and territorial rivalries. "
+                f"Here, horsemen, frontiersmen, rugged game trackers, and dangerous outlaws clash over hidden diamond caches and territorial rivalries. "
                 f"With vivid descriptions of the untamed wilderness and relentless pacing, this classic bushveld adventure keeps you on the edge of your seat from opening page to explosive climax {store_cta}."
             )
         elif genre == "Western, Romance & Pulp Anthologies":
@@ -463,11 +473,11 @@ class PulpDataEngine:
                 "title": "Jungle Adventure & Lost Worlds Pulp Novels",
                 "tagline": "Uncharted Territories, Ancient Civilizations, and Untamed Beasts",
                 "guide": (
-                    "Journey into deep, uncharted African jungles where forgotten civilizations and man-eating predators reign. "
+                    "Journey into deep, uncharted African jungles where forgotten civilizations and apex predators reign. "
                     "Braam le Roux's immortal 'Die Swart Luiperd' (The Black Leopard) series leads readers through treacherous swamps, ancient cursed ruins, and heart-pounding battles against rogue beasts and ruthless adversaries. "
                     "Experience the raw, feral excitement of classic mid-century African jungle pulp."
                 ),
-                "tropes": ["Feral Jungle Heroes", "Lost Civilizations", "Man-Eating Predators", "Tribal Feuds", "Ancient Curses", "Untamed Wilderness"]
+                "tropes": ["Masked Jungle Heroes", "Lost Civilizations", "Apex Predators", "Tribal Feuds", "Ancient Curses", "Untamed Wilderness"]
             },
             "Hardboiled Detective & Noir Crime": {
                 "title": "Hardboiled Detective & 1950s Crime Noir Pulp Ebooks",
@@ -481,13 +491,13 @@ class PulpDataEngine:
             },
             "Safari & Bushveld Adventure": {
                 "title": "Safari & Bushveld Mystery Pulp Fiction",
-                "tagline": "Wilderness Expeditions, Bush Pilots, and Frontier Danger",
+                "tagline": "Wilderness Expeditions, Lowveld Westerns, and Frontier Danger",
                 "guide": (
-                    "Explore the untamed African bushveld with our collection of safari mysteries and frontier adventure novels. "
-                    "Featuring 'Untamed Lowveld' and 'Jungle Hawk' aviation tales, these novels pit brave hunters and bush pilots against wildlife perils, illegal diamond syndicates, and hostile terrain. "
+                    "Explore the untamed South African bushveld with our collection of lowveld westerns, safari mysteries, and frontier adventure novels. "
+                    "Featuring 'Untamed Lowveld' and 'Jungle Hawk' tales, these novels pit brave horsemen, rangers, and frontiersmen against outlaws, illegal diamond syndicates, and hostile terrain. "
                     "Experience authentic, fast-paced frontier suspense."
                 ),
-                "tropes": ["Bush Pilots", "Diamond Smugglers", "Safari Expeditions", "Apex Predators", "Bushveld Intrigue", "Remote Outposts"]
+                "tropes": ["Lowveld Outlaws", "Diamond Smugglers", "Safari Expeditions", "Frontier Justice", "Bushveld Intrigue", "Remote Outposts"]
             },
             "Western, Romance & Pulp Anthologies": {
                 "title": "Western, Romance & Pulp Anthology Ebooks",
@@ -525,6 +535,12 @@ class PulpDataEngine:
             }
 
         subgenre_custom_meta = {
+            "Lowveld Westerns": {
+                "title": "Lowveld Westerns Pulp Fiction Ebooks",
+                "tagline": "Rugged Riders, Outlaw Showdowns, and South African Lowveld Action",
+                "guide": "Experience thrilling South African western pulp fiction set in the rugged lowveld. Featuring daring horsemen, frontier justice, cattle rustlers, and lawmen across the wild southern African frontier.",
+                "tropes": ["Lowveld Outlaws", "Frontier Justice", "Horseback Chases", "Bushveld Showdowns"]
+            },
             "Western Short Stories": {
                 "title": "Western Short Stories Pulp Fiction Ebooks",
                 "tagline": "Gunslingers, Saloon Showdowns, and Dusty Frontier Action",
@@ -594,7 +610,7 @@ class PulpDataEngine:
             ("Hidden Treasure", "Sunken galleons, forgotten maps, and ancient gold hoards."),
             ("Masked Highwaymen", "Cape Robin Hood heroes striking against oppressive tyrants."),
             ("Jungle Lost Cities", "Ancient stone temples hidden deep inside untamed jungles."),
-            ("Man-Eating Beasts", "Lethal lions, leopards, and apex predators prowling the dark."),
+            ("Masked Jungle Adventurer", "A fearless hero wearing a black leopard mask venturing through uncharted African jungles to conquer danger and defend the innocent."),
             ("Undercover Cops", "Dangerous deep-cover police stings inside criminal syndicates."),
             ("Wandering Detectives", "Drifter sleuths solving murders across desolate towns."),
             ("Smuggling Rings", "Contraband traders, coastal coves, and illegal contraband."),
@@ -612,29 +628,29 @@ class PulpDataEngine:
             ("Dime Novel Thrills", "The pure, high-voltage action of golden age pulp magazines."),
             ("Afrikaans Pulp Classics", "Original vintage Afrikaans pulp literature (snelskrif & ontspanningslees)."),
             ("English Translated Classics", "Masterpiece pulp fiction translated for worldwide ebook readers."),
-            ("Bush Pilots", "Daring aviators flying over unmapped African wilderness."),
+            ("South African Westerns", "Thrilling western pulp fiction, horseback justice, and outlaw showdowns across the wild South African frontier."),
             ("Desert Outpost Sieges", "Desperate garrisons holding out against overwhelming odds."),
             ("Lost Civilizations", "Enigmatic ancient empires hidden in uncharted Africa."),
             ("Vengeance & Blood Feuds", "Uncompromising justice and relentless vendettas."),
             ("Ghost Ships & Curses", "Cursed maritime vessels, phantom crews, and supernatural dread."),
-            ("Diamond Smugglers", "Illicit rough diamond syndicates in the Namib and Kalahari."),
+            ("Diamond Smugglers", "Illicit rough diamond syndicates in remote African territories."),
             ("Midnight Rides", "Horseback chases across mountain passes in the dead of night."),
             ("Revolver Shootouts", "Quick-draw pistol duels in smoky backrooms and desert frontiers."),
             ("Tribal Mysteries", "Ancient rituals, lost totems, and deep African lore."),
             ("Wilderness Survival", "Man vs nature in the harshest deserts and dense jungles."),
             ("Cape Frontier Action", "Historical swashbuckling set during the Cape colony era."),
             ("Military Brotherhood", "Bonds forged under fire in Foreign Legion companies."),
-            ("Underworld Syndicates", "Organized crime rings, corrupt kingpins, and vice rings."),
+            ("Sahara Western Action", "High-stakes desert warfare, fearless foreign legionnaires, and western-style action across the unforgiving Sahara desert."),
             ("High Stakes Heists", "Daring bank robberies, gem thefts, and intricate plans."),
-            ("Aviation Action", "Aerial dogfights, emergency landings, and flying pulp heroes."),
+            ("Lowveld Westerns", "Rugged frontier action, horseback shootouts, and outlaws across the South African Lowveld."),
             ("Forbidden Tombs", "Archaeological expeditions uncovering deadly secrets."),
             ("Bounty Hunters", "Relentless trackers hunting fugitives across hostile frontiers."),
-            ("Namib Desert Peril", "Survival across the skeleton coast and endless sand seas."),
-            ("Kalahari Vultures", "Dangerous confrontations in the parched Kalahari wilderness."),
+            ("Sahara Desert Peril", "Survival across blazing dunes, treacherous sandstorms, and endless desert seas in the Sahara."),
+            ("Sahara Vultures", "Dangerous confrontations, desert outlaws, and circling vultures under the blazing Sahara sun."),
             ("Cederberg Secrets", "Mountain hideouts and forgotten cave caches in the Cederberg."),
             ("Mutiny on the High Seas", "Rebellious sailors taking command of galleons and frigates."),
             ("Cutlass Combat", "Close-quarters sword fighting aboard rocking ship decks."),
-            ("Gold of Monomotapa", "Legends of legendary African gold mines and ancient kings."),
+            ("Jungle Leopard Companions", "A fearless hero on horseback travelling uncharted African jungles with two loyal tame leopards in search of thrilling action and adventure."),
             ("Feral Warriors", "Wild heroes living in harmony with nature and deadly beasts."),
             ("Poacher Hunters", "Game rangers battling illegal ivory and diamond cartels."),
             ("Underground Informants", "Whispered tips, secret meetups, and espionage contacts."),
@@ -645,16 +661,18 @@ class PulpDataEngine:
             if name not in theme_map:
                 matches = [b for b in self.books if name.lower() in b["title"].lower() or name.lower() in b["synopsis"].lower() or name.lower() in [th.lower() for th in b["themes"]] or name.lower() in [sg.lower() for sg in b["subgenres"]]]
                 if not matches:
-                    if any(w in name.lower() for w in ["desert", "sahara", "legion", "namib", "kalahari"]):
+                    if any(w in name.lower() for w in ["desert", "sahara", "legion", "namib", "kalahari", "sahara western", "sahara peril", "sahara vulture", "sahara desert"]):
                         matches = [b for b in self.books if b["primary_genre"] == "Desert Adventure & Foreign Legion"][:12]
                     elif any(w in name.lower() for w in ["pirate", "sea", "treasure", "naval", "ship", "mutiny", "cutlass"]):
                         matches = [b for b in self.books if b["primary_genre"] == "Pirate & High Seas Swashbuckler"][:12]
                     elif any(w in name.lower() for w in ["detective", "crime", "noir", "cop", "sleuth", "revolver", "smuggl", "informant"]):
                         matches = [b for b in self.books if b["primary_genre"] == "Hardboiled Detective & Noir Crime"][:12]
-                    elif any(w in name.lower() for w in ["jungle", "beast", "lion", "safari", "lost", "feral", "monomotapa"]):
+                    elif any(w in name.lower() for w in ["jungle", "beast", "lion", "safari", "lost", "feral", "monomotapa", "masked jungle", "leopard companion", "jungle leopard"]):
                         matches = [b for b in self.books if b["primary_genre"] == "Jungle Adventure & Lost Worlds"][:12]
                     elif any(w in name.lower() for w in ["masked", "highway", "cape", "sword", "ride", "cederberg"]):
                         matches = [b for b in self.books if b["primary_genre"] == "Masked Rogue & Highwayman"][:12]
+                    elif any(w in name.lower() for w in ["lowveld", "bushveld", "south african western"]):
+                        matches = [b for b in self.books if b["primary_genre"] == "Safari & Bushveld Adventure"][:12]
                     else:
                         matches = self.books[:12]
                 theme_map[name] = matches
@@ -675,7 +693,7 @@ class PulpDataEngine:
         """Build 550+ Curated Collections & Long-Tail pSEO Intent Landing Pages."""
         collection_templates = [
             ("Best Retro Crime Fiction on Amazon", "Explore the top vintage hardboiled crime, detective noir, and mid-century mystery pulp ebooks available on Amazon.", "Hardboiled Detective & Noir Crime"),
-            ("Short Pulp Stories under $3", "Fast, thrilling, budget-friendly vintage pulp novels available online at just $2.99 or less.", "All"),
+            ("Short Pulp Stories under $10", "Fast, thrilling, budget-friendly vintage pulp novels available online at just $9.99 or less.", "All"),
             ("Top 10 Classic Foreign Legion Novels", "The definitive reading list of French Foreign Legion desert warfare and military survival pulp fiction.", "Desert Adventure & Foreign Legion"),
             ("Ultimate Pirate Pulp Adventure Ebooks", "High-seas swashbucklers featuring galleon broadsides, cutlass duels, and pirate treasure islands.", "Pirate & High Seas Swashbuckler"),
             ("Vintage African Jungle Adventure Novels", "Iconic lost world and African wilderness pulp stories featuring legendary feral heroes and jungle danger.", "Jungle Adventure & Lost Worlds"),
@@ -751,7 +769,7 @@ class PulpDataEngine:
             ("Wanderer Detective Sleuth", "Wanderer Detective Series"),
             ("SA Police Hardboiled Crime", "SA Police Series"),
             ("Red Ruby Maritime Adventure", "Red Ruby Series"),
-            ("Jungle Hawk Bush Pilot", "Jungle Hawk Series"),
+            ("Jungle Hawk Frontier Western", "Jungle Hawk Series"),
             ("Untamed Lowveld Safari Mystery", "Untamed Lowveld Series"),
             ("Ryk Schoonraad Private Eye", "Ryk Schoonraad Series"),
             ("Afrikaans Vintage Ebooks", "Afrikaans"),
@@ -776,12 +794,12 @@ class PulpDataEngine:
             ("High Seas Mutiny Novels", "Pirate & High Seas Swashbuckler"),
             ("Feral Hero Jungle Sagas", "Jungle Adventure & Lost Worlds"),
             ("Cape Colony Historical Swashbucklers", "Masked Rogue & Highwayman"),
-            ("Man Eating Beast Thrillers", "Jungle Adventure & Lost Worlds"),
+            ("Masked Jungle Adventurer Sagas", "Jungle Adventure & Lost Worlds"),
             ("Bushveld Diamond Caches", "Safari & Bushveld Adventure"),
             ("Western Romance & Horror Pulp", "Western, Romance & Pulp Anthologies"),
             ("Pulp Fiction Masterpieces", "All"),
             ("Skeleton Coast Survival Novels", "Desert Adventure & Foreign Legion"),
-            ("Kalahari Desert Espionage", "Desert Adventure & Foreign Legion"),
+            ("Sahara Desert Espionage", "Desert Adventure & Foreign Legion"),
             ("Daring Prison Break Pulp Stories", "Desert Adventure & Foreign Legion"),
             ("Classic Highwayman Romances", "Masked Rogue & Highwayman"),
             ("Bounty Hunter Drifter Pulp", "Hardboiled Detective & Noir Crime"),
@@ -891,7 +909,7 @@ class PulpDataEngine:
             return (
                 f"The iconic **{series_name}** by {author} is South Africa's premier jungle adventure pulp phenomenon. "
                 f"Featuring {count} adrenaline-fueled novels in {lang_str}, the saga follows Leon Marais (The Black Leopard) through uncharted African wilderness, "
-                f"hidden lost cities, ferocious man-eating beasts, and ancient tribal mysteries in classic pulp tradition."
+                f"hidden lost cities, daring masked adventures, and ancient tribal mysteries in classic pulp tradition."
             )
         elif "buiter" in name_lower or "masked robber" in name_lower:
             return (
@@ -911,8 +929,8 @@ class PulpDataEngine:
             )
         elif "oerwoudvalk" in name_lower or "jungle hawk" in name_lower or "woeste laeveld" in name_lower or "lowveld" in name_lower:
             return (
-                f"The thrilling **{series_name}** by {author} captures the danger, romance, and untamed beauty of the African bushveld and aviation pulp. "
-                f"With {count} exciting titles in {lang_str}, follow rugged bush pilots and game trackers confronting poachers, remote outpost perils, and wilderness survival."
+                f"The thrilling **{series_name}** by {author} captures the danger, romance, and untamed beauty of the South African lowveld and bushveld frontier westerns. "
+                f"With {count} exciting titles in {lang_str}, follow rugged frontiersmen, horsemen, and rangers confronting outlaws, remote outpost perils, and wilderness survival."
             )
         else:
             return (

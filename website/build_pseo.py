@@ -1141,7 +1141,7 @@ class PSEOBuilder:
         <section class="hero">
           <div class="hero-badge">🎯 Niche Tropes &amp; Keywords</div>
           <h1>Pulp Fiction Niche Themes Directory</h1>
-          <p>Explore specialized long-tail pulp themes: Private Eyes, Desert Caravans, Cannon Broadsides, Man-Eating Predators, and Radio Drama Cliffhangers.</p>
+          <p>Explore specialized long-tail pulp themes: Private Eyes, Desert Caravans, Cannon Broadsides, Masked Jungle Adventurers, and Radio Drama Cliffhangers.</p>
         </section>
         <div class="directory-grid">
           {"".join(themes_cards)}
