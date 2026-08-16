@@ -999,3 +999,10 @@ a:hover {
   transform: translateY(0px);
   box-shadow: 0 2px 8px rgba(255, 153, 0, 0.25);
 }
+
+/* Home nav link 50% larger */
+.nav-list a[href="/"] {
+  font-size: 1.32rem !important;
+  padding: 0.65rem 1.25rem !important;
+  font-weight: 700;
+}
