@@ -352,6 +352,151 @@ a:hover {
   pointer-events: none;
 }
 
+/* ========== SEARCH DROPDOWN & RESULTS ========== */
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--card-bg, #1a1714);
+  border: 2px solid var(--border-strong, #3a2e22);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  overflow: hidden;
+  max-height: 480px;
+  overflow-y: auto;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-dropdown-section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-yellow, #e8a020);
+  padding: 0.75rem 1rem 0.35rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border, #2a2219);
+}
+
+.search-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: var(--text-main, #f0e6d6);
+  border-bottom: 1px solid var(--border, #2a2219);
+  transition: background 0.15s ease;
+}
+
+.search-dropdown-item:hover,
+.search-dropdown-item.is-selected {
+  background: rgba(232, 160, 32, 0.12);
+  color: var(--accent-yellow, #e8a020);
+}
+
+.search-dropdown-thumb {
+  width: 38px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #2a2219;
+  flex-shrink: 0;
+}
+
+.search-dropdown-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-dropdown-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-dropdown-author {
+  font-size: 0.8rem;
+  color: var(--text-dim, #a69888);
+  margin-top: 2px;
+}
+
+.search-dropdown-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(232, 160, 32, 0.18);
+  color: var(--accent-yellow, #e8a020);
+  border: 1px solid rgba(232, 160, 32, 0.3);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.search-dropdown-footer {
+  display: block;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  background: #15120f;
+  color: var(--accent-yellow, #e8a020);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.search-dropdown-footer:hover {
+  background: #221b14;
+  text-decoration: underline;
+}
+
+.search-dropdown-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-dim, #a69888);
+  font-size: 0.9rem;
+}
+
+.search-dropdown-empty a {
+  color: var(--accent-yellow, #e8a020);
+  text-decoration: underline;
+}
+
+.no-results-card {
+  background: var(--card-bg, #1a1714);
+  border: 1px dashed var(--border-strong, #3a2e22);
+  border-radius: 12px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.no-results-card h3 {
+  font-size: 1.3rem;
+  color: var(--accent-yellow, #e8a020);
+  margin-bottom: 0.5rem;
+}
+
+.no-results-card p {
+  color: var(--text-dim, #a69888);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 /* ========== PILLS & TAGS ========== */
 .tags-row {
   display: flex;

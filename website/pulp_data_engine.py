@@ -212,40 +212,82 @@ class PulpDataEngine:
         title_lower = title.lower()
         series_lower = series.lower()
 
-        if any(w in series_lower or w in title_lower for w in ["sahara", "aventure sahara", "abenteuer", "dini salam", "legion"]):
-            primary_genre = "Desert Adventure & Foreign Legion"
-            subgenres = ["Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
-            themes = ["French Foreign Legion", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
-
-        elif any(w in series_lower or w in title_lower for w in ["seerower", "pirate", "maagd van die see", "red ruby", "seewraak", "vloot", "draak"]):
-            primary_genre = "Pirate & High Seas Swashbuckler"
-            subgenres = ["High Seas Adventure", "Naval Fiction", "Swashbuckler", "Historical Action"]
-            themes = ["Pirate Galleons", "Hidden Treasure", "Naval Broadsides", "Sword Duels", "Ghost Ships & Maritime Legends", "Daring Escapes", "Mutiny at Sea"]
-
-        elif any(w in series_lower or w in title_lower for w in ["buiter", "masked robber"]):
-            primary_genre = "Masked Rogue & Highwayman"
-            subgenres = ["Vigilante Pulp", "Cape Frontier Action", "Historical Romance & Intrigue", "Rebellion Thriller"]
-            themes = ["Masked Highwaymen", "Cape Frontier History", "Vigilante Justice", "Sword Duels", "Midnight Rides", "Outlaw Rebellion", "Colonial Intrigue"]
-
-        elif any(w in series_lower or w in title_lower for w in ["swart luiperd", "black leopard"]):
+        # 1. Match by series explicitly first
+        if any(w in series_lower for w in ["swart luiperd", "black leopard"]):
             primary_genre = "Jungle Adventure & Lost Worlds"
             subgenres = ["African Wilderness Pulp", "Lost Civilizations", "Feral Hero Action", "Safari Mystery"]
             themes = ["Jungle Lost Cities", "Tribal Mysteries", "Man-Eating Beasts", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
 
-        elif any(w in series_lower or w in title_lower for w in ["polisie", "police", "speurder", "detective", "schoonraad", "tamar"]):
+        elif any(w in series_lower for w in ["sahara", "aventure sahara", "abenteuer", "dini salam", "legion"]):
+            primary_genre = "Desert Adventure & Foreign Legion"
+            subgenres = ["Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
+            themes = ["French Foreign Legion", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
+
+        elif any(w in series_lower for w in ["seerower", "pirate", "maagd van die see", "red ruby"]):
+            primary_genre = "Pirate & High Seas Swashbuckler"
+            subgenres = ["High Seas Adventure", "Naval Fiction", "Swashbuckler", "Historical Action"]
+            themes = ["Pirate Galleons", "Hidden Treasure", "Naval Broadsides", "Sword Duels", "Ghost Ships & Maritime Legends", "Daring Escapes", "Mutiny at Sea"]
+
+        elif any(w in series_lower for w in ["buiter", "masked robber"]):
+            primary_genre = "Masked Rogue & Highwayman"
+            subgenres = ["Vigilante Pulp", "Cape Frontier Action", "Historical Romance & Intrigue", "Rebellion Thriller"]
+            themes = ["Masked Highwaymen", "Cape Frontier History", "Vigilante Justice", "Sword Duels", "Midnight Rides", "Outlaw Rebellion", "Colonial Intrigue"]
+
+        elif any(w in series_lower for w in ["polisie", "police", "speurder", "detective", "schoonraad", "tamar"]):
             primary_genre = "Hardboiled Detective & Noir Crime"
             subgenres = ["1950s Crime Fiction", "Undercover Thriller", "Police Procedural", "Mystery Suspense"]
             themes = ["Private Eye", "1950s Crime", "Undercover Cops", "Wandering Detectives", "Smuggling Rings", "Revolver Shootouts", "Cold War Espionage"]
 
-        elif any(w in series_lower or w in title_lower for w in ["woeste laeveld", "untamed lowveld", "oerwoudvalk", "jungle hawk"]):
+        elif any(w in series_lower for w in ["woeste laeveld", "untamed lowveld", "oerwoudvalk", "jungle hawk"]):
             primary_genre = "Safari & Bushveld Adventure"
             subgenres = ["Bushveld Thriller", "Aviation Pulp", "Wilderness Danger", "African Expedition"]
             themes = ["Safari Expeditions", "Bushveld Mystery", "Aviation Action", "Man-Eating Beasts", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
 
-        elif any(w in series_lower or w in title_lower for w in ["ai stories", "artificial intelligence", "ruimte", "space"]):
-            primary_genre = "Sci-Fi Pulp & Retro Space Opera"
-            subgenres = ["Retro Sci-Fi", "Artificial Intelligence", "Space Exploration", "Futuristic Thriller"]
-            themes = ["Space Opera", "AI Rebellion", "Cybernetic Intrigue", "Distant Galaxies", "High-Tech Warfare", "Futuristic Dystopia", "Cosmic Mystery"]
+        elif any(w in series_lower for w in ["ai stories", "artificial intelligence"]) or any(w in title_lower for w in ["saloon fights", "romantic short stories", "scary western"]):
+            primary_genre = "Western, Romance & Pulp Anthologies"
+            if "saloon" in title_lower or "western cowboy" in title_lower:
+                subgenres = ["Western Short Stories", "Cowboy Action", "Short Story Anthologies"]
+                themes = ["Saloon Shootouts", "Wild West Outlaws", "Cowboy Legends", "Short Story Collections", "AI Created Fiction"]
+            elif "romantic" in title_lower:
+                subgenres = ["Romantic Short Stories", "Pulp Romance", "Short Story Anthologies"]
+                themes = ["Passionate Encounters", "Romantic Drama", "Vintage Romance", "Short Story Collections", "AI Created Fiction"]
+            elif "scary" in title_lower or "horror" in title_lower:
+                subgenres = ["Western Short Stories", "Scary Western & Horror Thrillers", "Short Story Anthologies"]
+                themes = ["Haunted Frontiers", "Ghost Towns", "Supernatural Thrillers", "Short Story Collections", "AI Created Fiction"]
+            else:
+                subgenres = ["Western Short Stories", "Romantic Short Stories", "Scary Western & Horror Thrillers", "Short Story Anthologies"]
+                themes = ["Short Story Collections", "AI Created Fiction", "Wild West Outlaws", "Vintage Romance"]
+
+        # 2. For standalone / other series, fallback to title keywords
+        elif any(w in title_lower for w in ["sahara", "legion"]):
+            primary_genre = "Desert Adventure & Foreign Legion"
+            subgenres = ["Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
+            themes = ["French Foreign Legion", "Desert Caravans", "Sahara Sandstorms", "Foreign Legion Garrisons", "Desert Fort Sieges", "Vengeance & Honor", "Guerrilla Warfare"]
+
+        elif any(w in title_lower for w in ["seerower", "pirate", "maagd van die see", "red ruby", "seewraak", "vloot"]):
+            primary_genre = "Pirate & High Seas Swashbuckler"
+            subgenres = ["High Seas Adventure", "Naval Fiction", "Swashbuckler", "Historical Action"]
+            themes = ["Pirate Galleons", "Hidden Treasure", "Naval Broadsides", "Sword Duels", "Ghost Ships & Maritime Legends", "Daring Escapes", "Mutiny at Sea"]
+
+        elif any(w in title_lower for w in ["buiter", "masked robber"]):
+            primary_genre = "Masked Rogue & Highwayman"
+            subgenres = ["Vigilante Pulp", "Cape Frontier Action", "Historical Romance & Intrigue", "Rebellion Thriller"]
+            themes = ["Masked Highwaymen", "Cape Frontier History", "Vigilante Justice", "Sword Duels", "Midnight Rides", "Outlaw Rebellion", "Colonial Intrigue"]
+
+        elif any(w in title_lower for w in ["swart luiperd", "black leopard"]):
+            primary_genre = "Jungle Adventure & Lost Worlds"
+            subgenres = ["African Wilderness Pulp", "Lost Civilizations", "Feral Hero Action", "Safari Mystery"]
+            themes = ["Jungle Lost Cities", "Tribal Mysteries", "Man-Eating Beasts", "Wilderness Survival", "Ancient Curses", "Uncharted Africa", "Prowling Predators"]
+
+        elif any(w in title_lower for w in ["polisie", "police", "speurder", "detective", "schoonraad", "tamar"]):
+            primary_genre = "Hardboiled Detective & Noir Crime"
+            subgenres = ["1950s Crime Fiction", "Undercover Thriller", "Police Procedural", "Mystery Suspense"]
+            themes = ["Private Eye", "1950s Crime", "Undercover Cops", "Wandering Detectives", "Smuggling Rings", "Revolver Shootouts", "Cold War Espionage"]
+
+        elif any(w in title_lower for w in ["woeste laeveld", "untamed lowveld", "oerwoudvalk", "jungle hawk"]):
+            primary_genre = "Safari & Bushveld Adventure"
+            subgenres = ["Bushveld Thriller", "Aviation Pulp", "Wilderness Danger", "African Expedition"]
+            themes = ["Safari Expeditions", "Bushveld Mystery", "Aviation Action", "Man-Eating Beasts", "Diamonds & Ivory", "Remote Outposts", "Untamed Lowveld"]
 
         else:
             primary_genre = "Vintage Pulp Thriller & Suspense"
@@ -315,10 +357,10 @@ class PulpDataEngine:
                 f"Here, bush pilots, rugged game trackers, and dangerous poachers clash over hidden diamond caches and territorial rivalries. "
                 f"With vivid descriptions of the untamed wilderness and relentless pacing, this classic bushveld adventure keeps you on the edge of your seat from opening page to explosive climax {store_cta}."
             )
-        elif genre == "Sci-Fi Pulp & Retro Space Opera":
+        elif genre == "Western, Romance & Pulp Anthologies":
             desc = (
-                f"**{title}** by {author} delivers mind-bending retro science fiction brimming with cosmic exploration, rogue artificial intelligences, and interstellar stakes. {series_info}. "
-                f"Featuring classic space opera themes, high-tech weapon duels, and cosmic survival against unknown planetary threats, this story delivers pure imaginative entertainment for retro sci-fi fans {store_cta}."
+                f"**{title}** by {author} is an action-packed pulp fiction short story collection delivering fast-paced entertainment, unforgettable character dynamics, and sharp narrative twists. {series_info}. "
+                f"Written in the thrilling tradition of vintage American and mid-century pulp paperbacks, every story offers instant excitement and vibrant storytelling. Available {store_cta}."
             )
         else:
             desc = (
@@ -359,7 +401,7 @@ class PulpDataEngine:
             "Chris Opperman": "Author of intense vintage crime thrillers, bushveld suspense, and high-stakes adventure fiction.",
             "Johan Nel": "Pulp novelist known for fast-paced mystery, frontier exploration, and classic paperback action.",
             "Christo Juan Malan": "Storyteller specializing in thrilling regional mysteries, suspenseful character dramas, and vintage adventure.",
-            "Artificial Intelligence": "Curated experimental retro pulp stories generated using cutting-edge AI neural storytelling engines, reimagining classic mid-century pulp genres for 21st-century readers."
+            "Artificial Intelligence": "Curated experimental retro pulp short stories generated using cutting-edge AI neural storytelling engines, reimagining classic western, romance, and thriller pulp genres for modern readers."
         }
 
         author_map = {}
@@ -447,14 +489,14 @@ class PulpDataEngine:
                 ),
                 "tropes": ["Bush Pilots", "Diamond Smugglers", "Safari Expeditions", "Apex Predators", "Bushveld Intrigue", "Remote Outposts"]
             },
-            "Sci-Fi Pulp & Retro Space Opera": {
-                "title": "Retro Sci-Fi & Space Opera Pulp Ebooks",
-                "tagline": "Interstellar Voyages, Rogue Cybernetics, and Cosmic Thrills",
+            "Western, Romance & Pulp Anthologies": {
+                "title": "Western, Romance & Pulp Anthology Ebooks",
+                "tagline": "Wild West Shootouts, Passionate Romances, and Spine-Chilling Frontier Tales",
                 "guide": (
-                    "Blast off into the cosmos with our retro science fiction and space opera pulp collection. "
-                    "Inspired by the golden age of sci-fi magazines and speculative adventure, these stories feature interstellar exploration, artificial intelligence conflicts, and futuristic suspense."
+                    "Explore our eclectic collection of vintage-style short story anthologies. "
+                    "From high-noon cowboy showdowns in lawless frontier saloons to steamy mid-century romantic intrigues and eerie supernatural western thrillers, these fast-paced short stories deliver instant, immersive excitement."
                 ),
-                "tropes": ["Space Opera", "AI Rebellion", "Alien Encounters", "Futuristic Technology", "Cosmic Survival"]
+                "tropes": ["Saloon Shootouts", "Wild West Outlaws", "Steamy Romance", "Supernatural Horror", "Short Story Anthologies", "Frontier Justice"]
             },
             "Vintage Pulp Thriller & Suspense": {
                 "title": "Vintage Pulp Thrillers & Classic Suspense Ebooks",
@@ -482,6 +524,33 @@ class PulpDataEngine:
                 "subgenres": list(dict.fromkeys([sg for b in matching_books for sg in b["subgenres"]]))
             }
 
+        subgenre_custom_meta = {
+            "Western Short Stories": {
+                "title": "Western Short Stories Pulp Fiction Ebooks",
+                "tagline": "Gunslingers, Saloon Showdowns, and Dusty Frontier Action",
+                "guide": "Step into the dusty streets and rowdy saloons of the American frontier with our western pulp short stories. Featuring high-stakes saloon brawls, quick-draw shootouts, and rugged cowboy heroes enforcing frontier justice.",
+                "tropes": ["Saloon Brawls", "Quick-Draw Shootouts", "Frontier Justice", "Cowboy Legends"]
+            },
+            "Romantic Short Stories": {
+                "title": "Romantic Short Stories Vintage Pulp Ebooks",
+                "tagline": "Passionate Encounters, Steamy Dramas, and Vintage Pulp Intrigue",
+                "guide": "Indulge in steamy romantic short stories inspired by golden-era pulp romance. Featuring passionate encounters, seductive twists, and dramatic emotional rivalries crafted for quick, captivating reading.",
+                "tropes": ["Steamy Encounters", "Romantic Drama", "Vintage Romance", "Dramatic Suspense"]
+            },
+            "Scary Western & Horror Thrillers": {
+                "title": "Scary Western & Horror Thrillers Pulp Ebooks",
+                "tagline": "Haunted Frontiers, Ghost Towns, and Eerie Supernatural Westerns",
+                "guide": "Discover chilling weird-west stories where eerie supernatural horrors stalk desolate frontier ghost towns and lonely desert trails. A unique blend of atmospheric horror and classic western grit.",
+                "tropes": ["Ghost Towns", "Haunted Trails", "Weird West", "Supernatural Thriller"]
+            },
+            "Short Story Anthologies": {
+                "title": "Short Story Anthologies Pulp Fiction Ebooks",
+                "tagline": "Bite-Sized Pulp Fiction, Multi-Story Collections, and Fast-Paced Action",
+                "guide": "Browse our curated short story anthologies offering fast-moving, action-packed fiction across western adventures, steamy romances, and spine-chilling suspense.",
+                "tropes": ["Anthologies", "Fast Paced", "Multi-Genre", "Short Reads"]
+            }
+        }
+
         subgenre_map = {}
         for b in self.books:
             for sg in b["subgenres"]:
@@ -492,13 +561,14 @@ class PulpDataEngine:
         for sg_name, sg_books in subgenre_map.items():
             sg_slug = slugify(sg_name)
             if sg_slug not in self.genres:
+                custom = subgenre_custom_meta.get(sg_name, {})
                 self.genres[sg_slug] = {
                     "name": sg_name,
                     "slug": sg_slug,
-                    "title": f"{sg_name} Vintage Pulp Fiction Ebooks",
-                    "tagline": f"Explore the Best {sg_name} Classic Pulp Novels",
-                    "guide": f"Discover our handpicked selection of {sg_name} vintage pulp fiction ebooks. Featuring {len(sg_books)} thrilling titles by celebrated authors with fast-paced storytelling and authentic retro atmosphere.",
-                    "tropes": ["Action Packed", "Vintage Aesthetic", "Relentless Suspense"],
+                    "title": custom.get("title", f"{sg_name} Vintage Pulp Fiction Ebooks"),
+                    "tagline": custom.get("tagline", f"Explore the Best {sg_name} Classic Pulp Novels"),
+                    "guide": custom.get("guide", f"Discover our handpicked selection of {sg_name} vintage pulp fiction ebooks. Featuring {len(sg_books)} thrilling titles by celebrated authors with fast-paced storytelling and authentic retro atmosphere."),
+                    "tropes": custom.get("tropes", ["Action Packed", "Vintage Aesthetic", "Relentless Suspense"]),
                     "books_count": len(sg_books),
                     "books": sg_books,
                     "subgenres": []
@@ -515,7 +585,6 @@ class PulpDataEngine:
 
         additional_niche_themes = [
             ("Private Eye", "Gritty gumshoes, trench coats, and high-stakes detective mysteries."),
-            ("Space Opera", "Epic galactic battles, cosmic empires, and futuristic adventures."),
             ("Femme Fatale", "Deadly sirens, dangerous alliances, and noir mystery."),
             ("Cold War Espionage", "Secret agents, coded messages, and iron-curtain suspense."),
             ("1950s Crime", "Mid-century mobsters, getaway cars, and hardboiled police squads."),
@@ -531,6 +600,12 @@ class PulpDataEngine:
             ("Smuggling Rings", "Contraband traders, coastal coves, and illegal contraband."),
             ("Daring Prison Escapes", "Fortress breakouts, midnight tunneling, and desperate flights."),
             ("Sahara Sandstorms", "Survival against lethal desert dust storms and blazing sun."),
+            ("Saloon Shootouts", "Wild West tavern brawls, quick-draw showdowns, and lawless frontier action."),
+            ("Wild West Outlaws", "Gunslingers, bandits, and frontier justice in the American Old West."),
+            ("Passionate Encounters", "Steamy vintage romances, emotional rivalry, and dramatic love affairs."),
+            ("Supernatural Thrillers", "Eerie ghost towns, haunted frontier trails, and weird west horror."),
+            ("Short Story Collections", "Fast-paced short fiction anthologies delivering instant pulp entertainment."),
+            ("AI Created Fiction", "Experimental fiction crafted with artificial intelligence storytelling tools."),
             ("Naval Broadsides", "Ship-to-ship artillery warfare and thunderous naval battles."),
             ("Sword Duels", "Clashing blades, rapier fencing, and honorable duels."),
             ("Radio Serial Style", "Fast-paced cliffhanger fiction inspired by vintage radio dramas."),
@@ -647,7 +722,7 @@ class PulpDataEngine:
             ("Must-Read {} Thrillers", "High-octane {} books packed with suspense, action, and retro paperback style."),
             ("Ultimate Guide to {} Novels", "A comprehensive buyer's and reader's guide to the best {} pulp ebooks on Amazon."),
             ("Essential {} Vintage Paperbacks", "Rediscover the golden era of mid-century {} pulp fiction available online."),
-            ("Cheap {} Ebooks Under $5 on Amazon", "Affordable, top-quality {} vintage pulp ebooks for your digital library."),
+            ("Cheap {} Ebooks Under $10 on Amazon", "Affordable, top-quality {} vintage pulp ebooks for your digital library."),
             ("Action-Packed {} Stories for Fast Reading", "Fast-moving {} pulp novels delivering instant excitement from the first page."),
             ("Classic {} Ebooks with Badass Protagonists", "Follow fearless heroes navigating high stakes and deadly danger in these {} masterpieces."),
             ("Top Ranked {} Books for Pulp Fiction Fans", "Community favorite {} pulp fiction ebooks ranked by excitement and storytelling quality."),
@@ -664,7 +739,7 @@ class PulpDataEngine:
             ("Cape Frontier Vigilante", "Masked Rogue & Highwayman"),
             ("African Jungle Lost World", "Jungle Adventure & Lost Worlds"),
             ("Wilderness Bushveld Safari", "Safari & Bushveld Adventure"),
-            ("Retro Sci-Fi Space Opera", "Sci-Fi Pulp & Retro Space Opera"),
+            ("Pulp Short Story Anthologies", "Western, Romance & Pulp Anthologies"),
             ("Francois Alwyn Venter Adventure", "Francois Alwyn Venter"),
             ("Gerrie Radlof Swashbuckler", "Gerrie Radlof"),
             ("Braam le Roux Jungle Hero", "Braam le Roux"),
@@ -703,7 +778,7 @@ class PulpDataEngine:
             ("Cape Colony Historical Swashbucklers", "Masked Rogue & Highwayman"),
             ("Man Eating Beast Thrillers", "Jungle Adventure & Lost Worlds"),
             ("Bushveld Diamond Caches", "Safari & Bushveld Adventure"),
-            ("Retro AI and Cyber Thrillers", "Sci-Fi Pulp & Retro Space Opera"),
+            ("Western Romance & Horror Pulp", "Western, Romance & Pulp Anthologies"),
             ("Pulp Fiction Masterpieces", "All"),
             ("Skeleton Coast Survival Novels", "Desert Adventure & Foreign Legion"),
             ("Kalahari Desert Espionage", "Desert Adventure & Foreign Legion"),

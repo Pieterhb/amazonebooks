@@ -65,6 +65,17 @@ def render_sidebar(engine, active_target="home"):
         </ul>
       </nav>
     </aside>
+    <script>
+      (function() {{
+        var sb = document.getElementById('sidebar');
+        if (sb) {{
+          var sp = sessionStorage.getItem('sidebar_scroll_pos');
+          if (sp !== null) {{
+            sb.scrollTop = parseInt(sp, 10);
+          }}
+        }}
+      }})();
+    </script>
     """
 
 def render_mobile_header():
@@ -247,6 +258,7 @@ class PSEOBuilder:
     def build_all(self):
         """Run complete static programmatic generation."""
         print("Starting Programmatic SEO Generation...")
+        self.build_search_index()
         self.build_book_pages()
         self.build_series_pages()
         self.build_author_pages()
@@ -258,6 +270,42 @@ class PSEOBuilder:
         self.build_sitemaps()
         self.build_robots_txt()
         print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 7} static pages.")
+
+    def build_search_index(self):
+        """Generate search-index.json for client-side live autocomplete."""
+        print("Generating search-index.json...")
+        index_data = {
+            "books": [
+                {
+                    "title": b["title"],
+                    "slug": b["slug"],
+                    "author": b["author"],
+                    "author_slug": b["author_slug"],
+                    "series": b["series"],
+                    "series_slug": b["series_slug"],
+                    "primary_genre": b["primary_genre"],
+                    "primary_genre_slug": b["primary_genre_slug"],
+                    "lang": b["lang"],
+                    "img": b["img"]
+                }
+                for b in self.engine.books
+            ],
+            "series": [
+                {"name": s["name"], "slug": slug, "count": s["books_count"]}
+                for slug, s in self.engine.series.items()
+            ],
+            "authors": [
+                {"name": a["name"], "slug": slug, "count": a["books_count"]}
+                for slug, a in self.engine.authors.items()
+            ],
+            "genres": [
+                {"name": g["name"], "slug": slug, "count": g["books_count"]}
+                for slug, g in self.engine.genres.items()
+            ]
+        }
+        json_str = json.dumps(index_data, ensure_ascii=False)
+        self.write_page("search-index.json", json_str)
+        self.write_page("public/search-index.json", json_str)
 
     def build_book_pages(self):
         """Generate 326 Book Detail Pages (/books/[slug]/index.html)."""
@@ -656,6 +704,15 @@ class PSEOBuilder:
     def build_genre_pages(self):
         """Generate Genre Hub & Subgenre Pages (/genres/[slug]/index.html)."""
         print(f"Generating {len(self.engine.genres)} Genre Hub Pages...")
+        # Clean up obsolete genre directories
+        genres_dir = os.path.join(self.out_dir, "genres")
+        if os.path.exists(genres_dir):
+            valid_slugs = set(self.engine.genres.keys())
+            for item in os.listdir(genres_dir):
+                item_path = os.path.join(genres_dir, item)
+                if os.path.isdir(item_path) and item not in valid_slugs:
+                    shutil.rmtree(item_path, ignore_errors=True)
+
         for slug, genre in self.engine.genres.items():
             url = f"{SITE_URL}/genres/{slug}/"
             self.sitemap_urls["genres"].append({
@@ -753,6 +810,15 @@ class PSEOBuilder:
     def build_theme_pages(self):
         """Generate Niche Theme/Tag Landing Pages (/themes/[slug]/index.html)."""
         print(f"Generating {len(self.engine.themes)} Niche Theme Pages...")
+        # Clean up obsolete theme directories
+        themes_dir = os.path.join(self.out_dir, "themes")
+        if os.path.exists(themes_dir):
+            valid_slugs = set(self.engine.themes.keys())
+            for item in os.listdir(themes_dir):
+                item_path = os.path.join(themes_dir, item)
+                if os.path.isdir(item_path) and item not in valid_slugs:
+                    shutil.rmtree(item_path, ignore_errors=True)
+
         for slug, theme in self.engine.themes.items():
             url = f"{SITE_URL}/themes/{slug}/"
             self.sitemap_urls["genres"].append({
@@ -843,6 +909,15 @@ class PSEOBuilder:
     def build_collection_pages(self):
         """Generate 550+ Curated Collection Landing Pages (/collections/[slug]/index.html)."""
         print(f"Generating {len(self.engine.collections)} Curated Collection Pages...")
+        # Clean up obsolete collection directories
+        col_dir = os.path.join(self.out_dir, "collections")
+        if os.path.exists(col_dir):
+            valid_slugs = set(col["slug"] for col in self.engine.collections)
+            for item in os.listdir(col_dir):
+                item_path = os.path.join(col_dir, item)
+                if os.path.isdir(item_path) and item not in valid_slugs:
+                    shutil.rmtree(item_path, ignore_errors=True)
+
         for col in self.engine.collections:
             url = f"{SITE_URL}/collections/{col['slug']}/"
             self.sitemap_urls["collections"].append({
@@ -944,10 +1019,16 @@ class PSEOBuilder:
           <p>Search, filter, and discover classic French Foreign Legion adventures, swashbuckling pirates, hardboiled crime sleuths, and lost jungle worlds.</p>
         </section>
 
-        <div class="pseo-search-container">
+        <form action="/books/" method="get" class="pseo-search-container" role="search" onsubmit="return false;">
           <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" id="pseo-search" class="pseo-search-input" placeholder="Search by title, author, or series keyword..." autocomplete="off">
+          <input type="search" name="q" id="pseo-search" class="pseo-search-input" placeholder="Search by title, author, or series keyword..." autocomplete="off">
           <div id="search-results-count" style="margin-top:0.5rem; font-size:0.85rem; color:var(--accent-yellow);"></div>
+        </form>
+
+        <div id="no-results-msg" class="no-results-card" style="display:none;">
+          <h3>No matching books found</h3>
+          <p>We couldn't find any books matching your search. Try searching for an author, series, or keyword.</p>
+          <button type="button" class="btn btn-primary" id="clear-search-btn" style="margin-top:1rem; cursor:pointer;">Show All Books</button>
         </div>
 
         <div class="product-grid">
@@ -1161,10 +1242,11 @@ class PSEOBuilder:
           <h1>Classic Pulp Fiction Ebooks</h1>
           <p>Welcome to the ultimate digital archive of vintage pulp fiction. Discover over 300+ action-packed novels across French Foreign Legion warfare, pirate swashbucklers, hardboiled noir crime, and untamed jungle adventures.</p>
           
-          <div class="pseo-search-container" style="margin-top:2rem;">
+          <form action="/books/" method="get" class="pseo-search-container" role="search" style="margin-top:2rem;">
             <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="pseo-search" class="pseo-search-input" placeholder="Search 300+ titles, authors, or genres..." autocomplete="off">
-          </div>
+            <input type="search" name="q" id="pseo-search" class="pseo-search-input" placeholder="Search 300+ titles, authors, or genres..." autocomplete="off">
+            <div id="search-dropdown" class="search-dropdown" style="display:none;" aria-expanded="false"></div>
+          </form>
         </section>
 
         <div class="stats-banner">
