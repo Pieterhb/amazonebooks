@@ -27,8 +27,8 @@ def escape_html(text):
 
 def render_sidebar(engine, active_target="home"):
     """Render consistent sidebar navigation."""
+    home_link = f'<li class="nav-item-home"><a href="/" class="home-nav-link {"active" if active_target == "home" else ""}">🏠 Home</a></li>'
     nav_links = [
-        f'<li><a href="/" class="{"active" if active_target == "home" else ""}">🏠 Home</a></li>',
         f'<li><a href="/books/" class="{"active" if active_target == "books" else ""}">📚 All Books <span class="count">({len(engine.books)})</span></a></li>',
         f'<li><a href="/series/" class="{"active" if active_target == "series" else ""}">📖 Book Series <span class="count">({len(engine.series)})</span></a></li>',
         f'<li><a href="/authors/" class="{"active" if active_target == "authors" else ""}">✍️ Authors <span class="count">({len(engine.authors)})</span></a></li>',
@@ -56,7 +56,8 @@ def render_sidebar(engine, active_target="home"):
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
-          <li class="nav-header">Explore Library</li>
+          {home_link}
+          <li class="nav-header" style="margin-top:0.6rem;">Explore Library</li>
           {"".join(nav_links)}
           <li class="nav-header">Popular Genres</li>
           {"".join(genre_links)}
@@ -1247,6 +1248,11 @@ class PSEOBuilder:
             <input type="search" name="q" id="pseo-search" class="pseo-search-input" placeholder="Search 300+ titles, authors, or genres..." autocomplete="off">
             <div id="search-dropdown" class="search-dropdown" style="display:none;" aria-expanded="false"></div>
           </form>
+          <div style="margin-top:1.25rem; text-align:center;">
+            <a href="https://amzn.to/4qiRkFR" target="_blank" rel="noopener noreferrer nofollow" id="amazon-author-page-btn" style="display:inline-flex; align-items:center; gap:0.6rem; background:#FF9900; color:#111; font-weight:700; font-size:0.95rem; letter-spacing:0.01em; padding:0.75rem 1.6rem; border-radius:8px; text-decoration:none; box-shadow:0 2px 8px rgba(255,153,0,0.25);">
+              &#128218; Amazon Author Page &#8211; 277 Pulp Fiction Ebooks
+            </a>
+          </div>
         </section>
 
         <div class="stats-banner">

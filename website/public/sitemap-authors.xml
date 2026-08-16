@@ -37,12 +37,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ebooks.softcoverbooks.co.za/authors/pieter-haasbroek/</loc>
-    <lastmod>2026-08-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://ebooks.softcoverbooks.co.za/authors/artificial-intelligence/</loc>
     <lastmod>2026-08-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -56,6 +50,12 @@
   </url>
   <url>
     <loc>https://ebooks.softcoverbooks.co.za/authors/chris-opperman/</loc>
+    <lastmod>2026-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ebooks.softcoverbooks.co.za/authors/pieter-haasbroek/</loc>
     <lastmod>2026-08-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

@@ -1000,9 +1000,32 @@ a:hover {
   box-shadow: 0 2px 8px rgba(255, 153, 0, 0.25);
 }
 
-/* Home nav link 50% larger */
+/* Home nav link 50% larger and placed on top */
+.nav-item-home {
+  margin-bottom: 0.25rem;
+}
+.nav-list .nav-item-home a,
+.nav-list a.home-nav-link,
 .nav-list a[href="/"] {
   font-size: 1.32rem !important;
-  padding: 0.65rem 1.25rem !important;
-  font-weight: 700;
+  font-weight: 700 !important;
+  padding: 0.75rem 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  color: var(--text-main) !important;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+.nav-list .nav-item-home a:hover,
+.nav-list a.home-nav-link:hover,
+.nav-list a[href="/"]:hover {
+  color: var(--accent-yellow) !important;
+  background: rgba(232, 160, 32, 0.08) !important;
+}
+.nav-list .nav-item-home a.active,
+.nav-list a.home-nav-link.active,
+.nav-list a[href="/"].active {
+  color: var(--accent-yellow) !important;
+  background: rgba(232, 160, 32, 0.12) !important;
+  border-left-color: var(--accent-yellow) !important;
 }
