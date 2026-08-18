@@ -1,0 +1,6 @@
+# Cloudflare Pages Redirect Rules
+# 301 Permanent Redirects for legacy hyphenated slugs
+/books/aasvo-ls-van-die-kalahari/ /books/aasvoels-van-die-kalahari/ 301
+/books/aasvo-ls-van-die-see/ /books/aasvoels-van-die-see/ 301
+/books/die-p-rel-van-malsia/ /books/die-perel-van-malsia/ 301
+/books/droster-in-algeri/ /books/droster-in-algerie/ 301

@@ -15,7 +15,7 @@ from site_config import (
     DEFAULT_DESCRIPTION, AMAZON_AFFILIATE_TAG, PUBLISHER_NAME,
     PUBLISHER_LOGO, DEFAULT_OG_IMAGE
 )
-from pulp_data_engine import PulpDataEngine, slugify
+from pulp_data_engine import PulpDataEngine, slugify, strip_markdown
 
 CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
 
@@ -102,18 +102,17 @@ def render_footer(engine):
     <footer class="site-footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>Softcover Books Pulp Ebooks</h4>
+          <h4>Classic Pulp Fiction Ebooks</h4>
           <p>The premier library for vintage pulp fiction ebooks. Featuring French Foreign Legion sagas, pirate swashbucklers, hardboiled 1950s detectives, and untamed African adventures.</p>
-          <p style="font-size: 0.8rem; color: var(--text-dim);">Amazon Associate Disclosure: As an Amazon Associate, Softcover Books earns from qualifying purchases made through links on this site.</p>
         </div>
         <div class="footer-col">
           <h4>Top Genres</h4>
           <ul class="footer-links">
-            <li><a href="/genres/desert-adventure-foreign-legion/">Foreign Legion & Desert</a></li>
-            <li><a href="/genres/pirate-high-seas-swashbuckler/">Pirate & Swashbuckler</a></li>
+            <li><a href="/genres/desert-adventure-foreign-legion/">Foreign Legion &amp; Desert</a></li>
+            <li><a href="/genres/pirate-high-seas-swashbuckler/">Pirate &amp; Swashbuckler</a></li>
             <li><a href="/genres/hardboiled-detective-noir-crime/">Hardboiled Noir Detective</a></li>
-            <li><a href="/genres/jungle-adventure-lost-worlds/">Jungle Adventure & Lost Worlds</a></li>
-            <li><a href="/genres/masked-rogue-highwayman/">Masked Rogue & Highwayman</a></li>
+            <li><a href="/genres/jungle-adventure-lost-worlds/">Jungle Adventure &amp; Lost Worlds</a></li>
+            <li><a href="/genres/masked-rogue-highwayman/">Masked Rogue &amp; Highwayman</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -138,9 +137,16 @@ def render_footer(engine):
             <li><a href="/sitemap.xml">XML Sitemap Index</a></li>
           </ul>
         </div>
+        <div class="footer-col footer-about">
+          <h4>About Us</h4>
+          <p><strong>Classic Pulp Fiction Ebooks</strong> is your dedicated source for discovering and enjoying vintage South African pulp fiction, now available as digital ebooks.</p>
+          <p>📧 <a href="mailto:haasbroek.pieter@gmail.com">haasbroek.pieter@gmail.com</a></p>
+          <p>💬 <a href="https://wa.me/27637722878" target="_blank" rel="noopener">Chat on WhatsApp</a></p>
+          <p class="footer-disclaimer">As an Amazon Associate, we earn from qualifying purchases.</p>
+        </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; {datetime.now().year} Softcover Books. All rights reserved. Built for speed, discovery, and vintage pulp preservation.</p>
+        <p>&copy; {datetime.now().year} Classic Pulp Fiction Ebooks. All rights reserved. Built for speed, discovery, and vintage pulp preservation.</p>
       </div>
     </footer>
     """
@@ -173,37 +179,48 @@ def render_book_card(book):
     </article>
     """
 
-def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None):
-    """Base HTML wrapper with complete technical SEO meta tags and scripts."""
+def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None, lang="en", is_404=False):
+    """Base HTML wrapper with complete technical SEO meta tags, OpenGraph, Twitter, Schema.org, and scripts."""
     if not engine:
         return ""
     sidebar_html = render_sidebar(engine, active_target)
     mobile_header = render_mobile_header()
     footer_html = render_footer(engine)
 
+    robots_directive = "noindex, follow" if is_404 else "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    og_locale = "af_ZA" if lang == "af" else "en_US"
+    clean_meta_desc = strip_markdown(meta_desc)
+    clean_title = strip_markdown(title)
+    og_img_url = og_img if og_img.startswith('http') else SITE_URL + og_img
+
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{escape_html(title)}</title>
-  <meta name="description" content="{escape_html(meta_desc)}" />
+  <title>{escape_html(clean_title)}</title>
+  <meta name="description" content="{escape_html(clean_meta_desc)}" />
+  <meta name="robots" content="{robots_directive}" />
   <link rel="canonical" href="{canonical_url}" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   
   <!-- OpenGraph Meta Tags -->
   <meta property="og:site_name" content="{SITE_NAME}" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="{escape_html(title)}" />
-  <meta property="og:description" content="{escape_html(meta_desc)}" />
+  <meta property="og:title" content="{escape_html(clean_title)}" />
+  <meta property="og:description" content="{escape_html(clean_meta_desc)}" />
   <meta property="og:url" content="{canonical_url}" />
-  <meta property="og:image" content="{og_img if og_img.startswith('http') else SITE_URL + og_img}" />
+  <meta property="og:image" content="{og_img_url}" />
+  <meta property="og:image:width" content="340" />
+  <meta property="og:image:height" content="510" />
+  <meta property="og:image:alt" content="{escape_html(clean_title)}" />
+  <meta property="og:locale" content="{og_locale}" />
   
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="{escape_html(title)}" />
-  <meta name="twitter:description" content="{escape_html(meta_desc)}" />
-  <meta name="twitter:image" content="{og_img if og_img.startswith('http') else SITE_URL + og_img}" />
+  <meta name="twitter:title" content="{escape_html(clean_title)}" />
+  <meta name="twitter:description" content="{escape_html(clean_meta_desc)}" />
+  <meta name="twitter:image" content="{og_img_url}" />
 
   <!-- Preconnect and Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -242,10 +259,12 @@ class PSEOBuilder:
         self.engine = engine
         self.out_dir = out_dir
         self.sitemap_urls = {
+            "pages": [],
             "books": [],
             "series": [],
             "authors": [],
             "genres": [],
+            "themes": [],
             "collections": []
         }
 
@@ -268,9 +287,11 @@ class PSEOBuilder:
         self.build_collection_pages()
         self.build_directory_hubs()
         self.build_homepage()
+        self.build_404_page()
         self.build_sitemaps()
         self.build_robots_txt()
-        print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 7} static pages.")
+        self.build_redirects()
+        print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 1} static pages.")
 
     def build_search_index(self):
         """Generate search-index.json for client-side live autocomplete."""
@@ -320,13 +341,14 @@ class PSEOBuilder:
                 "priority": "0.9"
             })
 
-            # Meta tags
+            # Meta tags & language detection
+            book_lang = "af" if "afrikaans" in book.get("lang", "").lower() else "en"
             if book.get("store_key") == "kobo":
-                title = f"{book['title']} by {book['author']} - Pulp Fiction Kobo Ebook | Softcover Books"
-                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Kobo. Get your copy today."
+                title = f"{book['title']} by {book['author']} | Kobo Pulp Ebook"
+                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Kobo. Instant digital download."
             else:
-                title = f"{book['title']} by {book['author']} - Vintage Pulp Fiction Ebook | Softcover Books"
-                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon. Get your copy today."
+                title = f"{book['title']} by {book['author']} | Vintage Pulp Ebook"
+                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon. Instant digital download."
             
             # Related books: More from author
             author_books = [b for b in self.engine.books if b['author'] == book['author'] and b['id'] != book['id']][:4]
@@ -356,7 +378,7 @@ class PSEOBuilder:
             
             <section class="book-detail-hero">
               <div class="book-detail-cover-wrapper">
-                <img src="{book['img']}" alt="{escape_html(book['title'])} - Book Cover" width="340" height="510">
+                <img src="{book['img']}" alt="{escape_html(book['title'])} - Book Cover" width="340" height="510" fetchpriority="high">
               </div>
               <div class="book-detail-info">
                 <div class="tags-row" style="margin-top:0;">
@@ -439,12 +461,14 @@ class PSEOBuilder:
             """
 
             # JSON-LD Structured Data
+            clean_synopsis = strip_markdown(book["synopsis"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
                     {
                         "@type": "Book",
                         "@id": f"{url}#book",
+                        "mainEntityOfPage": url,
                         "name": book["title"],
                         "author": {
                             "@type": "Person",
@@ -452,7 +476,7 @@ class PSEOBuilder:
                             "url": f"{SITE_URL}/authors/{book['author_slug']}/"
                         },
                         "image": f"{SITE_URL}{book['img']}",
-                        "description": book["synopsis"],
+                        "description": clean_synopsis,
                         "inLanguage": book["lang"],
                         "genre": book["primary_genre"],
                         "bookFormat": "https://schema.org/EBook",
@@ -461,18 +485,6 @@ class PSEOBuilder:
                             "name": PUBLISHER_NAME,
                             "logo": {"@type": "ImageObject", "url": PUBLISHER_LOGO}
                         },
-                        "offers": {
-                            "@type": "Offer",
-                            "url": book["amazon_url"],
-                            "availability": "https://schema.org/InStock",
-                            "seller": {"@type": "Organization", "name": book["seller"]}
-                        }
-                    },
-                    {
-                        "@type": "Product",
-                        "name": f"{book['title']} ({book['format']} Edition)",
-                        "image": f"{SITE_URL}{book['img']}",
-                        "description": book["synopsis"],
                         "offers": {
                             "@type": "Offer",
                             "url": book["amazon_url"],
@@ -499,7 +511,8 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target="books",
                 og_img=book["img"],
-                engine=self.engine
+                engine=self.engine,
+                lang=book_lang
             )
             self.write_page(f"books/{book['slug']}/index.html", html)
 
@@ -515,7 +528,8 @@ class PSEOBuilder:
                 "priority": "0.85"
             })
 
-            title = f"{series['name']} - Complete Pulp Fiction Series & Reading Order | Softcover Books"
+            series_lang = "af" if any("afrikaans" in l.lower() for l in series["languages"]) and not any("english" in l.lower() for l in series["languages"]) else "en"
+            title = f"{series['name']} - Complete Pulp Series Reading Order | Softcover Books"
             meta_desc = f"Discover all {series['books_count']} books in {series['name']}. Read story synopses, browse cover art, and buy digital editions in chronological order."
 
             breadcrumbs_html = f"""
@@ -558,6 +572,7 @@ class PSEOBuilder:
             </section>
             """
 
+            clean_series_desc = strip_markdown(series["description"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -565,7 +580,7 @@ class PSEOBuilder:
                         "@type": "CollectionPage",
                         "@id": url,
                         "name": f"{series['name']} - Book Series",
-                        "description": series["description"]
+                        "description": clean_series_desc
                     },
                     {
                         "@type": "ItemList",
@@ -599,7 +614,8 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target=f"series-{slug}",
                 og_img=series["sample_covers"][0] if series["sample_covers"] else DEFAULT_OG_IMAGE,
-                engine=self.engine
+                engine=self.engine,
+                lang=series_lang
             )
             self.write_page(f"series/{slug}/index.html", html)
 
@@ -615,7 +631,7 @@ class PSEOBuilder:
                 "priority": "0.8"
             })
 
-            title = f"{author['name']} - Vintage Pulp Fiction Ebooks & Complete Bibliography | Softcover Books"
+            title = f"{author['name']} - Vintage Pulp Fiction Bibliography | Softcover Books"
             meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels in digital editions."
 
             breadcrumbs_html = f"""
@@ -653,6 +669,7 @@ class PSEOBuilder:
             </section>
             """
 
+            clean_bio = strip_markdown(author["bio"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -663,7 +680,7 @@ class PSEOBuilder:
                         "mainEntity": {
                             "@type": "Person",
                             "name": author["name"],
-                            "description": author["bio"]
+                            "description": clean_bio
                         }
                     },
                     {
@@ -763,6 +780,7 @@ class PSEOBuilder:
             </section>
             """
 
+            clean_guide = strip_markdown(genre["guide"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -770,7 +788,7 @@ class PSEOBuilder:
                         "@type": "CollectionPage",
                         "@id": url,
                         "name": genre["title"],
-                        "description": genre["guide"]
+                        "description": clean_guide
                     },
                     {
                         "@type": "ItemList",
@@ -822,7 +840,7 @@ class PSEOBuilder:
 
         for slug, theme in self.engine.themes.items():
             url = f"{SITE_URL}/themes/{slug}/"
-            self.sitemap_urls["genres"].append({
+            self.sitemap_urls["themes"].append({
                 "loc": url,
                 "lastmod": CURRENT_DATE,
                 "changefreq": "monthly",
@@ -862,6 +880,7 @@ class PSEOBuilder:
             </section>
             """
 
+            clean_theme_guide = strip_markdown(theme["guide"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -869,7 +888,7 @@ class PSEOBuilder:
                         "@type": "CollectionPage",
                         "@id": url,
                         "name": theme["title"],
-                        "description": theme["guide"]
+                        "description": clean_theme_guide
                     },
                     {
                         "@type": "ItemList",
@@ -961,6 +980,7 @@ class PSEOBuilder:
             </section>
             """
 
+            clean_col_desc = strip_markdown(col["description"])
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -968,7 +988,7 @@ class PSEOBuilder:
                         "@type": "CollectionPage",
                         "@id": url,
                         "name": col["title"],
-                        "description": col["description"]
+                        "description": clean_col_desc
                     },
                     {
                         "@type": "ItemList",
@@ -1007,12 +1027,12 @@ class PSEOBuilder:
             self.write_page(f"collections/{col['slug']}/index.html", html)
 
     def build_directory_hubs(self):
-        """Generate Directory Hub Index Pages: /books/, /authors/, /genres/, /themes/, /collections/."""
+        """Generate Directory Hub Index Pages: /books/, /authors/, /genres/, /themes/, /collections/, /series/."""
         print("Generating Directory Hub Index Pages...")
 
         # 1. /books/index.html
         books_url = f"{SITE_URL}/books/"
-        self.sitemap_urls["books"].insert(0, {"loc": books_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "1.0"})
+        self.sitemap_urls["pages"].append({"loc": books_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "1.0"})
         books_content = f"""
         <section class="hero">
           <div class="hero-badge">📚 Complete Library Catalog</div>
@@ -1055,7 +1075,7 @@ class PSEOBuilder:
 
         # 2. /authors/index.html
         authors_url = f"{SITE_URL}/authors/"
-        self.sitemap_urls["authors"].insert(0, {"loc": authors_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
+        self.sitemap_urls["pages"].append({"loc": authors_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
         authors_cards = []
         for slug, a in self.engine.authors.items():
             authors_cards.append(f"""
@@ -1090,7 +1110,7 @@ class PSEOBuilder:
 
         # 3. /genres/index.html
         genres_url = f"{SITE_URL}/genres/"
-        self.sitemap_urls["genres"].insert(0, {"loc": genres_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
+        self.sitemap_urls["pages"].append({"loc": genres_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.9"})
         genres_cards = []
         for slug, g in self.engine.genres.items():
             genres_cards.append(f"""
@@ -1125,7 +1145,7 @@ class PSEOBuilder:
 
         # 4. /themes/index.html
         themes_url = f"{SITE_URL}/themes/"
-        self.sitemap_urls["genres"].insert(1, {"loc": themes_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.85"})
+        self.sitemap_urls["pages"].append({"loc": themes_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.85"})
         themes_cards = []
         for slug, th in self.engine.themes.items():
             themes_cards.append(f"""
@@ -1160,7 +1180,7 @@ class PSEOBuilder:
 
         # 5. /collections/index.html
         collections_url = f"{SITE_URL}/collections/"
-        self.sitemap_urls["collections"].insert(0, {"loc": collections_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "0.95"})
+        self.sitemap_urls["pages"].append({"loc": collections_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "0.95"})
         col_cards = []
         for col in self.engine.collections[:60]:
             col_cards.append(f"""
@@ -1195,7 +1215,7 @@ class PSEOBuilder:
 
         # 6. /series/index.html
         series_url = f"{SITE_URL}/series/"
-        self.sitemap_urls["series"].insert(0, {"loc": series_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.95"})
+        self.sitemap_urls["pages"].append({"loc": series_url, "lastmod": CURRENT_DATE, "changefreq": "weekly", "priority": "0.95"})
         series_cards = []
         for slug, s in sorted(self.engine.series.items(), key=lambda x: -x[1]["books_count"]):
             series_cards.append(f"""
@@ -1232,6 +1252,8 @@ class PSEOBuilder:
         """Generate high-converting, premium Homepage (/index.html)."""
         print("Generating Main Homepage...")
         home_url = f"{SITE_URL}/"
+        # Add Homepage to primary pages sitemap with top priority
+        self.sitemap_urls["pages"].insert(0, {"loc": home_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "1.0"})
 
         featured_books = self.engine.books[:12]
         top_collections = self.engine.collections[:8]
@@ -1387,16 +1409,53 @@ class PSEOBuilder:
         )
         self.write_page("index.html", html)
 
+    def build_404_page(self):
+        """Generate branded, SEO-friendly 404 error page."""
+        print("Generating 404.html...")
+        url = f"{SITE_URL}/404.html"
+        content_html = f"""
+        <section class="hero" style="text-align:center; padding:4rem 1.5rem;">
+          <div class="hero-badge">⚠️ 404 - Page Not Found</div>
+          <h1>Vintage Pulp Page Not Found</h1>
+          <p style="max-width:600px; margin:0 auto 2rem auto;">
+            The vintage pulp novel or reading guide you are looking for may have moved, been renamed, or is currently out of catalog. Explore over 300+ classic pulp ebooks below.
+          </p>
+          <form action="/books/" method="get" class="pseo-search-container" role="search" style="margin:0 auto 2rem auto; max-width:600px;">
+            <svg class="pseo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" name="q" id="pseo-search" class="pseo-search-input" placeholder="Search 300+ titles, authors, or genres..." autocomplete="off">
+          </form>
+          <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+            <a href="/" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; background:var(--accent-red); color:#fff; padding:0.75rem 1.5rem; border-radius:6px; font-weight:700; text-decoration:none;">🏠 Back to Homepage</a>
+            <a href="/books/" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:0.5rem; background:var(--bg-surface); border:1px solid var(--border-strong); color:var(--text-main); padding:0.75rem 1.5rem; border-radius:6px; font-weight:700; text-decoration:none;">📚 Browse All Books</a>
+            <a href="/series/" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:0.5rem; background:var(--bg-surface); border:1px solid var(--border-strong); color:var(--text-main); padding:0.75rem 1.5rem; border-radius:6px; font-weight:700; text-decoration:none;">📖 Book Series</a>
+          </div>
+        </section>
+        """
+        html = render_base_html(
+            title="Page Not Found | Softcover Books",
+            meta_desc="The requested page could not be found. Search over 300+ classic vintage pulp fiction ebooks on Softcover Books.",
+            canonical_url=url,
+            json_ld={"@context": "https://schema.org", "@type": "WebPage", "name": "Page Not Found", "url": url},
+            content_html=content_html,
+            active_target="home",
+            engine=self.engine,
+            is_404=True
+        )
+        self.write_page("404.html", html)
+        self.write_page("public/404.html", html)
+
     def build_sitemaps(self):
         """Generate Chunked XML Sitemaps (/sitemap.xml index + sub-sitemaps)."""
         print("Generating Chunked XML Sitemaps...")
 
         # Sub-sitemaps
         sub_sitemaps = [
+            ("sitemap-pages.xml", self.sitemap_urls["pages"]),
             ("sitemap-books.xml", self.sitemap_urls["books"]),
             ("sitemap-series.xml", self.sitemap_urls["series"]),
             ("sitemap-authors.xml", self.sitemap_urls["authors"]),
             ("sitemap-genres.xml", self.sitemap_urls["genres"]),
+            ("sitemap-themes.xml", self.sitemap_urls["themes"]),
             ("sitemap-collections.xml", self.sitemap_urls["collections"]),
         ]
 
@@ -1445,6 +1504,21 @@ Sitemap: {SITE_URL}/sitemap.xml
 """
         self.write_page("robots.txt", robots_content)
         self.write_page("public/robots.txt", robots_content)
+
+    def build_redirects(self):
+        """Generate Cloudflare Pages _redirects file for canonicalization and legacy slugs."""
+        print("Generating _redirects...")
+        redirect_rules = [
+            "# Cloudflare Pages Redirect Rules",
+            "# 301 Permanent Redirects for legacy hyphenated slugs",
+            "/books/aasvo-ls-van-die-kalahari/ /books/aasvoels-van-die-kalahari/ 301",
+            "/books/aasvo-ls-van-die-see/ /books/aasvoels-van-die-see/ 301",
+            "/books/die-p-rel-van-malsia/ /books/die-perel-van-malsia/ 301",
+            "/books/droster-in-algeri/ /books/droster-in-algerie/ 301",
+        ]
+        redirect_content = "\n".join(redirect_rules) + "\n"
+        self.write_page("_redirects", redirect_content)
+        self.write_page("public/_redirects", redirect_content)
 
 if __name__ == "__main__":
     website_dir = os.path.dirname(os.path.abspath(__file__))

@@ -895,9 +895,33 @@ a:hover {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 1.2fr repeat(3, 1fr) 1.4fr;
   gap: 2.5rem;
   margin-bottom: 2.5rem;
+}
+
+.footer-about p {
+  margin-bottom: 0.6rem;
+  line-height: 1.6;
+}
+
+.footer-about a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-about a:hover {
+  color: var(--accent-yellow);
+}
+
+.footer-disclaimer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(232, 160, 32, 0.12);
+  font-size: 0.75rem !important;
+  color: var(--text-dim) !important;
+  line-height: 1.5;
 }
 
 .footer-col h4 {
@@ -955,6 +979,11 @@ a:hover {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .footer-grid .footer-col:first-child,
+  .footer-grid .footer-about {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 768px) {
@@ -983,6 +1012,11 @@ a:hover {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .footer-grid .footer-col:first-child,
+  .footer-grid .footer-about {
+    grid-column: span 1;
   }
 }
 

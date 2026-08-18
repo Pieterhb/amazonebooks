@@ -7,7 +7,7 @@ function getHtmlEntries(dir = __dirname, baseDir = __dirname) {
   let entries = {};
   const files = fs.readdirSync(dir);
   for (const file of files) {
-    if (file === 'node_modules' || file === 'dist' || file === '.wrangler' || file === '.git') continue;
+    if (file === 'node_modules' || file === 'dist' || file === '.wrangler' || file === '.git' || file === 'catalog_source.html') continue;
     const fullPath = resolve(dir, file);
     const stat = fs.statSync(fullPath);
     if (stat.isDirectory()) {

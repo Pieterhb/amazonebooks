@@ -1,0 +1,25 @@
+# Global security and performance headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Cache static cover images for 1 year (immutable)
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache CSS and JS assets
+/style.css
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/main.js
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/search-index.json
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Cache Sitemaps and Robots
+/sitemap*.xml
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Content-Type: application/xml; charset=UTF-8
+/robots.txt
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400

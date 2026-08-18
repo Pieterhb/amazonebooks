@@ -7,15 +7,32 @@ import os
 import re
 import json
 import urllib.parse
+import unicodedata
 from bs4 import BeautifulSoup
 
 from site_config import SITE_URL, AMAZON_AFFILIATE_TAG, SITE_NAME
 
 def slugify(text):
-    """Generate a clean URL slug from string."""
-    text = re.sub(r'[\'\"’]', '', str(text).lower())
-    text = re.sub(r'[^a-z0-9]+', '-', text)
-    return text.strip('-')
+    """Generate a clean URL slug from string with ASCII transliteration for accented characters."""
+    if not text:
+        return ""
+    # Transliterate unicode characters (e.g. ë -> e, ê -> e, é -> e, ô -> o, á -> a)
+    normalized = unicodedata.normalize('NFKD', str(text))
+    ascii_text = normalized.encode('ascii', 'ignore').decode('utf-8')
+    ascii_text = re.sub(r'[\'\"’]', '', ascii_text.lower())
+    ascii_text = re.sub(r'[^a-z0-9]+', '-', ascii_text)
+    return ascii_text.strip('-')
+
+def strip_markdown(text):
+    """Remove markdown syntax (*, #, _, [, ], etc.) for clean plain-text meta and schema."""
+    if not text:
+        return ""
+    text = re.sub(r'\*{1,3}(.*?)\*{1,3}', r'\1', str(text))
+    text = re.sub(r'#{1,6}\s*', '', text)
+    text = re.sub(r'\[(.*?)\]\(.*?\)', r'\1', text)
+    text = re.sub(r'`(.*?)`', r'\1', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 def clean_amazon_url(url, affiliate_tag=AMAZON_AFFILIATE_TAG):
     """Normalize Amazon URL and inject affiliate tag."""
