@@ -469,6 +469,8 @@ class PSEOBuilder:
                         "@type": "Book",
                         "@id": f"{url}#book",
                         "mainEntityOfPage": url,
+                        "url": url,
+                        "sameAs": book["amazon_url"],
                         "name": book["title"],
                         "author": {
                             "@type": "Person",
@@ -484,12 +486,6 @@ class PSEOBuilder:
                             "@type": "Organization",
                             "name": PUBLISHER_NAME,
                             "logo": {"@type": "ImageObject", "url": PUBLISHER_LOGO}
-                        },
-                        "offers": {
-                            "@type": "Offer",
-                            "url": book["amazon_url"],
-                            "availability": "https://schema.org/InStock",
-                            "seller": {"@type": "Organization", "name": book["seller"]}
                         }
                     },
                     {
