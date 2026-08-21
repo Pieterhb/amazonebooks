@@ -122,7 +122,7 @@ def render_footer(engine):
             <li><a href="/authors/gerrie-radlof/">Gerrie Radlof</a></li>
             <li><a href="/authors/braam-le-roux/">Braam le Roux</a></li>
             <li><a href="/authors/sandbergh-beyers/">Sandbergh Beyers</a></li>
-            <li><a href="/authors/ap-du-plessis/">A.P. du Plessis</a></li>
+            <li><a href="/authors/a-p-du-plessis/">A.P. du Plessis</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -856,6 +856,12 @@ class PSEOBuilder:
             </nav>
             """
 
+            # Related themes
+            all_other_themes = [t for t_slug, t in self.engine.themes.items() if t_slug != slug]
+            h = sum(ord(c) for c in slug) % (len(all_other_themes) - 6 if len(all_other_themes) > 6 else 1)
+            related_themes = all_other_themes[h:h+6]
+            related_themes_html = "".join([f'<a href="/themes/{t["slug"]}/" class="tag-pill" style="padding:0.4rem 0.8rem; font-size:0.85rem;">🎯 {t["name"]} ({t["books_count"]})</a>' for t in related_themes])
+
             content_html = f"""
             {breadcrumbs_html}
             
@@ -872,6 +878,13 @@ class PSEOBuilder:
               </div>
               <div class="product-grid">
                 {"".join([render_book_card(b) for b in theme['books']])}
+              </div>
+            </section>
+
+            <section style="margin-top:2.5rem; margin-bottom:3rem; border-top:1px solid var(--border); padding-top:1.5rem;">
+              <h3 style="font-size:1.2rem; margin-bottom:1rem; color:var(--text-main);">Explore Related Pulp Themes</h3>
+              <div class="tags-row" style="margin-top:0.5rem;">
+                {related_themes_html}
               </div>
             </section>
             """
@@ -956,6 +969,22 @@ class PSEOBuilder:
             </nav>
             """
 
+            # Related collections (same category or nearby)
+            same_cat = [c for c in self.engine.collections if c['slug'] != col['slug'] and c.get('category') == col.get('category')]
+            if len(same_cat) >= 4:
+                related_cols = same_cat[:4]
+            else:
+                h = sum(ord(c) for c in col['slug']) % (len(self.engine.collections) - 5)
+                related_cols = [c for c in self.engine.collections[h:h+6] if c['slug'] != col['slug']][:4]
+
+            related_cols_html = "".join([
+                f'<a href="/collections/{rc["slug"]}/" style="display:block; padding:1rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:8px; text-decoration:none; color:inherit; transition:border-color 0.2s, transform 0.2s;">'
+                f'<strong style="color:var(--accent-yellow); display:block; margin-bottom:0.25rem; font-size:0.95rem;">⭐ {escape_html(rc["title"])}</strong>'
+                f'<span style="font-size:0.8rem; color:var(--text-dim); line-height:1.4; display:block;">{escape_html(rc["description"][:110])}...</span>'
+                f'</a>'
+                for rc in related_cols
+            ])
+
             content_html = f"""
             {breadcrumbs_html}
             
@@ -972,6 +1001,13 @@ class PSEOBuilder:
               </div>
               <div class="product-grid">
                 {"".join([render_book_card(b) for b in col['books']])}
+              </div>
+            </section>
+
+            <section style="margin-top:2.5rem; margin-bottom:3rem; border-top:1px solid var(--border); padding-top:1.5rem;">
+              <h3 style="font-size:1.2rem; margin-bottom:1rem; color:var(--text-main);">Related Curated Lists &amp; Reading Guides</h3>
+              <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;">
+                {related_cols_html}
               </div>
             </section>
             """
@@ -1504,14 +1540,150 @@ Sitemap: {SITE_URL}/sitemap.xml
     def build_redirects(self):
         """Generate Cloudflare Pages _redirects file for canonicalization and legacy slugs."""
         print("Generating _redirects...")
+        collection_slugs = {c["slug"]: c for c in self.engine.collections}
+        redirects = []
+
+        # 1. Author redirects
+        redirects.append(("/authors/ap-du-plessis/", "/authors/a-p-du-plessis/"))
+
+        # 2. Legacy book redirects
+        legacy_books = [
+            ("/books/aasvo-ls-van-die-kalahari/", "/books/aasvoels-van-die-kalahari/"),
+            ("/books/aasvo-ls-van-die-see/", "/books/aasvoels-van-die-see/"),
+            ("/books/die-p-rel-van-malsia/", "/books/die-perel-van-malsia/"),
+            ("/books/droster-in-algeri/", "/books/droster-in-algerie/"),
+        ]
+        redirects.extend(legacy_books)
+
+        # 3. Legacy theme redirects
+        legacy_themes = [
+            ("/themes/namib/", "/themes/sahara-desert-peril/"),
+            ("/themes/namib-desert-peril/", "/themes/sahara-desert-peril/"),
+            ("/themes/kalahari/", "/themes/sahara-vultures/"),
+            ("/themes/kalahari-vultures/", "/themes/sahara-vultures/"),
+            ("/themes/gold-of-monomotapa/", "/themes/jungle-leopard-companions/"),
+            ("/themes/bush-pilots/", "/themes/south-african-westerns/"),
+            ("/themes/underworld-syndicates/", "/themes/sahara-western-action/"),
+            ("/themes/man-eating-beasts/", "/themes/masked-jungle-adventurer/"),
+            ("/themes/aviation/", "/themes/lowveld-westerns/"),
+            ("/themes/aviation-action/", "/themes/lowveld-westerns/"),
+            ("/themes/ai-rebellion/", "/themes/ai-created-fiction/"),
+            ("/themes/cybernetic-intrigue/", "/themes/ai-created-fiction/"),
+            ("/themes/high-tech-warfare/", "/themes/ai-created-fiction/"),
+            ("/themes/futuristic-dystopia/", "/themes/ai-created-fiction/"),
+            ("/themes/cosmic-mystery/", "/genres/sci-fi-pulp-retro-space-opera/"),
+            ("/themes/distant-galaxies/", "/genres/sci-fi-pulp-retro-space-opera/"),
+            ("/themes/space-opera/", "/genres/sci-fi-pulp-retro-space-opera/"),
+        ]
+        redirects.extend(legacy_themes)
+
+        # 4. Old static collections
+        old_static = [
+            ("Best Retro Crime Fiction on Amazon Kindle", "best-retro-crime-fiction-on-amazon"),
+            ("Short Pulp Stories under $3", "short-pulp-stories-under-10"),
+            ("Short Pulp Stories under $5", "short-pulp-stories-under-10"),
+            ("Top 10 Classic Foreign Legion Novels on Kindle", "top-10-classic-foreign-legion-novels"),
+            ("Ultimate Pirate Pulp Adventure Ebooks on Kindle", "ultimate-pirate-pulp-adventure-ebooks"),
+            ("Vintage African Jungle Adventure Novels on Kindle", "vintage-african-jungle-adventure-novels"),
+            ("Top Swashbuckling Rogue & Highwayman Stories on Amazon Kindle", "top-swashbuckling-rogue-highwayman-stories"),
+            ("Best 1950s Vintage Mystery Novels for Kindle", "best-1950s-vintage-mystery-novels"),
+            ("Top 20 Afrikaans Pulp Fiction Ebooks on Kindle", "top-20-afrikaans-pulp-fiction-ebooks"),
+            ("Top 20 English Translated Pulp Fiction Masterpieces on Kindle", "top-20-english-translated-pulp-fiction-masterpieces"),
+            ("Vintage Espionage Novels for Fans of Ian Fleming on Amazon Kindle", "vintage-espionage-novels-for-fans-of-ian-fleming"),
+            ("Underground Noir Crime Paperbacks on Kindle", "underground-noir-crime-paperbacks"),
+        ]
+        for old_t, target_slug in old_static:
+            old_slug = slugify(old_t)
+            if target_slug in collection_slugs:
+                redirects.append((f"/collections/{old_slug}/", f"/collections/{target_slug}/"))
+
+        # 5. Programmatic historical variations
+        old_intents_patterns = [
+            ("Best {} Ebooks on Amazon Kindle", "best-{}-ebooks-on-amazon"),
+            ("Must-Read {} Thrillers for Kindle", "must-read-{}-thrillers"),
+            ("Ultimate Guide to {} Novels on Kindle", "ultimate-guide-to-{}-novels"),
+            ("Ultimate Guide to {} Novels", "ultimate-guide-to-{}-novels"),
+            ("Essential {} Vintage Paperbacks on Amazon Kindle", "essential-{}-vintage-paperbacks"),
+            ("Essential {} Vintage Paperbacks", "essential-{}-vintage-paperbacks"),
+            ("Cheap {} Ebooks Under $5 on Amazon", "cheap-{}-ebooks-under-10-on-amazon"),
+            ("Cheap {} Ebooks Under $3 on Amazon", "cheap-{}-ebooks-under-10-on-amazon"),
+            ("Action-Packed {} Stories for Fast Reading", "action-packed-{}-stories-for-fast-reading"),
+            ("Classic {} Ebooks with Badass Protagonists", "classic-{}-ebooks-with-badass-protagonists"),
+            ("Top Ranked {} Books for Pulp Fiction Fans", "top-ranked-{}-books-for-pulp-fiction-fans"),
+            ("Best {} Novels for Vacation Reading", "best-{}-novels-for-vacation-reading"),
+            ("Top 10 {} Novels on Kindle", "top-10-{}-pulp-fiction-classics"),
+            ("Top 10 {} Pulp Fiction Classics on Kindle", "top-10-{}-pulp-fiction-classics"),
+            ("Top 10 {} Pulp Fiction Classics", "top-10-{}-pulp-fiction-classics"),
+        ]
+
+        old_topics = [
+            "French Foreign Legion", "Sahara Military Survival", "High Seas Pirate Action", "Swashbuckling Buccaneer",
+            "Hardboiled Private Detective", "1950s Undercover Crime", "Cape Frontier Vigilante", "African Jungle Lost World",
+            "Wilderness Bushveld Safari", "Retro Sci-Fi Space Opera", "Francois Alwyn Venter Adventure", "Gerrie Radlof Swashbuckler",
+            "Braam le Roux Jungle Hero", "Sandbergh Beyers Military", "A.P. du Plessis Noir Detective", "Die Buiter Masked Robber",
+            "Oloff the Pirate High Seas", "The Black Leopard African", "Wanderer Detective Sleuth", "SA Police Hardboiled Crime",
+            "Red Ruby Maritime Adventure", "Jungle Hawk Bush Pilot", "Jungle Hawk Frontier Western", "Untamed Lowveld Safari Mystery",
+            "Ryk Schoonraad Private Eye", "Afrikaans Vintage Ebooks", "English Translated Pulp Classics", "Desert Outpost Sieges",
+            "Galleon Cannon Battles", "Midnight Sword Duels", "Underworld Smuggling Rings", "Diamond Syndicate Thrillers",
+            "Lost Civilizations in Africa", "Revolver Shootout Action", "Vintage Pulp Box Sets", "Classic Dime Novel Ebooks",
+            "Fast Paced Pulp Mysteries", "Treasure Hunting Pulp Stories", "Escape & Evasion Military Thrillers", "Escape Evasion Military Thrillers",
+            "Men's Adventure Vintage Paperbacks", "Pulp Fiction Novellas for Kindle", "Pulp Fiction Novellas", "Cold War Spy Thrillers",
+            "Vintage Crime Paperbacks", "Desert Caravan Romances", "High Seas Mutiny Novels", "Feral Hero Jungle Sagas",
+            "Cape Colony Historical Swashbucklers", "Man Eating Beast Thrillers", "Bushveld Diamond Caches", "Retro AI and Cyber Thrillers",
+            "Pulp Fiction Masterpieces on Kindle", "Pulp Fiction Masterpieces", "Skeleton Coast Survival Novels", "Kalahari Desert Espionage",
+            "Daring Prison Break Pulp Stories", "Classic Highwayman Romances", "Bounty Hunter Drifter Pulp", "Ancient Relic Quest Ebooks",
+            "Undercover Police Infiltration", "Vintage Maritime Ghost Ship Tales", "Radio Drama Style Cliffhangers", "Golden Age Paperback Thrillers"
+        ]
+
+        topic_mapping = {
+            "Retro Sci-Fi Space Opera": "ai-stories",
+            "Retro AI and Cyber Thrillers": "ai-stories",
+            "Man Eating Beast Thrillers": "masked-jungle-adventurer",
+            "Kalahari Desert Espionage": "sahara-vultures",
+            "Pulp Fiction Novellas for Kindle": "pulp-fiction-novellas",
+            "Pulp Fiction Masterpieces on Kindle": "pulp-fiction-masterpieces",
+            "Jungle Hawk Bush Pilot": "jungle-hawk-frontier-western",
+            "Escape Evasion Military Thrillers": "escape-evasion-military-thrillers",
+        }
+
+        for top in old_topics:
+            for old_pat, target_pat in old_intents_patterns:
+                old_title = old_pat.format(top)
+                old_slug = slugify(old_title)
+                
+                mapped_topic = topic_mapping.get(top, top)
+                if mapped_topic in ["ai-stories", "masked-jungle-adventurer", "sahara-vultures"]:
+                    target_slug = slugify(target_pat.format("Pulp Fiction Masterpieces"))
+                else:
+                    target_slug = slugify(target_pat.format(mapped_topic))
+                    
+                if old_slug != target_slug:
+                    if target_slug in collection_slugs:
+                        redirects.append((f"/collections/{old_slug}/", f"/collections/{target_slug}/"))
+                    elif old_slug in collection_slugs:
+                        pass
+                    else:
+                        clean_target = old_slug.replace("-for-kindle", "").replace("-on-amazon-kindle", "-on-amazon").replace("-on-kindle", "").replace("-under-5-on-amazon", "-under-10-on-amazon")
+                        if clean_target in collection_slugs:
+                            redirects.append((f"/collections/{old_slug}/", f"/collections/{clean_target}/"))
+
+        # Explicit overrides for remaining sci-fi collections
+        redirects.append(("/collections/action-packed-retro-sci-fi-space-opera-stories-for-fast-reading/", "/collections/action-packed-pulp-fiction-masterpieces-stories-for-fast-reading/"))
+        redirects.append(("/collections/ultimate-guide-to-retro-sci-fi-space-opera-novels/", "/collections/ultimate-guide-to-pulp-fiction-masterpieces-novels/"))
+        redirects.append(("/collections/best-retro-sci-fi-space-opera-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-novels-for-vacation-reading/"))
+        redirects.append(("/collections/best-retro-ai-and-cyber-thrillers-ebooks-on-amazon-kindle/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+
+        # Deduplicate and format rules
+        seen_sources = set()
         redirect_rules = [
             "# Cloudflare Pages Redirect Rules",
-            "# 301 Permanent Redirects for legacy hyphenated slugs",
-            "/books/aasvo-ls-van-die-kalahari/ /books/aasvoels-van-die-kalahari/ 301",
-            "/books/aasvo-ls-van-die-see/ /books/aasvoels-van-die-see/ 301",
-            "/books/die-p-rel-van-malsia/ /books/die-perel-van-malsia/ 301",
-            "/books/droster-in-algeri/ /books/droster-in-algerie/ 301",
+            "# 301 Permanent Redirects for legacy routes, collections, themes, and authors"
         ]
+        for src, dst in redirects:
+            if src not in seen_sources and src != dst:
+                seen_sources.add(src)
+                redirect_rules.append(f"{src} {dst} 301")
+
         redirect_content = "\n".join(redirect_rules) + "\n"
         self.write_page("_redirects", redirect_content)
         self.write_page("public/_redirects", redirect_content)
