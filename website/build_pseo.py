@@ -1571,9 +1571,9 @@ Sitemap: {SITE_URL}/sitemap.xml
             ("/themes/cybernetic-intrigue/", "/themes/ai-created-fiction/"),
             ("/themes/high-tech-warfare/", "/themes/ai-created-fiction/"),
             ("/themes/futuristic-dystopia/", "/themes/ai-created-fiction/"),
-            ("/themes/cosmic-mystery/", "/genres/sci-fi-pulp-retro-space-opera/"),
-            ("/themes/distant-galaxies/", "/genres/sci-fi-pulp-retro-space-opera/"),
-            ("/themes/space-opera/", "/genres/sci-fi-pulp-retro-space-opera/"),
+            ("/themes/cosmic-mystery/", "/themes/ai-created-fiction/"),
+            ("/themes/distant-galaxies/", "/themes/ai-created-fiction/"),
+            ("/themes/space-opera/", "/themes/ai-created-fiction/"),
         ]
         redirects.extend(legacy_themes)
 
