@@ -9,6 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const noResultsMsg = document.getElementById('no-results-msg');
   const clearSearchBtn = document.getElementById('clear-search-btn');
 
+  // 0. Dynamic Banner Height Calculation
+  function updateBannerHeight() {
+    const banner = document.querySelector('.top-announcement-bar');
+    if (banner) {
+      document.documentElement.style.setProperty('--banner-height', `${banner.offsetHeight}px`);
+    }
+  }
+  updateBannerHeight();
+  window.addEventListener('resize', updateBannerHeight);
+
   // Sidebar scroll position persistence across page navigations
   if (sidebar) {
     // Restore saved scroll position

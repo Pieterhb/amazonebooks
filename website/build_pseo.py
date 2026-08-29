@@ -242,6 +242,16 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
   </script>
 </head>
 <body>
+<!-- Top Announcement Banner -->
+<aside class="top-announcement-bar" role="banner" aria-label="Special Free Offer">
+  <a href="https://magicebooks.sendibble.com/Optin-Squeeze-Page-be2f4065-41c8629a" target="_blank" rel="noopener noreferrer" class="announcement-link">
+    <div class="announcement-content">
+      <span class="announcement-badge">FREE EBOOK</span>
+      <span class="announcement-text"><strong>🎁 Free Download:</strong> &ldquo;Witch of the Sahara&rdquo; &ndash; Complete Vintage Pulp PDF Novel</span>
+      <span class="announcement-cta">Get Instant PDF <span class="announcement-arrow">&rarr;</span></span>
+    </div>
+  </a>
+</aside>
   {mobile_header}
   <div class="app-layout">
     {sidebar_html}
