@@ -201,6 +201,7 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
   <title>{escape_html(clean_title)}</title>
   <meta name="description" content="{escape_html(clean_meta_desc)}" />
   <meta name="robots" content="{robots_directive}" />
+  <meta name="yandex-verification" content="c6dd0cf94053564f" />
   <link rel="canonical" href="{canonical_url}" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   
