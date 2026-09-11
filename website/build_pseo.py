@@ -179,7 +179,7 @@ def render_book_card(book):
     </article>
     """
 
-def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None, lang="en", is_404=False):
+def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None, lang="en", is_404=False, og_type="website"):
     """Base HTML wrapper with complete technical SEO meta tags, OpenGraph, Twitter, Schema.org, and scripts."""
     if not engine:
         return ""
@@ -207,7 +207,7 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
   
   <!-- OpenGraph Meta Tags -->
   <meta property="og:site_name" content="{SITE_NAME}" />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="{og_type}" />
   <meta property="og:title" content="{escape_html(clean_title)}" />
   <meta property="og:description" content="{escape_html(clean_meta_desc)}" />
   <meta property="og:url" content="{canonical_url}" />
@@ -973,9 +973,9 @@ class PSEOBuilder:
             breadcrumbs_html = f"""
             <nav class="breadcrumbs" aria-label="Breadcrumbs">
               <a href="/">Home</a>
-              <span class="separator">›</span>
+              <span class="separator">\u203a</span>
               <a href="/collections/">Collections</a>
-              <span class="separator">›</span>
+              <span class="separator">\u203a</span>
               <span class="current">{escape_html(col['title'])}</span>
             </nav>
             """
@@ -989,22 +989,102 @@ class PSEOBuilder:
                 related_cols = [c for c in self.engine.collections[h:h+6] if c['slug'] != col['slug']][:4]
 
             related_cols_html = "".join([
-                f'<a href="/collections/{rc["slug"]}/" style="display:block; padding:1rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:8px; text-decoration:none; color:inherit; transition:border-color 0.2s, transform 0.2s;">'
-                f'<strong style="color:var(--accent-yellow); display:block; margin-bottom:0.25rem; font-size:0.95rem;">⭐ {escape_html(rc["title"])}</strong>'
-                f'<span style="font-size:0.8rem; color:var(--text-dim); line-height:1.4; display:block;">{escape_html(rc["description"][:110])}...</span>'
+                f'<a href="/collections/{rc["slug"]}/" style="display:block; padding:1rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:8px; text-decoration:none; color:inherit; transition:border-color 0.2s, transform 0.2s;">' +
+                f'<strong style="color:var(--accent-yellow); display:block; margin-bottom:0.25rem; font-size:0.95rem;">&#11088; {escape_html(rc["title"])}</strong>' +
+                f'<span style="font-size:0.8rem; color:var(--text-dim); line-height:1.4; display:block;">{escape_html(rc["description"][:110])}...</span>' +
                 f'</a>'
                 for rc in related_cols
             ])
 
+            # --- Unique editorial intro section ---
+            col_category = col.get("category", "pulp fiction")
+            first_books = col["books"][:3]
+            featured_titles = ", ".join(f'"{escape_html(b["title"])}" ' for b in first_books).strip() if first_books else ""
+            featured_authors_set = list({b.get("author", "") for b in col["books"] if b.get("author")})[:3]
+            featured_authors_str = ", ".join(escape_html(a) for a in featured_authors_set) if featured_authors_set else "skilled pulp authors"
+
+            editorial_para1 = (
+                f"This curated reading list brings together {col['books_count']} handpicked {escape_html(col_category)} ebooks "
+                f"that represent the finest examples of vintage pulp fiction available on Amazon Kindle today. "
+                f"Whether you are a longtime collector of retro paperbacks or a first-time explorer of the genre, "
+                f"this collection has been assembled to give you the most satisfying reading experience possible. "
+                f"Titles include {featured_titles}and more."
+            )
+            editorial_para2 = (
+                f"Each book in this list has been selected for its authenticity to the classic pulp tradition \u2014 "
+                f"fast pacing, vivid settings, unforgettable protagonists, and the kind of raw storytelling energy "
+                f"that defined an era. Works by {featured_authors_str} appear here alongside other masters of the form. "
+                f"All titles are available as affordable Kindle ebooks, many under $5, making this an exceptional value "
+                f"for readers who want quality without overspending."
+            )
+            editorial_para3 = (
+                f"Reading pulp fiction is more than entertainment \u2014 it is a journey into a world where heroes acted without hesitation, "
+                f"villains were truly menacing, and adventure lurked around every corner. "
+                f"This {escape_html(col['title'])} collection preserves that spirit in fully digital format, "
+                f"letting you carry an entire library in your pocket. "
+                f"Start with any title that catches your eye \u2014 every one of these ebooks will reward you handsomely."
+            )
+
+            editorial_html = f"""
+            <article style="margin:2rem 0 2.5rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem 2rem;">
+              <h2 style="font-size:1.25rem; color:var(--accent-yellow); margin-bottom:1rem;">&#128214; Why Read This Collection?</h2>
+              <p style="line-height:1.75; margin-bottom:0.9rem; color:var(--text-main);">{editorial_para1}</p>
+              <p style="line-height:1.75; margin-bottom:0.9rem; color:var(--text-main);">{editorial_para2}</p>
+              <p style="line-height:1.75; color:var(--text-main);">{editorial_para3}</p>
+            </article>
+            """
+
+            # --- FAQ section ---
+            faq_q1 = f"What makes this {escape_html(col['title'])} collection special?"
+            faq_a1 = (
+                f"{escape_html(col['description'])} We have curated exactly {col['books_count']} titles "
+                f"that best capture the theme, ensuring every recommendation is worth your reading time."
+            )
+            faq_q2 = "Are these ebooks available on Amazon Kindle?"
+            faq_a2 = (
+                "Yes \u2014 every title in this collection is available as a Kindle ebook on Amazon. "
+                "Simply click any book card to visit its Amazon product page. "
+                "Most titles are priced affordably, often under $5, and many are included in Kindle Unlimited subscriptions."
+            )
+            faq_q3 = "How do I choose which book to read first?"
+            faq_a3 = (
+                "We recommend starting with the book listed first \u2014 our ranking places the most acclaimed and representative "
+                "titles at the top. However, every book in this list is worth reading. "
+                "If you are new to the genre, choose a title whose cover or synopsis grabs you most immediately \u2014 "
+                "pulp fiction rewards instinctive picks."
+            )
+
+            faq_html = f"""
+            <section style="margin:2.5rem 0 3rem;" aria-label="Frequently Asked Questions">
+              <h2 style="font-size:1.2rem; margin-bottom:1.25rem; color:var(--text-main);">&#10067; Frequently Asked Questions</h2>
+              <div style="border:1px solid var(--border); border-radius:8px; overflow:hidden;">
+                <details style="padding:1rem 1.25rem; border-bottom:1px solid var(--border);">
+                  <summary style="font-weight:600; cursor:pointer; color:var(--text-main); font-size:0.97rem;">{faq_q1}</summary>
+                  <p style="margin-top:0.75rem; line-height:1.7; color:var(--text-dim); font-size:0.93rem;">{faq_a1}</p>
+                </details>
+                <details style="padding:1rem 1.25rem; border-bottom:1px solid var(--border);">
+                  <summary style="font-weight:600; cursor:pointer; color:var(--text-main); font-size:0.97rem;">{faq_q2}</summary>
+                  <p style="margin-top:0.75rem; line-height:1.7; color:var(--text-dim); font-size:0.93rem;">{faq_a2}</p>
+                </details>
+                <details style="padding:1rem 1.25rem;">
+                  <summary style="font-weight:600; cursor:pointer; color:var(--text-main); font-size:0.97rem;">{faq_q3}</summary>
+                  <p style="margin-top:0.75rem; line-height:1.7; color:var(--text-dim); font-size:0.93rem;">{faq_a3}</p>
+                </details>
+              </div>
+            </section>
+            """
+
             content_html = f"""
             {breadcrumbs_html}
-            
+
             <section class="hub-hero">
-              <div class="hero-badge">⭐ Curated Reading List</div>
+              <div class="hero-badge">&#11088; Curated Reading List</div>
               <h1>{escape_html(col['title'])}</h1>
               <p class="hub-tagline">Handpicked selection of {col['books_count']} thrilling pulp fiction ebooks</p>
               <p class="hub-description">{escape_html(col['description'])} Discover high-velocity plots, unforgettable vintage characters, and instant digital reading.</p>
             </section>
+
+            {editorial_html}
 
             <section style="margin-bottom:3rem;">
               <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
@@ -1015,6 +1095,8 @@ class PSEOBuilder:
               </div>
             </section>
 
+            {faq_html}
+
             <section style="margin-top:2.5rem; margin-bottom:3rem; border-top:1px solid var(--border); padding-top:1.5rem;">
               <h3 style="font-size:1.2rem; margin-bottom:1rem; color:var(--text-main);">Related Curated Lists &amp; Reading Guides</h3>
               <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;">
@@ -1024,14 +1106,39 @@ class PSEOBuilder:
             """
 
             clean_col_desc = strip_markdown(col["description"])
+            faq_q1_clean = strip_markdown(faq_q1)
+            faq_a1_clean = strip_markdown(faq_a1)
+            faq_q2_clean = strip_markdown(faq_q2)
+            faq_a2_clean = strip_markdown(faq_a2)
+            faq_q3_clean = strip_markdown(faq_q3)
+            faq_a3_clean = strip_markdown(faq_a3)
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
                     {
-                        "@type": "CollectionPage",
+                        "@type": "Article",
                         "@id": url,
-                        "name": col["title"],
-                        "description": clean_col_desc
+                        "headline": col["title"],
+                        "description": clean_col_desc,
+                        "datePublished": "2024-01-01",
+                        "dateModified": CURRENT_DATE,
+                        "author": {
+                            "@type": "Organization",
+                            "name": PUBLISHER_NAME,
+                            "url": SITE_URL
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": PUBLISHER_NAME,
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": PUBLISHER_LOGO
+                            }
+                        },
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": url
+                        }
                     },
                     {
                         "@type": "ItemList",
@@ -1044,6 +1151,26 @@ class PSEOBuilder:
                                 "url": f"{SITE_URL}/books/{b['slug']}/"
                             }
                             for idx, b in enumerate(col["books"])
+                        ]
+                    },
+                    {
+                        "@type": "FAQPage",
+                        "mainEntity": [
+                            {
+                                "@type": "Question",
+                                "name": faq_q1_clean,
+                                "acceptedAnswer": {"@type": "Answer", "text": faq_a1_clean}
+                            },
+                            {
+                                "@type": "Question",
+                                "name": faq_q2_clean,
+                                "acceptedAnswer": {"@type": "Answer", "text": faq_a2_clean}
+                            },
+                            {
+                                "@type": "Question",
+                                "name": faq_q3_clean,
+                                "acceptedAnswer": {"@type": "Answer", "text": faq_a3_clean}
+                            }
                         ]
                     },
                     {
@@ -1065,6 +1192,7 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target="collections",
                 og_img=col["books"][0]["img"] if col["books"] else DEFAULT_OG_IMAGE,
+                og_type="article",
                 engine=self.engine
             )
             self.write_page(f"collections/{col['slug']}/index.html", html)
