@@ -137,6 +137,9 @@ class PulpDataEngine:
             if title_display.isupper():
                 title_display = title_display.title()
 
+            if author in ["A.P. du Plessis", "A. P. du Plessis", "AP du Plessis"]:
+                author = "Andreas du Plessis"
+
             if author == "Box Set - 3 Ebooks":
                 author = "Francois Alwyn Venter" if "sahara" in b["series"].lower() else "Gerrie Radlof"
 
@@ -464,8 +467,8 @@ class PulpDataEngine:
                 "Sandbergh Beyers is celebrated for his gripping military and desert survival novels in the 'Sahara Reeks'. "
                 "His storytelling specializes in high-tension outpost defenses, harsh desert recon missions, and the unbreakable brotherhood of Foreign Legionnaires under fire."
             ),
-            "A.P. du Plessis": (
-                "A.P. du Plessis is renowned for his mid-century private detective and espionage pulp series, most notably the 'Ryk Schoonraad' and 'Tamar' detective novels. "
+            "Andreas du Plessis": (
+                "Andreas du Plessis is renowned for his mid-century private detective and espionage pulp series, most notably the 'Ryk Schoonraad' and 'Tamar' detective novels. "
                 "His gritty, noir-tinged investigations feature Cold War intrigue, hidden syndicates, and sharp deduction."
             ),
             "Pieter Haasbroek": (
@@ -548,7 +551,7 @@ class PulpDataEngine:
                 "tagline": "Gritty Sleuths, Smoke-Filled Alleys, and Underworld Conspiracies",
                 "guide": (
                     "Dive into the shadowy underworld of 1950s crime, private investigators, and undercover police squads. "
-                    "Featuring Gerrie Radlof's 'SA Polisie' and 'Swerwer Speurder' (The Wanderer Detective), alongside A.P. du Plessis' 'Ryk Schoonraad' series, these gripping stories deliver fast-paced shootouts, cunning smugglers, and relentless sleuthing. "
+                    "Featuring Gerrie Radlof's 'SA Polisie' and 'Swerwer Speurder' (The Wanderer Detective), alongside Andreas du Plessis' 'Ryk Schoonraad' series, these gripping stories deliver fast-paced shootouts, cunning smugglers, and relentless sleuthing. "
                     "Perfect for fans of classic Mickey Spillane, Raymond Chandler, and vintage hardboiled paperback noir."
                 ),
                 "tropes": ["Private Investigators", "1950s Noir Crime", "Undercover Police", "Revolver Shootouts", "Smuggling Syndicates", "Femmes Fatales"]
@@ -828,7 +831,7 @@ class PulpDataEngine:
             ("Gerrie Radlof Swashbuckler", "Gerrie Radlof"),
             ("Braam le Roux Jungle Hero", "Braam le Roux"),
             ("Sandbergh Beyers Military", "Sandbergh Beyers"),
-            ("A.P. du Plessis Noir Detective", "A.P. du Plessis"),
+            ("Andreas du Plessis Noir Detective", "Andreas du Plessis"),
             ("Die Buiter Masked Robber", "Die Buiter Reeks"),
             ("Oloff the Pirate High Seas", "Oloff the Pirate Series"),
             ("The Black Leopard African", "The Black Leopard Series"),

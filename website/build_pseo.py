@@ -122,7 +122,7 @@ def render_footer(engine):
             <li><a href="/authors/gerrie-radlof/">Gerrie Radlof</a></li>
             <li><a href="/authors/braam-le-roux/">Braam le Roux</a></li>
             <li><a href="/authors/sandbergh-beyers/">Sandbergh Beyers</a></li>
-            <li><a href="/authors/a-p-du-plessis/">A.P. du Plessis</a></li>
+            <li><a href="/authors/andreas-du-plessis/">Andreas du Plessis</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -644,6 +644,15 @@ class PSEOBuilder:
     def build_author_pages(self):
         """Generate Author Hub Pages (/authors/[slug]/index.html)."""
         print(f"Generating {len(self.engine.authors)} Author Hub Pages...")
+        # Clean up obsolete author directories
+        author_dir = os.path.join(self.out_dir, "authors")
+        if os.path.exists(author_dir):
+            valid_slugs = set(self.engine.authors.keys())
+            for item in os.listdir(author_dir):
+                item_path = os.path.join(author_dir, item)
+                if os.path.isdir(item_path) and item not in valid_slugs:
+                    shutil.rmtree(item_path, ignore_errors=True)
+
         for slug, author in self.engine.authors.items():
             url = f"{SITE_URL}/authors/{slug}/"
             is_thin = (author["books_count"] < 2)
@@ -1714,7 +1723,8 @@ Sitemap: {SITE_URL}/sitemap.xml
         redirects = []
 
         # 1. Author redirects
-        redirects.append(("/authors/ap-du-plessis/", "/authors/a-p-du-plessis/"))
+        redirects.append(("/authors/a-p-du-plessis/", "/authors/andreas-du-plessis/"))
+        redirects.append(("/authors/ap-du-plessis/", "/authors/andreas-du-plessis/"))
 
         # 2. Legacy book redirects (including diacritic fixes)
         legacy_books = [
@@ -1802,7 +1812,7 @@ Sitemap: {SITE_URL}/sitemap.xml
             "French Foreign Legion", "Sahara Military Survival", "High Seas Pirate Action", "Swashbuckling Buccaneer",
             "Hardboiled Private Detective", "1950s Undercover Crime", "Cape Frontier Vigilante", "African Jungle Lost World",
             "Wilderness Bushveld Safari", "Retro Sci-Fi Space Opera", "Francois Alwyn Venter Adventure", "Gerrie Radlof Swashbuckler",
-            "Braam le Roux Jungle Hero", "Sandbergh Beyers Military", "A.P. du Plessis Noir Detective", "Die Buiter Masked Robber",
+            "Braam le Roux Jungle Hero", "Sandbergh Beyers Military", "Andreas du Plessis Noir Detective", "A.P. du Plessis Noir Detective", "Die Buiter Masked Robber",
             "Oloff the Pirate High Seas", "The Black Leopard African", "Wanderer Detective Sleuth", "SA Police Hardboiled Crime",
             "Red Ruby Maritime Adventure", "Jungle Hawk Bush Pilot", "Jungle Hawk Frontier Western", "Untamed Lowveld Safari Mystery",
             "Ryk Schoonraad Private Eye", "Afrikaans Vintage Ebooks", "English Translated Pulp Classics", "Desert Outpost Sieges",
@@ -1826,6 +1836,7 @@ Sitemap: {SITE_URL}/sitemap.xml
             "Pulp Fiction Masterpieces on Kindle": "pulp-fiction-masterpieces",
             "Jungle Hawk Bush Pilot": "jungle-hawk-frontier-western",
             "Escape Evasion Military Thrillers": "escape-evasion-military-thrillers",
+            "A.P. du Plessis Noir Detective": "Andreas du Plessis Noir Detective",
         }
 
         for top in old_topics:
