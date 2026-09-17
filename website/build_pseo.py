@@ -15,7 +15,7 @@ from site_config import (
     DEFAULT_DESCRIPTION, AMAZON_AFFILIATE_TAG, PUBLISHER_NAME,
     PUBLISHER_LOGO, DEFAULT_OG_IMAGE
 )
-from pulp_data_engine import PulpDataEngine, slugify, strip_markdown
+from pulp_data_engine import PulpDataEngine, slugify, strip_markdown, markdown_to_html
 
 CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
 
@@ -179,7 +179,7 @@ def render_book_card(book):
     </article>
     """
 
-def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None, lang="en", is_404=False, og_type="website"):
+def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, active_target="home", og_img=DEFAULT_OG_IMAGE, engine=None, lang="en", is_404=False, og_type="website", noindex=False):
     """Base HTML wrapper with complete technical SEO meta tags, OpenGraph, Twitter, Schema.org, and scripts."""
     if not engine:
         return ""
@@ -187,7 +187,7 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
     mobile_header = render_mobile_header()
     footer_html = render_footer(engine)
 
-    robots_directive = "noindex, follow" if is_404 else "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    robots_directive = "noindex, follow" if (is_404 or noindex) else "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     og_locale = "af_ZA" if lang == "af" else "en_US"
     clean_meta_desc = strip_markdown(meta_desc)
     clean_title = strip_markdown(title)
@@ -356,10 +356,9 @@ class PSEOBuilder:
             book_lang = "af" if "afrikaans" in book.get("lang", "").lower() else "en"
             if book.get("store_key") == "kobo":
                 title = f"{book['title']} by {book['author']} | Kobo Pulp Ebook"
-                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Kobo. Instant digital download."
             else:
                 title = f"{book['title']} by {book['author']} | Vintage Pulp Ebook"
-                meta_desc = f"Read {book['title']} by {book['author']}. Discover vintage {book['primary_genre']} pulp fiction available on Amazon. Instant digital download."
+            meta_desc = book.get("meta_description") or f"Read {book['title']} by {book['author']}. Vintage {book['primary_genre']} pulp fiction ebook. Instant digital download."
             
             # Related books: More from author
             author_books = [b for b in self.engine.books if b['author'] == book['author'] and b['id'] != book['id']][:4]
@@ -383,6 +382,8 @@ class PSEOBuilder:
             tag_pills = [f'<a href="/genres/{book["primary_genre_slug"]}/" class="tag-pill tag-pill-genre">🏷️ {book["primary_genre"]}</a>']
             for th in book["themes"][:4]:
                 tag_pills.append(f'<a href="/themes/{slugify(th)}/" class="tag-pill">🎯 {th}</a>')
+
+            synopsis_html = markdown_to_html(book['synopsis'])
 
             content_html = f"""
             {breadcrumbs_html}
@@ -410,7 +411,7 @@ class PSEOBuilder:
 
                 <div class="book-synopsis">
                   <h2 style="font-size:1.3rem; margin-bottom:0.75rem; color:var(--text-main);">Book Synopsis &amp; Story Overview</h2>
-                  <p>{book['synopsis'].replace(chr(10), '<br><br>')}</p>
+                  <p>{synopsis_html}</p>
                 </div>
 
                 <div class="book-specs-grid">
@@ -421,6 +422,14 @@ class PSEOBuilder:
                   <div class="spec-item">
                     <span class="spec-label">Read Time</span>
                     <span class="spec-val">{book['read_time']}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Original Era</span>
+                    <span class="spec-val">{book.get('publication_era', 'Vintage Mid-Century (1950s)')}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Digital Edition</span>
+                    <span class="spec-val">{book.get('digital_edition_year', '2024')} Ebook</span>
                   </div>
                   <div class="spec-item">
                     <span class="spec-label">Publisher</span>
@@ -493,6 +502,9 @@ class PSEOBuilder:
                         "inLanguage": book["lang"],
                         "genre": book["primary_genre"],
                         "bookFormat": "https://schema.org/EBook",
+                        "copyrightYear": "1954",
+                        "datePublished": "1954",
+                        "bookEdition": f"{book.get('digital_edition_year', '2024')} Digital Ebook Edition",
                         "publisher": {
                             "@type": "Organization",
                             "name": PUBLISHER_NAME,
@@ -528,12 +540,14 @@ class PSEOBuilder:
         print(f"Generating {len(self.engine.series)} Series Pages...")
         for slug, series in self.engine.series.items():
             url = f"{SITE_URL}/series/{slug}/"
-            self.sitemap_urls["series"].append({
-                "loc": url,
-                "lastmod": CURRENT_DATE,
-                "changefreq": "weekly",
-                "priority": "0.85"
-            })
+            is_thin = (series["books_count"] < 2)
+            if not is_thin:
+                self.sitemap_urls["series"].append({
+                    "loc": url,
+                    "lastmod": CURRENT_DATE,
+                    "changefreq": "weekly",
+                    "priority": "0.85"
+                })
 
             series_lang = "af" if any("afrikaans" in l.lower() for l in series["languages"]) and not any("english" in l.lower() for l in series["languages"]) else "en"
             title = f"{series['name']} - Complete Pulp Series Reading Order | Softcover Books"
@@ -622,7 +636,8 @@ class PSEOBuilder:
                 active_target=f"series-{slug}",
                 og_img=series["sample_covers"][0] if series["sample_covers"] else DEFAULT_OG_IMAGE,
                 engine=self.engine,
-                lang=series_lang
+                lang=series_lang,
+                noindex=is_thin
             )
             self.write_page(f"series/{slug}/index.html", html)
 
@@ -631,12 +646,14 @@ class PSEOBuilder:
         print(f"Generating {len(self.engine.authors)} Author Hub Pages...")
         for slug, author in self.engine.authors.items():
             url = f"{SITE_URL}/authors/{slug}/"
-            self.sitemap_urls["authors"].append({
-                "loc": url,
-                "lastmod": CURRENT_DATE,
-                "changefreq": "weekly",
-                "priority": "0.8"
-            })
+            is_thin = (author["books_count"] < 2)
+            if not is_thin:
+                self.sitemap_urls["authors"].append({
+                    "loc": url,
+                    "lastmod": CURRENT_DATE,
+                    "changefreq": "weekly",
+                    "priority": "0.8"
+                })
 
             title = f"{author['name']} - Vintage Pulp Fiction Bibliography | Softcover Books"
             meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels in digital editions."
@@ -722,7 +739,8 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target="authors",
                 og_img=author["sample_covers"][0] if author["sample_covers"] else DEFAULT_OG_IMAGE,
-                engine=self.engine
+                engine=self.engine,
+                noindex=is_thin
             )
             self.write_page(f"authors/{slug}/index.html", html)
 
@@ -740,12 +758,14 @@ class PSEOBuilder:
 
         for slug, genre in self.engine.genres.items():
             url = f"{SITE_URL}/genres/{slug}/"
-            self.sitemap_urls["genres"].append({
-                "loc": url,
-                "lastmod": CURRENT_DATE,
-                "changefreq": "weekly",
-                "priority": "0.85"
-            })
+            is_thin = (genre["books_count"] < 2)
+            if not is_thin:
+                self.sitemap_urls["genres"].append({
+                    "loc": url,
+                    "lastmod": CURRENT_DATE,
+                    "changefreq": "weekly",
+                    "priority": "0.85"
+                })
 
             title = f"{genre['title']} | Softcover Books"
             meta_desc = f"Discover {genre['books_count']}+ classic {genre['name']} vintage pulp fiction novels available online. {genre['tagline']}."
@@ -829,7 +849,8 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target=f"genre-{slug}",
                 og_img=genre["books"][0]["img"] if genre["books"] else DEFAULT_OG_IMAGE,
-                engine=self.engine
+                engine=self.engine,
+                noindex=is_thin
             )
             self.write_page(f"genres/{slug}/index.html", html)
 
@@ -847,12 +868,14 @@ class PSEOBuilder:
 
         for slug, theme in self.engine.themes.items():
             url = f"{SITE_URL}/themes/{slug}/"
-            self.sitemap_urls["themes"].append({
-                "loc": url,
-                "lastmod": CURRENT_DATE,
-                "changefreq": "monthly",
-                "priority": "0.75"
-            })
+            is_thin = (theme["books_count"] < 2)
+            if not is_thin:
+                self.sitemap_urls["themes"].append({
+                    "loc": url,
+                    "lastmod": CURRENT_DATE,
+                    "changefreq": "monthly",
+                    "priority": "0.75"
+                })
 
             title = f"{theme['title']} | Softcover Books"
             meta_desc = f"Browse vintage {theme['name']} pulp fiction ebooks. Discover {theme['books_count']} exciting retro paperback novels."
@@ -942,7 +965,8 @@ class PSEOBuilder:
                 content_html=content_html,
                 active_target="themes",
                 og_img=theme["books"][0]["img"] if theme["books"] else DEFAULT_OG_IMAGE,
-                engine=self.engine
+                engine=self.engine,
+                noindex=is_thin
             )
             self.write_page(f"themes/{slug}/index.html", html)
 
@@ -960,12 +984,18 @@ class PSEOBuilder:
 
         for col in self.engine.collections:
             url = f"{SITE_URL}/collections/{col['slug']}/"
-            self.sitemap_urls["collections"].append({
-                "loc": url,
-                "lastmod": CURRENT_DATE,
-                "changefreq": "monthly",
-                "priority": "0.8"
-            })
+            is_primary = col.get("is_primary", True)
+            primary_slug = col.get("primary_slug", col["slug"])
+            canonical_url = url if is_primary else f"{SITE_URL}/collections/{primary_slug}/"
+            is_thin = col["books_count"] < 2
+
+            if is_primary and not is_thin:
+                self.sitemap_urls["collections"].append({
+                    "loc": url,
+                    "lastmod": CURRENT_DATE,
+                    "changefreq": "monthly",
+                    "priority": "0.8"
+                })
 
             title = f"{col['title']} - Curated Pulp Ebooks | Softcover Books"
             meta_desc = f"{col['description']} Read top-rated vintage pulp fiction books in digital editions today."
@@ -1187,13 +1217,14 @@ class PSEOBuilder:
             html = render_base_html(
                 title=title,
                 meta_desc=meta_desc,
-                canonical_url=url,
+                canonical_url=canonical_url,
                 json_ld=json_ld,
                 content_html=content_html,
                 active_target="collections",
                 og_img=col["books"][0]["img"] if col["books"] else DEFAULT_OG_IMAGE,
                 og_type="article",
-                engine=self.engine
+                engine=self.engine,
+                noindex=is_thin
             )
             self.write_page(f"collections/{col['slug']}/index.html", html)
 
@@ -1685,16 +1716,28 @@ Sitemap: {SITE_URL}/sitemap.xml
         # 1. Author redirects
         redirects.append(("/authors/ap-du-plessis/", "/authors/a-p-du-plessis/"))
 
-        # 2. Legacy book redirects
+        # 2. Legacy book redirects (including diacritic fixes)
         legacy_books = [
             ("/books/aasvo-ls-van-die-kalahari/", "/books/aasvoels-van-die-kalahari/"),
             ("/books/aasvo-ls-van-die-see/", "/books/aasvoels-van-die-see/"),
             ("/books/die-p-rel-van-malsia/", "/books/die-perel-van-malsia/"),
+            ("/books/die-buiter-se-vier/", "/books/die-buiter-seevier/"),
             ("/books/droster-in-algeri/", "/books/droster-in-algerie/"),
         ]
         redirects.extend(legacy_books)
 
-        # 3. Legacy theme redirects
+        # 3. Explicit 301 Redirects for 6 Orphaned Collection URLs
+        orphaned_collections = [
+            ("/collections/best-wilderness-bushveld-safari-ebooks-on-amazon-kindle/", "/collections/best-wilderness-bushveld-safari-ebooks-on-amazon/"),
+            ("/collections/must-read-revolver-shootout-action-thrillers-for-kindle/", "/collections/must-read-revolver-shootout-action-thrillers/"),
+            ("/collections/top-10-retro-sci-fi-space-opera-pulp-fiction-classics/", "/collections/top-10-pulp-fiction-masterpieces-pulp-fiction-classics/"),
+            ("/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-5-on-amazon/", "/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-10-on-amazon/"),
+            ("/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-5-on-amazon/", "/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-10-on-amazon/"),
+            ("/collections/best-underworld-smuggling-rings-ebooks-on-amazon-kindle/", "/collections/best-underworld-smuggling-rings-ebooks-on-amazon/"),
+        ]
+        redirects.extend(orphaned_collections)
+
+        # 4. Legacy theme redirects
         legacy_themes = [
             ("/themes/namib/", "/themes/sahara-desert-peril/"),
             ("/themes/namib-desert-peril/", "/themes/sahara-desert-peril/"),
@@ -1716,7 +1759,7 @@ Sitemap: {SITE_URL}/sitemap.xml
         ]
         redirects.extend(legacy_themes)
 
-        # 4. Old static collections
+        # 5. Old static collections
         old_static = [
             ("Best Retro Crime Fiction on Amazon Kindle", "best-retro-crime-fiction-on-amazon"),
             ("Short Pulp Stories under $3", "short-pulp-stories-under-10"),
@@ -1736,7 +1779,7 @@ Sitemap: {SITE_URL}/sitemap.xml
             if target_slug in collection_slugs:
                 redirects.append((f"/collections/{old_slug}/", f"/collections/{target_slug}/"))
 
-        # 5. Programmatic historical variations
+        # 6. Programmatic historical variations
         old_intents_patterns = [
             ("Best {} Ebooks on Amazon Kindle", "best-{}-ebooks-on-amazon"),
             ("Must-Read {} Thrillers for Kindle", "must-read-{}-thrillers"),
@@ -1812,20 +1855,34 @@ Sitemap: {SITE_URL}/sitemap.xml
         redirects.append(("/collections/best-retro-sci-fi-space-opera-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-novels-for-vacation-reading/"))
         redirects.append(("/collections/best-retro-ai-and-cyber-thrillers-ebooks-on-amazon-kindle/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
 
-        # Deduplicate and format rules
+        # Deduplicate and format rules (covering both trailing-slash and non-trailing-slash requests)
         seen_sources = set()
         redirect_rules = [
             "# Cloudflare Pages Redirect Rules",
             "# 301 Permanent Redirects for legacy routes, collections, themes, and authors"
         ]
         for src, dst in redirects:
-            if src not in seen_sources and src != dst:
-                seen_sources.add(src)
-                redirect_rules.append(f"{src} {dst} 301")
+            # Ensure trailing slash on dst if it's a directory path
+            if not dst.endswith("/") and "." not in dst:
+                dst = dst + "/"
+            
+            # 1. Add trailing-slash source
+            src_slash = src if src.endswith("/") or "." in src else src + "/"
+            if src_slash not in seen_sources and src_slash != dst:
+                seen_sources.add(src_slash)
+                redirect_rules.append(f"{src_slash} {dst} 301")
+            
+            # 2. Add non-trailing-slash source
+            src_no_slash = src.rstrip("/")
+            if src_no_slash and src_no_slash not in seen_sources and src_no_slash != dst:
+                seen_sources.add(src_no_slash)
+                redirect_rules.append(f"{src_no_slash} {dst} 301")
 
         redirect_content = "\n".join(redirect_rules) + "\n"
         self.write_page("_redirects", redirect_content)
         self.write_page("public/_redirects", redirect_content)
+        if os.path.exists(os.path.join(self.out_dir, "dist")):
+            self.write_page("dist/_redirects", redirect_content)
 
 if __name__ == "__main__":
     website_dir = os.path.dirname(os.path.abspath(__file__))

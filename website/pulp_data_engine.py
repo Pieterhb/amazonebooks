@@ -8,6 +8,7 @@ import re
 import json
 import urllib.parse
 import unicodedata
+import html
 from bs4 import BeautifulSoup
 
 from site_config import SITE_URL, AMAZON_AFFILIATE_TAG, SITE_NAME
@@ -16,12 +17,30 @@ def slugify(text):
     """Generate a clean URL slug from string with ASCII transliteration for accented characters."""
     if not text:
         return ""
+    # Unescape any HTML entities like &euml;, &ecirc;, &#235;, etc.
+    text = html.unescape(str(text))
+    # Replace common non-decomposing ligatures and special symbols
+    char_map = {
+        'æ': 'ae', 'œ': 'oe', 'ß': 'ss', 'ø': 'o', 'ð': 'd', 'þ': 'th',
+        'Æ': 'ae', 'Œ': 'oe', 'Ø': 'o', 'Þ': 'th'
+    }
+    for k, v in char_map.items():
+        text = text.replace(k, v)
     # Transliterate unicode characters (e.g. ë -> e, ê -> e, é -> e, ô -> o, á -> a)
-    normalized = unicodedata.normalize('NFKD', str(text))
+    normalized = unicodedata.normalize('NFKD', text)
     ascii_text = normalized.encode('ascii', 'ignore').decode('utf-8')
-    ascii_text = re.sub(r'[\'\"’]', '', ascii_text.lower())
+    ascii_text = re.sub(r'[\'\"’`]', '', ascii_text.lower())
     ascii_text = re.sub(r'[^a-z0-9]+', '-', ascii_text)
     return ascii_text.strip('-')
+
+def markdown_to_html(text):
+    """Convert basic markdown formatting (bold, italics, linebreaks) to HTML."""
+    if not text:
+        return ""
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', str(text))
+    text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+    text = text.replace('\n', '<br>')
+    return text
 
 def strip_markdown(text):
     """Remove markdown syntax (*, #, _, [, ], etc.) for clean plain-text meta and schema."""
@@ -184,6 +203,9 @@ class PulpDataEngine:
             synopsis = self.generate_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"], store_key=store_key)
 
             read_time = "4 – 8 hours" if ("omnibus" in title_display.lower() or "box set" in title_display.lower()) else "1 – 4 hours"
+            publication_era = "Vintage Mid-Century Pulp Era (1950s–1960s)"
+            digital_edition_year = "2024"
+            meta_desc = self.generate_meta_description(title_display, author, b["series"], b["num"], primary_genre, b["lang"], themes)
 
             book_obj = {
                 "id": idx + 1,
@@ -215,6 +237,9 @@ class PulpDataEngine:
                 "theme_slugs": [slugify(th) for th in themes],
                 "synopsis": synopsis,
                 "read_time": read_time,
+                "publication_era": publication_era,
+                "digital_edition_year": digital_edition_year,
+                "meta_description": meta_desc,
             }
             self.books.append(book_obj)
 
@@ -327,6 +352,28 @@ class PulpDataEngine:
             themes.append("English Translated Classics")
 
         return primary_genre, subgenres, list(dict.fromkeys(themes))
+
+    def generate_meta_description(self, title, author, series, num, genre, lang, themes):
+        """Generate a unique, high-CTR meta description (<160 chars) per book."""
+        theme_snippet = f"featuring {themes[0].lower()}" if themes else "delivering vintage action"
+        if len(themes) > 1 and len(theme_snippet) < 32:
+            theme_snippet += f" & {themes[1].lower()}"
+
+        series_info = ""
+        if series and series != "Other":
+            if num and str(num) not in ("", "999", "None"):
+                series_info = f" (Book #{num} in {series})"
+            else:
+                series_info = f" ({series})"
+
+        lang_str = f" in {lang}" if lang and lang != "English" else ""
+
+        meta = f"Read {title} by {author}{series_info}. Vintage {genre.lower()} pulp novel{lang_str} {theme_snippet}. Instant digital download."
+        if len(meta) > 160:
+            meta = f"Read {title} by {author}{series_info}. Vintage {genre.lower()} pulp ebook{lang_str}. Instant digital download."
+        if len(meta) > 160:
+            meta = f"Read {title} by {author}. Vintage {genre.lower()} pulp fiction ebook. Instant digital download."
+        return meta
 
     def generate_synopsis(self, title, author, series, genre, lang, num, store_key="amazon"):
         """Generate high-engagement, immersive pulp fiction synopsis."""
@@ -748,7 +795,9 @@ class PulpDataEngine:
                 "description": desc,
                 "books_count": len(matching),
                 "books": matching,
-                "category": filter_category
+                "category": filter_category,
+                "is_primary": True,
+                "primary_slug": slug
             })
 
         intents = [
@@ -828,6 +877,9 @@ class PulpDataEngine:
         ]
 
         for topic_name, category in topics:
+            primary_title = intents[0][0].format(topic_name)
+            primary_slug = slugify(primary_title)
+
             for pattern, desc_pattern in intents:
                 col_title = pattern.format(topic_name)
                 col_desc = desc_pattern.format(topic_name)
@@ -863,7 +915,9 @@ class PulpDataEngine:
                     "description": col_desc,
                     "books_count": len(matching),
                     "books": matching,
-                    "category": topic_name
+                    "category": topic_name,
+                    "is_primary": (col_slug == primary_slug),
+                    "primary_slug": primary_slug
                 })
 
     def build_series(self):
