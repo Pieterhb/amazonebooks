@@ -1812,7 +1812,7 @@ Sitemap: {SITE_URL}/sitemap.xml
             "French Foreign Legion", "Sahara Military Survival", "High Seas Pirate Action", "Swashbuckling Buccaneer",
             "Hardboiled Private Detective", "1950s Undercover Crime", "Cape Frontier Vigilante", "African Jungle Lost World",
             "Wilderness Bushveld Safari", "Retro Sci-Fi Space Opera", "Francois Alwyn Venter Adventure", "Gerrie Radlof Swashbuckler",
-            "Braam le Roux Jungle Hero", "Sandbergh Beyers Military", "Andreas du Plessis Noir Detective", "A.P. du Plessis Noir Detective", "Die Buiter Masked Robber",
+            "Braam le Roux Jungle Hero", "Sandbergh Beyers Military", "Andreas du Plessis Noir Detective", "Die Buiter Masked Robber",
             "Oloff the Pirate High Seas", "The Black Leopard African", "Wanderer Detective Sleuth", "SA Police Hardboiled Crime",
             "Red Ruby Maritime Adventure", "Jungle Hawk Bush Pilot", "Jungle Hawk Frontier Western", "Untamed Lowveld Safari Mystery",
             "Ryk Schoonraad Private Eye", "Afrikaans Vintage Ebooks", "English Translated Pulp Classics", "Desert Outpost Sieges",
