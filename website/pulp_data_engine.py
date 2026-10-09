@@ -12,6 +12,12 @@ import html
 from bs4 import BeautifulSoup
 
 from site_config import SITE_URL, AMAZON_AFFILIATE_TAG, SITE_NAME
+from enrichment_engine import (
+    generate_rich_book_synopsis,
+    generate_story_highlights,
+    generate_preservation_note,
+    generate_unique_meta_description
+)
 
 def slugify(text):
     """Generate a clean URL slug from string with ASCII transliteration for accented characters."""
@@ -87,6 +93,7 @@ class PulpDataEngine:
         self.themes = {}
         self.collections = []
         self.series = {}
+        self.redundant_collection_redirects = []
         self.load_data()
 
     def load_data(self):
@@ -203,12 +210,14 @@ class PulpDataEngine:
                 seller_name = "Amazon"
 
             primary_genre, subgenres, themes = self.classify_book(title_display, b["series"], author, b["lang"])
-            synopsis = self.generate_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"], store_key=store_key)
+            synopsis = generate_rich_book_synopsis(title_display, author, b["series"], primary_genre, b["lang"], b["num"], store_key=store_key)
+            highlights = generate_story_highlights(title_display, author, b["series"], primary_genre, b["lang"], b["num"])
+            preservation = generate_preservation_note(author, title_display)
+            meta_desc = generate_unique_meta_description(title_display, author, b["series"], b["num"], primary_genre, b["lang"])
 
             read_time = "4 – 8 hours" if ("omnibus" in title_display.lower() or "box set" in title_display.lower()) else "1 – 4 hours"
             publication_era = "Vintage Mid-Century Pulp Era (1950s–1960s)"
             digital_edition_year = "2024"
-            meta_desc = self.generate_meta_description(title_display, author, b["series"], b["num"], primary_genre, b["lang"], themes)
 
             book_obj = {
                 "id": idx + 1,
@@ -239,12 +248,32 @@ class PulpDataEngine:
                 "themes": themes,
                 "theme_slugs": [slugify(th) for th in themes],
                 "synopsis": synopsis,
+                "story_highlights": highlights,
+                "preservation_note": preservation,
+                "prev_book": None,
+                "next_book": None,
                 "read_time": read_time,
                 "publication_era": publication_era,
                 "digital_edition_year": digital_edition_year,
                 "meta_description": meta_desc,
             }
             self.books.append(book_obj)
+
+        # Wire series navigation links (prev_book and next_book)
+        series_groups = {}
+        for b in self.books:
+            s_slug = b["series_slug"]
+            if s_slug and b["series"] != "Other":
+                if s_slug not in series_groups:
+                    series_groups[s_slug] = []
+                series_groups[s_slug].append(b)
+
+        for s_slug, s_books in series_groups.items():
+            for i, b in enumerate(s_books):
+                if i > 0:
+                    b["prev_book"] = {"title": s_books[i-1]["title"], "slug": s_books[i-1]["slug"]}
+                if i < len(s_books) - 1:
+                    b["next_book"] = {"title": s_books[i+1]["title"], "slug": s_books[i+1]["slug"]}
 
         self.build_authors()
         self.build_genres()
@@ -883,45 +912,47 @@ class PulpDataEngine:
             primary_title = intents[0][0].format(topic_name)
             primary_slug = slugify(primary_title)
 
-            for pattern, desc_pattern in intents:
-                col_title = pattern.format(topic_name)
-                col_desc = desc_pattern.format(topic_name)
-                col_slug = slugify(col_title)
+            # Match books for this topic
+            if category == "All":
+                h = sum(ord(c) for c in primary_title) % len(self.books)
+                matching = self.books[h:h+16]
+                if len(matching) < 8:
+                    matching = self.books[:16]
+            elif category in ["Afrikaans", "English"]:
+                matching = [b for b in self.books if category.lower() in b["lang"].lower()][:18]
+            elif category in self.genres:
+                matching = self.genres[category]["books"][:18]
+            elif category in self.authors:
+                matching = self.authors[category]["books"][:18]
+            elif any(a["name"] == category for a in self.authors.values()):
+                matching = [b for b in self.books if b["author"] == category][:18]
+            elif any(b["series"] == category for b in self.books):
+                matching = [b for b in self.books if b["series"] == category][:18]
+            else:
+                kw = topic_name.lower().split()[0]
+                matching = [b for b in self.books if kw in b["title"].lower() or kw in b["synopsis"].lower() or kw in b["primary_genre"].lower()][:18]
+                if not matching:
+                    matching = self.books[:16]
 
-                if any(c["slug"] == col_slug for c in self.collections):
-                    continue
-
-                if category == "All":
-                    h = sum(ord(c) for c in col_title) % len(self.books)
-                    matching = self.books[h:h+16]
-                    if len(matching) < 8:
-                        matching = self.books[:16]
-                elif category in ["Afrikaans", "English"]:
-                    matching = [b for b in self.books if category.lower() in b["lang"].lower()][:18]
-                elif category in self.genres:
-                    matching = self.genres[category]["books"][:18]
-                elif category in self.authors:
-                    matching = self.authors[category]["books"][:18]
-                elif any(a["name"] == category for a in self.authors.values()):
-                    matching = [b for b in self.books if b["author"] == category][:18]
-                elif any(b["series"] == category for b in self.books):
-                    matching = [b for b in self.books if b["series"] == category][:18]
-                else:
-                    kw = topic_name.lower().split()[0]
-                    matching = [b for b in self.books if kw in b["title"].lower() or kw in b["synopsis"].lower() or kw in b["primary_genre"].lower()][:18]
-                    if not matching:
-                        matching = self.books[:16]
-
+            primary_desc = intents[0][1].format(topic_name)
+            if not any(c["slug"] == primary_slug for c in self.collections):
                 self.collections.append({
-                    "title": col_title,
-                    "slug": col_slug,
-                    "description": col_desc,
+                    "title": primary_title,
+                    "slug": primary_slug,
+                    "description": primary_desc,
                     "books_count": len(matching),
                     "books": matching,
                     "category": topic_name,
-                    "is_primary": (col_slug == primary_slug),
+                    "is_primary": True,
                     "primary_slug": primary_slug
                 })
+
+            # Record 301 redirects for the 9 other redundant intent permutations
+            for pattern, _ in intents[1:]:
+                alt_title = pattern.format(topic_name)
+                alt_slug = slugify(alt_title)
+                if alt_slug != primary_slug:
+                    self.redundant_collection_redirects.append((f"/collections/{alt_slug}/", f"/collections/{primary_slug}/"))
 
     def build_series(self):
         """Build structured series collections with story descriptions, reading order, and metadata."""

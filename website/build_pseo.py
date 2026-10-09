@@ -16,6 +16,7 @@ from site_config import (
     PUBLISHER_LOGO, DEFAULT_OG_IMAGE
 )
 from pulp_data_engine import PulpDataEngine, slugify, strip_markdown, markdown_to_html
+from enrichment_engine import get_theme_editorial_guide, get_collection_editorial_guide
 
 CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
 
@@ -383,7 +384,64 @@ class PSEOBuilder:
             for th in book["themes"][:4]:
                 tag_pills.append(f'<a href="/themes/{slugify(th)}/" class="tag-pill">🎯 {th}</a>')
 
-            synopsis_html = markdown_to_html(book['synopsis'])
+            synopsis_paras = [p.strip() for p in book['synopsis'].split("\n\n") if p.strip()]
+            synopsis_html = "".join(f'<p style="margin-bottom:1rem; line-height:1.75; color:var(--text-main);">{markdown_to_html(p)}</p>' for p in synopsis_paras)
+
+            # Story Highlights cards
+            highlights_html = ""
+            if book.get("story_highlights"):
+                hl_cards = []
+                for hl in book["story_highlights"]:
+                    hl_cards.append(f"""
+                    <div style="background:var(--bg-color); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem;">
+                      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.35rem;">
+                        <span style="font-size:1.2rem;">{hl['icon']}</span>
+                        <strong style="color:var(--accent-yellow); font-size:0.9rem;">{escape_html(hl['label'])}</strong>
+                      </div>
+                      <p style="font-size:0.86rem; color:var(--text-main); margin:0; line-height:1.45;">{escape_html(hl['text'])}</p>
+                    </div>
+                    """)
+                highlights_html = f"""
+                <div style="margin-top:1.75rem; margin-bottom:1.5rem;">
+                  <h3 style="font-size:1.1rem; color:var(--accent-yellow); margin-bottom:0.75rem;">⚡ Story Highlights &amp; Key Themes</h3>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.85rem;">
+                    {"".join(hl_cards)}
+                  </div>
+                </div>
+                """
+
+            # Series Reading Order Navigation Bar
+            series_nav_html = ""
+            if book.get("series") and book["series"] != "Other" and (book.get("prev_book") or book.get("next_book")):
+                prev_link = f'<a href="/books/{book["prev_book"]["slug"]}/" class="btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem; text-decoration:none;">⬅️ Prev: {escape_html(book["prev_book"]["title"][:28])}</a>' if book.get("prev_book") else '<span></span>'
+                next_link = f'<a href="/books/{book["next_book"]["slug"]}/" class="btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem; text-decoration:none;">Next: {escape_html(book["next_book"]["title"][:28])} ➡️</a>' if book.get("next_book") else '<span></span>'
+                series_nav_html = f"""
+                <div style="margin:2.5rem 0 2rem; padding:1.25rem 1.5rem; background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                    <span style="font-weight:700; color:var(--accent-yellow); font-size:1rem;">📖 {escape_html(book['series'])} Reading Order</span>
+                    <a href="/series/{book['series_slug']}/" style="font-weight:600; font-size:0.85rem; color:var(--text-muted); text-decoration:none;">View Full Series ({len(self.engine.series.get(book['series_slug'], {}).get('books', []))} Books) &rarr;</a>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+                    {prev_link}
+                    {next_link}
+                  </div>
+                </div>
+                """
+
+            # Archival Preservation Note
+            preservation_html = ""
+            if book.get("preservation_note"):
+                preservation_html = f"""
+                <div style="margin:2rem 0; padding:1.25rem 1.5rem; background:rgba(232, 160, 32, 0.05); border:1px solid var(--border); border-radius:10px;">
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+                    <span>🏛️</span>
+                    <strong style="color:var(--accent-yellow); font-size:0.95rem;">Vintage Pulp Preservation Project</strong>
+                  </div>
+                  <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin:0;">
+                    {markdown_to_html(book['preservation_note'])}
+                  </p>
+                </div>
+                """
 
             content_html = f"""
             {breadcrumbs_html}
@@ -411,8 +469,10 @@ class PSEOBuilder:
 
                 <div class="book-synopsis">
                   <h2 style="font-size:1.3rem; margin-bottom:0.75rem; color:var(--text-main);">Book Synopsis &amp; Story Overview</h2>
-                  <p>{synopsis_html}</p>
+                  {synopsis_html}
                 </div>
+
+                {highlights_html}
 
                 <div class="book-specs-grid">
                   <div class="spec-item">
@@ -454,6 +514,9 @@ class PSEOBuilder:
                 </div>
               </div>
             </section>
+
+            {series_nav_html}
+            {preservation_html}
 
             <!-- More From Author -->
             {f'''
@@ -877,7 +940,7 @@ class PSEOBuilder:
 
         for slug, theme in self.engine.themes.items():
             url = f"{SITE_URL}/themes/{slug}/"
-            is_thin = (theme["books_count"] < 2)
+            is_thin = (theme["books_count"] < 3)
             if not is_thin:
                 self.sitemap_urls["themes"].append({
                     "loc": url,
@@ -905,6 +968,8 @@ class PSEOBuilder:
             related_themes = all_other_themes[h:h+6]
             related_themes_html = "".join([f'<a href="/themes/{t["slug"]}/" class="tag-pill" style="padding:0.4rem 0.8rem; font-size:0.85rem;">🎯 {t["name"]} ({t["books_count"]})</a>' for t in related_themes])
 
+            theme_guide_text = get_theme_editorial_guide(theme['name'], theme['books_count'])
+
             content_html = f"""
             {breadcrumbs_html}
             
@@ -912,7 +977,7 @@ class PSEOBuilder:
               <div class="hero-badge">🎯 Niche Pulp Theme</div>
               <h1>{escape_html(theme['name'])} Pulp Fiction Ebooks</h1>
               <p class="hub-tagline">{escape_html(theme['tagline'])}</p>
-              <p class="hub-description">{escape_html(theme['guide'])}</p>
+              <p class="hub-description">{escape_html(theme_guide_text)}</p>
             </section>
 
             <section style="margin-bottom:3rem;">
@@ -932,7 +997,7 @@ class PSEOBuilder:
             </section>
             """
 
-            clean_theme_guide = strip_markdown(theme["guide"])
+            clean_theme_guide = strip_markdown(theme_guide_text)
             json_ld = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -1040,28 +1105,11 @@ class PSEOBuilder:
             first_books = col["books"][:3]
             featured_titles = ", ".join(f'"{escape_html(b["title"])}" ' for b in first_books).strip() if first_books else ""
             featured_authors_set = list({b.get("author", "") for b in col["books"] if b.get("author")})[:3]
-            featured_authors_str = ", ".join(escape_html(a) for a in featured_authors_set) if featured_authors_set else "skilled pulp authors"
-
-            editorial_para1 = (
-                f"This curated reading list brings together {col['books_count']} handpicked {escape_html(col_category)} ebooks "
-                f"that represent the finest examples of vintage pulp fiction available on Amazon Kindle today. "
-                f"Whether you are a longtime collector of retro paperbacks or a first-time explorer of the genre, "
-                f"this collection has been assembled to give you the most satisfying reading experience possible. "
-                f"Titles include {featured_titles}and more."
-            )
-            editorial_para2 = (
-                f"Each book in this list has been selected for its authenticity to the classic pulp tradition \u2014 "
-                f"fast pacing, vivid settings, unforgettable protagonists, and the kind of raw storytelling energy "
-                f"that defined an era. Works by {featured_authors_str} appear here alongside other masters of the form. "
-                f"All titles are available as affordable Kindle ebooks, many under $5, making this an exceptional value "
-                f"for readers who want quality without overspending."
-            )
-            editorial_para3 = (
-                f"Reading pulp fiction is more than entertainment \u2014 it is a journey into a world where heroes acted without hesitation, "
-                f"villains were truly menacing, and adventure lurked around every corner. "
-                f"This {escape_html(col['title'])} collection preserves that spirit in fully digital format, "
-                f"letting you carry an entire library in your pocket. "
-                f"Start with any title that catches your eye \u2014 every one of these ebooks will reward you handsomely."
+            editorial_para1, editorial_para2, editorial_para3 = get_collection_editorial_guide(
+                col["title"],
+                col_category,
+                col["books_count"],
+                col["books"]
             )
 
             editorial_html = f"""
@@ -1864,9 +1912,11 @@ Sitemap: {SITE_URL}/sitemap.xml
         redirects.append(("/collections/action-packed-retro-sci-fi-space-opera-stories-for-fast-reading/", "/collections/action-packed-pulp-fiction-masterpieces-stories-for-fast-reading/"))
         redirects.append(("/collections/ultimate-guide-to-retro-sci-fi-space-opera-novels/", "/collections/ultimate-guide-to-pulp-fiction-masterpieces-novels/"))
         redirects.append(("/collections/best-retro-sci-fi-space-opera-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-novels-for-vacation-reading/"))
-        redirects.append(("/collections/best-retro-ai-and-cyber-thrillers-ebooks-on-amazon-kindle/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        # 7. Add all redundant collection redirects (540 permutation variants redirected to primary guides)
+        if hasattr(self.engine, "redundant_collection_redirects"):
+            redirects.extend(self.engine.redundant_collection_redirects)
 
-        # Deduplicate and format rules (covering both trailing-slash and non-trailing-slash requests)
+        # Deduplicate and format rules (normalized with trailing slash for Cloudflare Pages)
         seen_sources = set()
         redirect_rules = [
             "# Cloudflare Pages Redirect Rules",
@@ -1877,17 +1927,10 @@ Sitemap: {SITE_URL}/sitemap.xml
             if not dst.endswith("/") and "." not in dst:
                 dst = dst + "/"
             
-            # 1. Add trailing-slash source
             src_slash = src if src.endswith("/") or "." in src else src + "/"
             if src_slash not in seen_sources and src_slash != dst:
                 seen_sources.add(src_slash)
                 redirect_rules.append(f"{src_slash} {dst} 301")
-            
-            # 2. Add non-trailing-slash source
-            src_no_slash = src.rstrip("/")
-            if src_no_slash and src_no_slash not in seen_sources and src_no_slash != dst:
-                seen_sources.add(src_no_slash)
-                redirect_rules.append(f"{src_no_slash} {dst} 301")
 
         redirect_content = "\n".join(redirect_rules) + "\n"
         self.write_page("_redirects", redirect_content)
