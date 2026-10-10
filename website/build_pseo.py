@@ -863,8 +863,7 @@ class PSEOBuilder:
               <h1>{escape_html(genre['title'])}</h1>
               <p class="hub-tagline">{escape_html(genre['tagline'])}</p>
               
-              {f'<div class="tags-row" style="margin-bottom:1rem;"><strong>Key Tropes:</strong> {"".join(trope_pills)}</div>' if trope_pills else ''}
-              {f'<div class="tags-row" style="margin-bottom:1.5rem;"><strong>Subgenres:</strong> {"".join(subgenre_pills)}</div>' if subgenre_pills else ''}
+              {f'<div class="tags-row" style="margin-bottom:1.5rem;"><strong>Key Tropes:</strong> {"".join(trope_pills)}</div>' if trope_pills else ''}
 
               <p class="hub-description">{escape_html(genre['guide'])}</p>
             </section>
@@ -1816,6 +1815,45 @@ Sitemap: {SITE_URL}/sitemap.xml
             ("/themes/space-opera/", "/themes/ai-created-fiction/"),
         ]
         redirects.extend(legacy_themes)
+
+        # 4b. Deleted subgenres redirected to parent Popular Genres (Oct 2026)
+        deleted_subgenres = [
+            ("/genres/military-pulp/", "/genres/desert-adventure-foreign-legion/"),
+            ("/genres/french-foreign-legion/", "/genres/desert-adventure-foreign-legion/"),
+            ("/genres/survival-action/", "/genres/desert-adventure-foreign-legion/"),
+            ("/genres/historical-adventure/", "/genres/desert-adventure-foreign-legion/"),
+            ("/genres/high-seas-adventure/", "/genres/pirate-high-seas-swashbuckler/"),
+            ("/genres/naval-fiction/", "/genres/pirate-high-seas-swashbuckler/"),
+            ("/genres/swashbuckler/", "/genres/pirate-high-seas-swashbuckler/"),
+            ("/genres/historical-action/", "/genres/pirate-high-seas-swashbuckler/"),
+            ("/genres/vigilante-pulp/", "/genres/masked-rogue-highwayman/"),
+            ("/genres/cape-frontier-action/", "/genres/masked-rogue-highwayman/"),
+            ("/genres/historical-romance-intrigue/", "/genres/masked-rogue-highwayman/"),
+            ("/genres/rebellion-thriller/", "/genres/masked-rogue-highwayman/"),
+            ("/genres/african-wilderness-pulp/", "/genres/jungle-adventure-lost-worlds/"),
+            ("/genres/lost-civilizations/", "/genres/jungle-adventure-lost-worlds/"),
+            ("/genres/feral-hero-action/", "/genres/jungle-adventure-lost-worlds/"),
+            ("/genres/safari-mystery/", "/genres/jungle-adventure-lost-worlds/"),
+            ("/genres/1950s-crime-fiction/", "/genres/hardboiled-detective-noir-crime/"),
+            ("/genres/undercover-thriller/", "/genres/hardboiled-detective-noir-crime/"),
+            ("/genres/police-procedural/", "/genres/hardboiled-detective-noir-crime/"),
+            ("/genres/mystery-suspense/", "/genres/hardboiled-detective-noir-crime/"),
+            ("/genres/lowveld-westerns/", "/genres/safari-bushveld-adventure/"),
+            ("/genres/bushveld-thriller/", "/genres/safari-bushveld-adventure/"),
+            ("/genres/wilderness-danger/", "/genres/safari-bushveld-adventure/"),
+            ("/genres/african-expedition/", "/genres/safari-bushveld-adventure/"),
+            ("/genres/western-short-stories/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/cowboy-action/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/short-story-anthologies/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/romantic-short-stories/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/pulp-romance/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/scary-western-horror-thrillers/", "/genres/western-romance-pulp-anthologies/"),
+            ("/genres/classic-pulp/", "/genres/vintage-pulp-thriller-suspense/"),
+            ("/genres/action-thriller/", "/genres/vintage-pulp-thriller-suspense/"),
+            ("/genres/mens-adventure/", "/genres/vintage-pulp-thriller-suspense/"),
+            ("/genres/vintage-suspense/", "/genres/vintage-pulp-thriller-suspense/"),
+        ]
+        redirects.extend(deleted_subgenres)
 
         # 5. Old static collections
         old_static = [

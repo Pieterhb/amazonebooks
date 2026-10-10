@@ -543,7 +543,7 @@ class PulpDataEngine:
                     "From F.A. Venter's iconic Sahara Adventure Series to Sandbergh Beyers' high-tension military survival tales, these books deliver non-stop combat, fortress sieges, and desert reconnaissance. "
                     "Featuring legendary battles against ruthless raiders, perilous sandstorms, and deep bonds of military brotherhood, this genre is the cornerstone of mid-century adventure pulp."
                 ),
-                "tropes": ["Foreign Legion Garrisons", "Desert Sandstorms", "Oasis Ambushes", "Honor & Vengeance", "Cavalry Charges", "Desert Treachery"]
+                "tropes": ["Foreign Legion Garrisons", "Desert Sandstorms", "Oasis Ambushes", "Honor & Vengeance", "Cavalry Charges", "Desert Treachery", "Military Pulp", "French Foreign Legion", "Survival Action", "Historical Adventure"]
             },
             "Pirate & High Seas Swashbuckler": {
                 "title": "Pirate & High Seas Swashbuckling Pulp Ebooks",
@@ -553,7 +553,7 @@ class PulpDataEngine:
                     "Featuring Gerrie Radlof's legendary 'Oloff die Seerower' (Oloff the Pirate) and 'Maagd van die See' (Red Ruby) sagas, these stories capture the ferocious glory of naval combat, hidden gold islands, and cutlass-wielding buccaneers. "
                     "Experience unforgettable maritime adventures full of naval broadsides, mutinous plots, and heroic escapes."
                 ),
-                "tropes": ["Pirate Galleons", "Broadside Cannon Duels", "Hidden Treasure", "Cutlass Swordplay", "Mutinous Crews", "Ghost Ships"]
+                "tropes": ["Pirate Galleons", "Broadside Cannon Duels", "Hidden Treasure", "Cutlass Swordplay", "Mutinous Crews", "Ghost Ships", "High Seas Adventure", "Naval Fiction", "Swashbuckler", "Historical Action"]
             },
             "Masked Rogue & Highwayman": {
                 "title": "Masked Rogue & Cape Highwayman Pulp Fiction",
@@ -563,7 +563,7 @@ class PulpDataEngine:
                     "Striking fear into corrupt magistrates and greedy colonial tyrants, the masked hero fights for the oppressed across rugged mountain passes and candlelit manors. "
                     "Blending romantic intrigue, brilliant sword duels, and midnight ambushes, these timeless tales represent the pinnacle of swashbuckling historical pulp."
                 ),
-                "tropes": ["Masked Vigilantes", "Midnight Horse Rides", "Swordplay & Dueling", "Outlaw Justice", "Colonial Tyranny", "Romantic Intrigue"]
+                "tropes": ["Masked Vigilantes", "Midnight Horse Rides", "Swordplay & Dueling", "Outlaw Justice", "Colonial Tyranny", "Romantic Intrigue", "Vigilante Pulp", "Cape Frontier Action", "Historical Romance & Intrigue", "Rebellion Thriller"]
             },
             "Jungle Adventure & Lost Worlds": {
                 "title": "Jungle Adventure & Lost Worlds Pulp Novels",
@@ -573,7 +573,7 @@ class PulpDataEngine:
                     "Braam le Roux's immortal 'Die Swart Luiperd' (The Black Leopard) series leads readers through treacherous swamps, ancient cursed ruins, and heart-pounding battles against rogue beasts and ruthless adversaries. "
                     "Experience the raw, feral excitement of classic mid-century African jungle pulp."
                 ),
-                "tropes": ["Masked Jungle Heroes", "Lost Civilizations", "Apex Predators", "Tribal Feuds", "Ancient Curses", "Untamed Wilderness"]
+                "tropes": ["Masked Jungle Heroes", "Lost Civilizations", "Apex Predators", "Tribal Feuds", "Ancient Curses", "Untamed Wilderness", "African Wilderness Pulp", "Feral Hero Action", "Safari Mystery"]
             },
             "Hardboiled Detective & Noir Crime": {
                 "title": "Hardboiled Detective & 1950s Crime Noir Pulp Ebooks",
@@ -583,7 +583,7 @@ class PulpDataEngine:
                     "Featuring Gerrie Radlof's 'SA Polisie' and 'Swerwer Speurder' (The Wanderer Detective), alongside Andreas du Plessis' 'Ryk Schoonraad' series, these gripping stories deliver fast-paced shootouts, cunning smugglers, and relentless sleuthing. "
                     "Perfect for fans of classic Mickey Spillane, Raymond Chandler, and vintage hardboiled paperback noir."
                 ),
-                "tropes": ["Private Investigators", "1950s Noir Crime", "Undercover Police", "Revolver Shootouts", "Smuggling Syndicates", "Femmes Fatales"]
+                "tropes": ["Private Investigators", "1950s Noir Crime", "Undercover Police", "Revolver Shootouts", "Smuggling Syndicates", "Femmes Fatales", "1950s Crime Fiction", "Undercover Thriller", "Police Procedural", "Mystery Suspense"]
             },
             "Safari & Bushveld Adventure": {
                 "title": "Safari & Bushveld Mystery Pulp Fiction",
@@ -593,7 +593,7 @@ class PulpDataEngine:
                     "Featuring 'Untamed Lowveld' and 'Jungle Hawk' tales, these novels pit brave horsemen, rangers, and frontiersmen against outlaws, illegal diamond syndicates, and hostile terrain. "
                     "Experience authentic, fast-paced frontier suspense."
                 ),
-                "tropes": ["Lowveld Outlaws", "Diamond Smugglers", "Safari Expeditions", "Frontier Justice", "Bushveld Intrigue", "Remote Outposts"]
+                "tropes": ["Lowveld Outlaws", "Diamond Smugglers", "Safari Expeditions", "Frontier Justice", "Bushveld Intrigue", "Remote Outposts", "Lowveld Westerns", "Bushveld Thriller", "Wilderness Danger", "African Expedition"]
             },
             "Western, Romance & Pulp Anthologies": {
                 "title": "Western, Romance & Pulp Anthology Ebooks",
@@ -602,7 +602,7 @@ class PulpDataEngine:
                     "Explore our eclectic collection of vintage-style short story anthologies. "
                     "From high-noon cowboy showdowns in lawless frontier saloons to steamy mid-century romantic intrigues and eerie supernatural western thrillers, these fast-paced short stories deliver instant, immersive excitement."
                 ),
-                "tropes": ["Saloon Shootouts", "Wild West Outlaws", "Steamy Romance", "Supernatural Horror", "Short Story Anthologies", "Frontier Justice"]
+                "tropes": ["Saloon Shootouts", "Wild West Outlaws", "Steamy Romance", "Supernatural Horror", "Short Story Anthologies", "Frontier Justice", "Western Short Stories", "Cowboy Action", "Romantic Short Stories", "Pulp Romance", "Scary Western & Horror Thrillers"]
             },
             "Vintage Pulp Thriller & Suspense": {
                 "title": "Vintage Pulp Thrillers & Classic Suspense Ebooks",
@@ -611,7 +611,7 @@ class PulpDataEngine:
                     "Experience the raw energy of mid-century dime novels and paperback originals. "
                     "Filled with sharp plot twists, daring escapes, and high-velocity action, our curated vintage pulp thrillers deliver pure, unadulterated reading pleasure."
                 ),
-                "tropes": ["Dime Novel Style", "Fast Pacing", "High Stakes", "Cliffhangers", "Heroic Action"]
+                "tropes": ["Dime Novel Style", "Fast Pacing", "High Stakes", "Cliffhangers", "Heroic Action", "Classic Pulp", "Action Thriller", "Men's Adventure", "Vintage Suspense"]
             }
         }
 
@@ -627,64 +627,8 @@ class PulpDataEngine:
                 "tropes": meta["tropes"],
                 "books_count": len(matching_books),
                 "books": matching_books,
-                "subgenres": list(dict.fromkeys([sg for b in matching_books for sg in b["subgenres"]]))
+                "subgenres": []
             }
-
-        subgenre_custom_meta = {
-            "Lowveld Westerns": {
-                "title": "Lowveld Westerns Pulp Fiction Ebooks",
-                "tagline": "Rugged Riders, Outlaw Showdowns, and South African Lowveld Action",
-                "guide": "Experience thrilling South African western pulp fiction set in the rugged lowveld. Featuring daring horsemen, frontier justice, cattle rustlers, and lawmen across the wild southern African frontier.",
-                "tropes": ["Lowveld Outlaws", "Frontier Justice", "Horseback Chases", "Bushveld Showdowns"]
-            },
-            "Western Short Stories": {
-                "title": "Western Short Stories Pulp Fiction Ebooks",
-                "tagline": "Gunslingers, Saloon Showdowns, and Dusty Frontier Action",
-                "guide": "Step into the dusty streets and rowdy saloons of the American frontier with our western pulp short stories. Featuring high-stakes saloon brawls, quick-draw shootouts, and rugged cowboy heroes enforcing frontier justice.",
-                "tropes": ["Saloon Brawls", "Quick-Draw Shootouts", "Frontier Justice", "Cowboy Legends"]
-            },
-            "Romantic Short Stories": {
-                "title": "Romantic Short Stories Vintage Pulp Ebooks",
-                "tagline": "Passionate Encounters, Steamy Dramas, and Vintage Pulp Intrigue",
-                "guide": "Indulge in steamy romantic short stories inspired by golden-era pulp romance. Featuring passionate encounters, seductive twists, and dramatic emotional rivalries crafted for quick, captivating reading.",
-                "tropes": ["Steamy Encounters", "Romantic Drama", "Vintage Romance", "Dramatic Suspense"]
-            },
-            "Scary Western & Horror Thrillers": {
-                "title": "Scary Western & Horror Thrillers Pulp Ebooks",
-                "tagline": "Haunted Frontiers, Ghost Towns, and Eerie Supernatural Westerns",
-                "guide": "Discover chilling weird-west stories where eerie supernatural horrors stalk desolate frontier ghost towns and lonely desert trails. A unique blend of atmospheric horror and classic western grit.",
-                "tropes": ["Ghost Towns", "Haunted Trails", "Weird West", "Supernatural Thriller"]
-            },
-            "Short Story Anthologies": {
-                "title": "Short Story Anthologies Pulp Fiction Ebooks",
-                "tagline": "Bite-Sized Pulp Fiction, Multi-Story Collections, and Fast-Paced Action",
-                "guide": "Browse our curated short story anthologies offering fast-moving, action-packed fiction across western adventures, steamy romances, and spine-chilling suspense.",
-                "tropes": ["Anthologies", "Fast Paced", "Multi-Genre", "Short Reads"]
-            }
-        }
-
-        subgenre_map = {}
-        for b in self.books:
-            for sg in b["subgenres"]:
-                if sg not in subgenre_map:
-                    subgenre_map[sg] = []
-                subgenre_map[sg].append(b)
-
-        for sg_name, sg_books in subgenre_map.items():
-            sg_slug = slugify(sg_name)
-            if sg_slug not in self.genres:
-                custom = subgenre_custom_meta.get(sg_name, {})
-                self.genres[sg_slug] = {
-                    "name": sg_name,
-                    "slug": sg_slug,
-                    "title": custom.get("title", f"{sg_name} Vintage Pulp Fiction Ebooks"),
-                    "tagline": custom.get("tagline", f"Explore the Best {sg_name} Classic Pulp Novels"),
-                    "guide": custom.get("guide", f"Discover our handpicked selection of {sg_name} vintage pulp fiction ebooks. Featuring {len(sg_books)} thrilling titles by celebrated authors with fast-paced storytelling and authentic retro atmosphere."),
-                    "tropes": custom.get("tropes", ["Action Packed", "Vintage Aesthetic", "Relentless Suspense"]),
-                    "books_count": len(sg_books),
-                    "books": sg_books,
-                    "subgenres": []
-                }
 
     def build_themes(self):
         """Build 120+ Niche Theme & Tag programmatic pages."""
