@@ -857,6 +857,7 @@ class PulpDataEngine:
             primary_slug = slugify(primary_title)
 
             # Match books for this topic
+            cat_slug = slugify(category)
             if category == "All":
                 h = sum(ord(c) for c in primary_title) % len(self.books)
                 matching = self.books[h:h+16]
@@ -864,14 +865,19 @@ class PulpDataEngine:
                     matching = self.books[:16]
             elif category in ["Afrikaans", "English"]:
                 matching = [b for b in self.books if category.lower() in b["lang"].lower()][:18]
-            elif category in self.genres:
-                matching = self.genres[category]["books"][:18]
-            elif category in self.authors:
-                matching = self.authors[category]["books"][:18]
+            elif category in self.genres or cat_slug in self.genres:
+                g_key = category if category in self.genres else cat_slug
+                matching = self.genres[g_key]["books"][:18]
+            elif category in self.authors or cat_slug in self.authors:
+                a_key = category if category in self.authors else cat_slug
+                matching = self.authors[a_key]["books"][:18]
             elif any(a["name"] == category for a in self.authors.values()):
                 matching = [b for b in self.books if b["author"] == category][:18]
             elif any(b["series"] == category for b in self.books):
                 matching = [b for b in self.books if b["series"] == category][:18]
+            elif category in self.series or cat_slug in self.series:
+                s_key = category if category in self.series else cat_slug
+                matching = self.series[s_key]["books"][:18]
             else:
                 kw = topic_name.lower().split()[0]
                 matching = [b for b in self.books if kw in b["title"].lower() or kw in b["synopsis"].lower() or kw in b["primary_genre"].lower()][:18]

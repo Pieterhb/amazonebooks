@@ -603,14 +603,12 @@ class PSEOBuilder:
         print(f"Generating {len(self.engine.series)} Series Pages...")
         for slug, series in self.engine.series.items():
             url = f"{SITE_URL}/series/{slug}/"
-            is_thin = (series["books_count"] < 2)
-            if not is_thin:
-                self.sitemap_urls["series"].append({
-                    "loc": url,
-                    "lastmod": CURRENT_DATE,
-                    "changefreq": "weekly",
-                    "priority": "0.85"
-                })
+            self.sitemap_urls["series"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.85"
+            })
 
             series_lang = "af" if any("afrikaans" in l.lower() for l in series["languages"]) and not any("english" in l.lower() for l in series["languages"]) else "en"
             title = f"{series['name']} - Complete Pulp Series Reading Order | Softcover Books"
@@ -700,7 +698,7 @@ class PSEOBuilder:
                 og_img=series["sample_covers"][0] if series["sample_covers"] else DEFAULT_OG_IMAGE,
                 engine=self.engine,
                 lang=series_lang,
-                noindex=is_thin
+                noindex=False
             )
             self.write_page(f"series/{slug}/index.html", html)
 
@@ -718,14 +716,12 @@ class PSEOBuilder:
 
         for slug, author in self.engine.authors.items():
             url = f"{SITE_URL}/authors/{slug}/"
-            is_thin = (author["books_count"] < 2)
-            if not is_thin:
-                self.sitemap_urls["authors"].append({
-                    "loc": url,
-                    "lastmod": CURRENT_DATE,
-                    "changefreq": "weekly",
-                    "priority": "0.8"
-                })
+            self.sitemap_urls["authors"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.8"
+            })
 
             title = f"{author['name']} - Vintage Pulp Fiction Bibliography | Softcover Books"
             meta_desc = f"Explore classic vintage pulp fiction ebooks by {author['name']}. Browse {author['books_count']} legendary paperback novels in digital editions."
@@ -812,7 +808,7 @@ class PSEOBuilder:
                 active_target="authors",
                 og_img=author["sample_covers"][0] if author["sample_covers"] else DEFAULT_OG_IMAGE,
                 engine=self.engine,
-                noindex=is_thin
+                noindex=False
             )
             self.write_page(f"authors/{slug}/index.html", html)
 
@@ -830,14 +826,12 @@ class PSEOBuilder:
 
         for slug, genre in self.engine.genres.items():
             url = f"{SITE_URL}/genres/{slug}/"
-            is_thin = (genre["books_count"] < 2)
-            if not is_thin:
-                self.sitemap_urls["genres"].append({
-                    "loc": url,
-                    "lastmod": CURRENT_DATE,
-                    "changefreq": "weekly",
-                    "priority": "0.85"
-                })
+            self.sitemap_urls["genres"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "weekly",
+                "priority": "0.85"
+            })
 
             title = f"{genre['title']} | Softcover Books"
             meta_desc = f"Discover {genre['books_count']}+ classic {genre['name']} vintage pulp fiction novels available online. {genre['tagline']}."
@@ -921,7 +915,7 @@ class PSEOBuilder:
                 active_target=f"genre-{slug}",
                 og_img=genre["books"][0]["img"] if genre["books"] else DEFAULT_OG_IMAGE,
                 engine=self.engine,
-                noindex=is_thin
+                noindex=False
             )
             self.write_page(f"genres/{slug}/index.html", html)
 
@@ -939,14 +933,12 @@ class PSEOBuilder:
 
         for slug, theme in self.engine.themes.items():
             url = f"{SITE_URL}/themes/{slug}/"
-            is_thin = (theme["books_count"] < 3)
-            if not is_thin:
-                self.sitemap_urls["themes"].append({
-                    "loc": url,
-                    "lastmod": CURRENT_DATE,
-                    "changefreq": "monthly",
-                    "priority": "0.75"
-                })
+            self.sitemap_urls["themes"].append({
+                "loc": url,
+                "lastmod": CURRENT_DATE,
+                "changefreq": "monthly",
+                "priority": "0.75"
+            })
 
             title = f"{theme['title']} | Softcover Books"
             meta_desc = f"Browse vintage {theme['name']} pulp fiction ebooks. Discover {theme['books_count']} exciting retro paperback novels."
@@ -1039,7 +1031,7 @@ class PSEOBuilder:
                 active_target="themes",
                 og_img=theme["books"][0]["img"] if theme["books"] else DEFAULT_OG_IMAGE,
                 engine=self.engine,
-                noindex=is_thin
+                noindex=False
             )
             self.write_page(f"themes/{slug}/index.html", html)
 
@@ -1060,9 +1052,7 @@ class PSEOBuilder:
             is_primary = col.get("is_primary", True)
             primary_slug = col.get("primary_slug", col["slug"])
             canonical_url = url if is_primary else f"{SITE_URL}/collections/{primary_slug}/"
-            is_thin = col["books_count"] < 2
-
-            if is_primary and not is_thin:
+            if is_primary:
                 self.sitemap_urls["collections"].append({
                     "loc": url,
                     "lastmod": CURRENT_DATE,
@@ -1280,7 +1270,7 @@ class PSEOBuilder:
                 og_img=col["books"][0]["img"] if col["books"] else DEFAULT_OG_IMAGE,
                 og_type="article",
                 engine=self.engine,
-                noindex=is_thin
+                noindex=False
             )
             self.write_page(f"collections/{col['slug']}/index.html", html)
 
@@ -1783,13 +1773,17 @@ Sitemap: {SITE_URL}/sitemap.xml
         ]
         redirects.extend(legacy_books)
 
-        # 3. Explicit 301 Redirects for 6 Orphaned Collection URLs
+        # 3. Explicit 301 Redirects for Orphaned Collection URLs & Historical Broken Targets
         orphaned_collections = [
             ("/collections/best-wilderness-bushveld-safari-ebooks-on-amazon-kindle/", "/collections/best-wilderness-bushveld-safari-ebooks-on-amazon/"),
-            ("/collections/must-read-revolver-shootout-action-thrillers-for-kindle/", "/collections/must-read-revolver-shootout-action-thrillers/"),
-            ("/collections/top-10-retro-sci-fi-space-opera-pulp-fiction-classics/", "/collections/top-10-pulp-fiction-masterpieces-pulp-fiction-classics/"),
-            ("/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-5-on-amazon/", "/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-10-on-amazon/"),
-            ("/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-5-on-amazon/", "/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-10-on-amazon/"),
+            ("/collections/must-read-revolver-shootout-action-thrillers-for-kindle/", "/collections/best-revolver-shootout-action-ebooks-on-amazon/"),
+            ("/collections/must-read-revolver-shootout-action-thrillers/", "/collections/best-revolver-shootout-action-ebooks-on-amazon/"),
+            ("/collections/top-10-retro-sci-fi-space-opera-pulp-fiction-classics/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"),
+            ("/collections/top-10-pulp-fiction-masterpieces-pulp-fiction-classics/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"),
+            ("/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-5-on-amazon/", "/collections/best-fast-paced-pulp-mysteries-ebooks-on-amazon/"),
+            ("/collections/cheap-fast-paced-pulp-mysteries-ebooks-under-10-on-amazon/", "/collections/best-fast-paced-pulp-mysteries-ebooks-on-amazon/"),
+            ("/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-5-on-amazon/", "/collections/best-treasure-hunting-pulp-stories-ebooks-on-amazon/"),
+            ("/collections/cheap-treasure-hunting-pulp-stories-ebooks-under-10-on-amazon/", "/collections/best-treasure-hunting-pulp-stories-ebooks-on-amazon/"),
             ("/collections/best-underworld-smuggling-rings-ebooks-on-amazon-kindle/", "/collections/best-underworld-smuggling-rings-ebooks-on-amazon/"),
         ]
         redirects.extend(orphaned_collections)
@@ -1946,10 +1940,13 @@ Sitemap: {SITE_URL}/sitemap.xml
                         if clean_target in collection_slugs:
                             redirects.append((f"/collections/{old_slug}/", f"/collections/{clean_target}/"))
 
-        # Explicit overrides for remaining sci-fi collections
-        redirects.append(("/collections/action-packed-retro-sci-fi-space-opera-stories-for-fast-reading/", "/collections/action-packed-pulp-fiction-masterpieces-stories-for-fast-reading/"))
-        redirects.append(("/collections/ultimate-guide-to-retro-sci-fi-space-opera-novels/", "/collections/ultimate-guide-to-pulp-fiction-masterpieces-novels/"))
-        redirects.append(("/collections/best-retro-sci-fi-space-opera-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-novels-for-vacation-reading/"))
+        # Explicit overrides for remaining sci-fi collections & broken targets
+        redirects.append(("/collections/action-packed-retro-sci-fi-space-opera-stories-for-fast-reading/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        redirects.append(("/collections/action-packed-pulp-fiction-masterpieces-stories-for-fast-reading/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        redirects.append(("/collections/ultimate-guide-to-retro-sci-fi-space-opera-novels/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        redirects.append(("/collections/ultimate-guide-to-pulp-fiction-masterpieces-novels/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        redirects.append(("/collections/best-retro-sci-fi-space-opera-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
+        redirects.append(("/collections/best-pulp-fiction-masterpieces-novels-for-vacation-reading/", "/collections/best-pulp-fiction-masterpieces-ebooks-on-amazon/"))
         # 7. Add all redundant collection redirects (540 permutation variants redirected to primary guides)
         if hasattr(self.engine, "redundant_collection_redirects"):
             redirects.extend(self.engine.redundant_collection_redirects)
