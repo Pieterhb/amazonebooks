@@ -302,6 +302,7 @@ class PSEOBuilder:
         self.build_404_page()
         self.build_sitemaps()
         self.build_robots_txt()
+        self.build_verification_files()
         self.build_redirects()
         print(f"PSEO generation finished successfully! Generated {sum(len(v) for v in self.sitemap_urls.values()) + 1} static pages.")
 
@@ -1752,6 +1753,16 @@ Sitemap: {SITE_URL}/sitemap.xml
 """
         self.write_page("robots.txt", robots_content)
         self.write_page("public/robots.txt", robots_content)
+
+    def build_verification_files(self):
+        """Ensure search engine verification files are in place."""
+        print("Ensuring verification files...")
+        key = "bc56a5896c0f4892bb71c444fc8123eb"
+        self.write_page(f"{key}.txt", key)
+        self.write_page(f"public/{key}.txt", key)
+        dist_dir = os.path.join(self.out_dir, "dist")
+        if os.path.exists(dist_dir):
+            self.write_page(f"dist/{key}.txt", key)
 
     def build_redirects(self):
         """Generate Cloudflare Pages _redirects file for canonicalization and legacy slugs."""
