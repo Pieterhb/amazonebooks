@@ -161,7 +161,7 @@ def render_book_card(book):
     <article class="book-card" data-series="{escape_html(book['series'])}">
       <div class="book-img-wrapper">
         <a href="/books/{book['slug']}/" aria-label="{escape_html(book['title'])}">
-          <img src="{book['img']}" alt="{escape_html(book['title'])} cover" loading="lazy" width="220" height="330">
+          <img src="{book['img']}" alt="{escape_html(book['title'])} cover" loading="lazy" decoding="async" width="220" height="330">
         </a>
         {num_badge}
         {lang_badge}
@@ -227,6 +227,7 @@ def render_base_html(title, meta_desc, canonical_url, json_ld, content_html, act
   <!-- Preconnect and Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;900&display=swap" />
   <link rel="stylesheet" href="/style.css" />
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -449,7 +450,7 @@ class PSEOBuilder:
             
             <section class="book-detail-hero">
               <div class="book-detail-cover-wrapper">
-                <img src="{book['img']}" alt="{escape_html(book['title'])} - Book Cover" width="340" height="510" fetchpriority="high">
+                <img src="{book['img']}" alt="{escape_html(book['title'])} - Book Cover" width="340" height="510" fetchpriority="high" decoding="async">
               </div>
               <div class="book-detail-info">
                 <div class="tags-row" style="margin-top:0;">
@@ -957,7 +958,29 @@ class PSEOBuilder:
             # Related themes
             all_other_themes = [t for t_slug, t in self.engine.themes.items() if t_slug != slug]
             h = sum(ord(c) for c in slug) % (len(all_other_themes) - 6 if len(all_other_themes) > 6 else 1)
-            related_themes = all_other_themes[h:h+6]
+            related_themes = list(all_other_themes[h:h+6])
+
+            # Strengthen internal linking for niche themes like dime-novel-heroes
+            theme_cross_map = {
+                "fast-paced-action": "dime-novel-heroes",
+                "dime-novel-thrills": "dime-novel-heroes",
+                "vintage-paperbacks": "dime-novel-heroes",
+                "bounty-hunters": "dime-novel-heroes",
+                "wild-west-outlaws": "dime-novel-heroes",
+                "undercover-cops": "underground-informants",
+                "wandering-detectives": "underground-informants",
+            }
+            if slug in theme_cross_map:
+                target_th_slug = theme_cross_map[slug]
+                target_th = self.engine.themes.get(target_th_slug)
+                if target_th and target_th not in related_themes:
+                    related_themes = [target_th] + related_themes[:5]
+            elif slug == "dime-novel-heroes":
+                preferred_slugs = ["dime-novel-thrills", "fast-paced-action", "vintage-paperbacks", "bounty-hunters", "wild-west-outlaws"]
+                preferred_ths = [self.engine.themes[ps] for ps in preferred_slugs if ps in self.engine.themes]
+                if preferred_ths:
+                    related_themes = preferred_ths[:6]
+
             related_themes_html = "".join([f'<a href="/themes/{t["slug"]}/" class="tag-pill" style="padding:0.4rem 0.8rem; font-size:0.85rem;">🎯 {t["name"]} ({t["books_count"]})</a>' for t in related_themes])
 
             theme_guide_text = get_theme_editorial_guide(theme['name'], theme['books_count'])
@@ -1077,10 +1100,42 @@ class PSEOBuilder:
             # Related collections (same category or nearby)
             same_cat = [c for c in self.engine.collections if c['slug'] != col['slug'] and c.get('category') == col.get('category')]
             if len(same_cat) >= 4:
-                related_cols = same_cat[:4]
+                related_cols = list(same_cat[:4])
             else:
                 h = sum(ord(c) for c in col['slug']) % (len(self.engine.collections) - 5)
                 related_cols = [c for c in self.engine.collections[h:h+6] if c['slug'] != col['slug']][:4]
+
+            # Cross-linking mesh for orphaned and isolated collections
+            collection_cross_map = {
+                "fast-paced-action-ebooks-for-weekend-reading": "best-radio-drama-style-cliffhangers-ebooks-on-amazon",
+                "best-fast-paced-pulp-mysteries-ebooks-on-amazon": "best-radio-drama-style-cliffhangers-ebooks-on-amazon",
+                "best-mens-adventure-vintage-paperbacks-ebooks-on-amazon": "best-golden-age-paperback-thrillers-ebooks-on-amazon",
+                "best-vintage-crime-paperbacks-ebooks-on-amazon": "best-golden-age-paperback-thrillers-ebooks-on-amazon",
+                "best-high-seas-pirate-action-ebooks-on-amazon": "best-vintage-maritime-ghost-ship-tales-ebooks-on-amazon",
+                "classic-maritime-adventure-novels-on-amazon": "best-vintage-maritime-ghost-ship-tales-ebooks-on-amazon",
+                "best-sahara-military-survival-ebooks-on-amazon": "complete-sahara-adventure-reading-order",
+                "must-read-desert-survival-thrillers": "complete-sahara-adventure-reading-order",
+                "best-francois-alwyn-venter-adventure-ebooks-on-amazon": "complete-sahara-adventure-reading-order",
+                "best-oloff-the-pirate-high-seas-ebooks-on-amazon": "complete-oloff-the-pirate-series-reading-order",
+                "ultimate-pirate-pulp-adventure-ebooks": "complete-oloff-the-pirate-series-reading-order",
+            }
+            if col['slug'] in collection_cross_map:
+                target_col_slug = collection_cross_map[col['slug']]
+                target_col = next((c for c in self.engine.collections if c['slug'] == target_col_slug), None)
+                if target_col and target_col not in related_cols:
+                    related_cols = [target_col] + [c for c in related_cols if c['slug'] != target_col_slug][:3]
+            elif col['slug'] == "best-radio-drama-style-cliffhangers-ebooks-on-amazon":
+                preferred = ["fast-paced-action-ebooks-for-weekend-reading", "best-fast-paced-pulp-mysteries-ebooks-on-amazon", "pulp-thrillers-for-fans-of-conan-and-tarzan", "best-revolver-shootout-action-ebooks-on-amazon"]
+                related_cols = [c for c in self.engine.collections if c['slug'] in preferred][:4]
+            elif col['slug'] == "best-golden-age-paperback-thrillers-ebooks-on-amazon":
+                preferred = ["best-mens-adventure-vintage-paperbacks-ebooks-on-amazon", "best-vintage-crime-paperbacks-ebooks-on-amazon", "underground-noir-crime-paperbacks", "best-pulp-fiction-masterpieces-ebooks-on-amazon"]
+                related_cols = [c for c in self.engine.collections if c['slug'] in preferred][:4]
+            elif col['slug'] == "best-vintage-maritime-ghost-ship-tales-ebooks-on-amazon":
+                preferred = ["classic-maritime-adventure-novels-on-amazon", "best-high-seas-pirate-action-ebooks-on-amazon", "ultimate-pirate-pulp-adventure-ebooks", "best-swashbuckling-buccaneer-ebooks-on-amazon"]
+                related_cols = [c for c in self.engine.collections if c['slug'] in preferred][:4]
+            elif col['slug'] == "complete-sahara-adventure-reading-order":
+                preferred = ["must-read-desert-survival-thrillers", "best-sahara-military-survival-ebooks-on-amazon", "top-10-classic-foreign-legion-novels", "best-french-foreign-legion-ebooks-on-amazon"]
+                related_cols = [c for c in self.engine.collections if c['slug'] in preferred][:4]
 
             related_cols_html = "".join([
                 f'<a href="/collections/{rc["slug"]}/" style="display:block; padding:1rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:8px; text-decoration:none; color:inherit; transition:border-color 0.2s, transform 0.2s;">' +
@@ -1431,7 +1486,7 @@ class PSEOBuilder:
         collections_url = f"{SITE_URL}/collections/"
         self.sitemap_urls["pages"].append({"loc": collections_url, "lastmod": CURRENT_DATE, "changefreq": "daily", "priority": "0.95"})
         col_cards = []
-        for col in self.engine.collections[:60]:
+        for col in self.engine.collections:
             col_cards.append(f"""
             <a href="/collections/{col['slug']}/" class="directory-card">
               <h3>⭐ {escape_html(col['title'])}</h3>

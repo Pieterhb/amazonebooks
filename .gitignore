@@ -4,3 +4,4 @@ website/dist
 website/node_modules
 website/.wrangler
 .wrangler
+backups/raw_covers/
