@@ -406,7 +406,7 @@ class PSEOBuilder:
                 highlights_html = f"""
                 <div style="margin-top:1.75rem; margin-bottom:1.5rem;">
                   <h3 style="font-size:1.1rem; color:var(--accent-yellow); margin-bottom:0.75rem;">⚡ Story Highlights &amp; Key Themes</h3>
-                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.85rem;">
+                  <div class="story-highlights-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.85rem;">
                     {"".join(hl_cards)}
                   </div>
                 </div>
@@ -418,7 +418,7 @@ class PSEOBuilder:
                 prev_link = f'<a href="/books/{book["prev_book"]["slug"]}/" class="btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem; text-decoration:none;">⬅️ Prev: {escape_html(book["prev_book"]["title"][:28])}</a>' if book.get("prev_book") else '<span></span>'
                 next_link = f'<a href="/books/{book["next_book"]["slug"]}/" class="btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem; text-decoration:none;">Next: {escape_html(book["next_book"]["title"][:28])} ➡️</a>' if book.get("next_book") else '<span></span>'
                 series_nav_html = f"""
-                <div style="margin:2.5rem 0 2rem; padding:1.25rem 1.5rem; background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px;">
+                <div class="series-nav-card" style="margin:2.5rem 0 2rem; padding:1.25rem 1.5rem; background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
                     <span style="font-weight:700; color:var(--accent-yellow); font-size:1rem;">📖 {escape_html(book['series'])} Reading Order</span>
                     <a href="/series/{book['series_slug']}/" style="font-weight:600; font-size:0.85rem; color:var(--text-muted); text-decoration:none;">View Full Series ({len(self.engine.series.get(book['series_slug'], {}).get('books', []))} Books) &rarr;</a>
@@ -434,7 +434,7 @@ class PSEOBuilder:
             preservation_html = ""
             if book.get("preservation_note"):
                 preservation_html = f"""
-                <div style="margin:2rem 0; padding:1.25rem 1.5rem; background:rgba(232, 160, 32, 0.05); border:1px solid var(--border); border-radius:10px;">
+                <div class="preservation-note-card" style="margin:2rem 0; padding:1.25rem 1.5rem; background:rgba(232, 160, 32, 0.05); border:1px solid var(--border); border-radius:10px;">
                   <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
                     <span>🏛️</span>
                     <strong style="color:var(--accent-yellow); font-size:0.95rem;">Vintage Pulp Preservation Project</strong>
@@ -523,7 +523,7 @@ class PSEOBuilder:
             <!-- More From Author -->
             {f'''
             <section style="margin-bottom:3.5rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>More Vintage Pulp by {escape_html(book['author'])}</h2>
                 <a href="/authors/{book['author_slug']}/" style="font-weight:700; font-size:0.9rem;">View All ({len(self.engine.authors[book['author_slug']]['books'])}) &rarr;</a>
               </div>
@@ -535,7 +535,7 @@ class PSEOBuilder:
 
             <!-- Similar Genre Ebooks -->
             <section style="margin-bottom:3.5rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>Similar {escape_html(book['primary_genre'])} Ebooks</h2>
                 <a href="/genres/{book['primary_genre_slug']}/" style="font-weight:700; font-size:0.9rem;">Explore Genre ({self.engine.genres[book['primary_genre_slug']]['books_count']}) &rarr;</a>
               </div>
@@ -647,7 +647,7 @@ class PSEOBuilder:
             </section>
 
             <section style="margin-bottom:3rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>All {series['books_count']} Books in {escape_html(series['name'])} (Reading Order)</h2>
               </div>
               <div class="product-grid">
@@ -754,7 +754,7 @@ class PSEOBuilder:
             </section>
 
             <section style="margin-bottom:3rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>Complete Bibliography by {escape_html(author['name'])} ({author['books_count']} Titles)</h2>
               </div>
               <div class="product-grid">
@@ -865,7 +865,7 @@ class PSEOBuilder:
             </section>
 
             <section style="margin-bottom:3rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>Explore All {genre['books_count']} {escape_html(genre['name'])} Ebooks</h2>
               </div>
               <div class="product-grid">
@@ -996,7 +996,7 @@ class PSEOBuilder:
             </section>
 
             <section style="margin-bottom:3rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>Featured {escape_html(theme['name'])} Titles ({theme['books_count']})</h2>
               </div>
               <div class="product-grid">
@@ -1219,7 +1219,7 @@ class PSEOBuilder:
             {editorial_html}
 
             <section style="margin-bottom:3rem;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+              <div class="section-header-row">
                 <h2>Ranked Book Recommendations ({col['books_count']} Ebooks)</h2>
               </div>
               <div class="product-grid">
@@ -1602,7 +1602,7 @@ class PSEOBuilder:
 
         <!-- Featured Book Series -->
         <section style="margin-bottom:3.5rem;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+          <div class="section-header-row">
             <h2>Popular Pulp Fiction Book Series</h2>
             <a href="/series/" style="font-weight:700; font-size:0.9rem;">All {len(self.engine.series)} Series &rarr;</a>
           </div>
@@ -1622,7 +1622,7 @@ class PSEOBuilder:
 
         <!-- Featured Collections -->
         <section style="margin-bottom:3.5rem;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+          <div class="section-header-row">
             <h2>Curated Reading Lists &amp; Buyer Guides</h2>
             <a href="/collections/" style="font-weight:700; font-size:0.9rem;">All Guides &rarr;</a>
           </div>
@@ -1642,7 +1642,7 @@ class PSEOBuilder:
 
         <!-- Featured Books Grid -->
         <section style="margin-bottom:3.5rem;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+          <div class="section-header-row">
             <h2>Popular Pulp Fiction Ebooks</h2>
             <a href="/books/" style="font-weight:700; font-size:0.9rem;">Browse All {len(self.engine.books)} &rarr;</a>
           </div>
@@ -1653,7 +1653,7 @@ class PSEOBuilder:
 
         <!-- Top Authors Section -->
         <section style="margin-bottom:3.5rem;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+          <div class="section-header-row">
             <h2>Featured Master Authors</h2>
             <a href="/authors/" style="font-weight:700; font-size:0.9rem;">All Authors &rarr;</a>
           </div>
